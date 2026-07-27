@@ -2,7 +2,7 @@
 
 > **For Hermes:** Use subagent-driven-development skill to implement this plan task-by-task.
 
-**Goal:** Chuyển toàn bộ UI vibe-expense sang phong cách Claymorphism (soft 3D, puffy, inner/outer shadows, rounded-mega, pastel surfaces) thay cho flat/material hiện tại.
+**Goal:** Chuyển toàn bộ UI vibe-tube-atlas sang phong cách Claymorphism (soft 3D, puffy, inner/outer shadows, rounded-mega, pastel surfaces) thay cho flat/material hiện tại.
 
 **Architecture:** Tạo một design-token layer + utility CSS classes trong `index.css` (Tailwind v4 `@theme` + `@layer`), rồi cập nhật lần lượt từng component. Không thay đổi logic/state/data-flow — chỉ thay đổi className + CSS variables.
 
@@ -427,7 +427,7 @@ Thay block `.dark` ở line 79-101, thêm:
 **Step 4: Verif;y CSS loads**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense
+cd /home/vmo/vibe-coding/vibe-tube-atlas
 npm run dev  # Check console for CSS errors, visit localhost:5173
 ```
 
@@ -1075,7 +1075,7 @@ Replace `bg-gray-200 dark:bg-white/10` with `clay-inset opacity-50`.
 **Step 1: Production build**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense
+cd /home/vmo/vibe-coding/vibe-tube-atlas
 npm run build
 ```
 

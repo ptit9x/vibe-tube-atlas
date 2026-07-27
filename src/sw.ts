@@ -59,7 +59,7 @@ registerRoute(
 // ─── Push notifications (carried over from old sw.js) ───────────────────────
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {}
-  const title = data.title || 'Vibe Expense'
+  const title = data.title || 'Vibe Tube Atlas'
   const options = {
     body: data.body || 'Bạn có thông báo mới',
     icon: '/icons/logo.png',

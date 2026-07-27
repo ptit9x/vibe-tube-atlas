@@ -147,7 +147,7 @@ function DesktopSidebar({ user }: { user: import('@/types').AuthUser }) {
       {/* Logo */}
       <div className="flex h-16 items-center justify-between px-6 border-b border-gray-100">
         <span className="text-lg font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          💰 Vibe Expense
+          💰 Vibe Tube Atlas
         </span>
         <Link
           to="/notifications"

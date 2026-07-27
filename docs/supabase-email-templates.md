@@ -8,12 +8,12 @@ Copy these directly into **Supabase Dashboard → Authentication → Email Templ
 
 **Subject:**
 ```
-Welcome to Vibe Expense! Please confirm your email
+Welcome to Vibe Tube Atlas! Please confirm your email
 ```
 
 **Body:**
 ```html
-<h2>Welcome to Vibe Expense! 👋</h2>
+<h2>Welcome to Vibe Tube Atlas! 👋</h2>
 <p>Thanks for signing up. Please confirm your email address to get started:</p>
 <p>
   <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 32px;background-color:#3B82F6;color:#fff;border-radius:12px;text-decoration:none;font-weight:600;">
@@ -29,13 +29,13 @@ Welcome to Vibe Expense! Please confirm your email
 
 **Subject:**
 ```
-You're invited to join Vibe Expense 💰
+You're invited to join Vibe Tube Atlas 💰
 ```
 
 **Body:**
 ```html
-<h2>You've been invited to Vibe Expense!</h2>
-<p>Someone has invited you to join Vibe Expense — your personal finance companion.</p>
+<h2>You've been invited to Vibe Tube Atlas!</h2>
+<p>Someone has invited you to join Vibe Tube Atlas — your personal finance companion.</p>
 <p>Create your account by clicking below:</p>
 <p>
   <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 32px;background-color:#3B82F6;color:#fff;border-radius:12px;text-decoration:none;font-weight:600;">
@@ -51,16 +51,16 @@ You're invited to join Vibe Expense 💰
 
 **Subject:**
 ```
-Sign in to Vibe Expense 🔐
+Sign in to Vibe Tube Atlas 🔐
 ```
 
 **Body:**
 ```html
 <h2>Sign in with one click</h2>
-<p>Someone requested a sign-in link for your Vibe Expense account.</p>
+<p>Someone requested a sign-in link for your Vibe Tube Atlas account.</p>
 <p>
   <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 32px;background-color:#3B82F6;color:#fff;border-radius:12px;text-decoration:none;font-weight:600;">
-    Sign in to Vibe Expense
+    Sign in to Vibe Tube Atlas
   </a>
 </p>
 <p style="color:#9CA3AF;font-size:14px;">This link is one-time use and expires in 15 minutes. If you didn't request this, you can safely ignore this email.</p>
@@ -72,13 +72,13 @@ Sign in to Vibe Expense 🔐
 
 **Subject:**
 ```
-Confirm your new email address — Vibe Expense 📧
+Confirm your new email address — Vibe Tube Atlas 📧
 ```
 
 **Body:**
 ```html
 <h2>Verify your new email</h2>
-<p>You're updating your Vibe Expense account email to <strong>{{ .Email }}</strong>.</p>
+<p>You're updating your Vibe Tube Atlas account email to <strong>{{ .Email }}</strong>.</p>
 <p>Please confirm by clicking below:</p>
 <p>
   <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 32px;background-color:#3B82F6;color:#fff;border-radius:12px;text-decoration:none;font-weight:600;">
@@ -94,13 +94,13 @@ Confirm your new email address — Vibe Expense 📧
 
 **Subject:**
 ```
-Reset your Vibe Expense password 🔑
+Reset your Vibe Tube Atlas password 🔑
 ```
 
 **Body:**
 ```html
 <h2>Reset your password</h2>
-<p>You requested a password reset for your Vibe Expense account.</p>
+<p>You requested a password reset for your Vibe Tube Atlas account.</p>
 <p>Click the button below to create a new password:</p>
 <p>
   <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 32px;background-color:#3B82F6;color:#fff;border-radius:12px;text-decoration:none;font-weight:600;">
@@ -116,13 +116,13 @@ Reset your Vibe Expense password 🔑
 
 **Subject:**
 ```
-Confirm your identity — Vibe Expense 🔒
+Confirm your identity — Vibe Tube Atlas 🔒
 ```
 
 **Body:**
 ```html
 <h2>Security confirmation required</h2>
-<p>You're performing a sensitive action on your Vibe Expense account. Please confirm it's you:</p>
+<p>You're performing a sensitive action on your Vibe Tube Atlas account. Please confirm it's you:</p>
 <p>
   <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 32px;background-color:#3B82F6;color:#fff;border-radius:12px;text-decoration:none;font-weight:600;">
     Confirm it's me
@@ -137,7 +137,7 @@ Confirm your identity — Vibe Expense 🔒
 
 - **`{{ .ConfirmationURL }}`** — Supabase auto-generates this for each email
 - **`{{ .Email }}`** — Available in Change Email template
-- All buttons use **blue-500 (#3B82F6)** to match Vibe Expense brand
+- All buttons use **blue-500 (#3B82F6)** to match Vibe Tube Atlas brand
 - Redirect URL config: `Supabase Dashboard → Authentication → URL Configuration → Redirect URLs`
   - Add: `https://your-domain.com/reset-password` (for Reset Password)
   - Add: `https://your-domain.com/**` (catch-all for dev)

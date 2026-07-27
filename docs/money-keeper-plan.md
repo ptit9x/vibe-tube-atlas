@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-**Based on:** vibe-expense codebase (React 19 + Vite + TypeScript + TailwindCSS v4 + shadcn/ui)
+**Based on:** vibe-tube-atlas codebase (React 19 + Vite + TypeScript + TailwindCSS v4 + shadcn/ui)
 
 **Goal:** Build a personal finance management app similar to Money Keeper - track income/expenses, manage wallets, view reports.
 
@@ -121,7 +121,7 @@ CREATE INDEX idx_wallets_user ON wallets(user_id);
 
 ## 4. Tech Stack
 
-### Frontend (Current vibe-expense)
+### Frontend (Current vibe-tube-atlas)
 ```
 React 19 + Vite 8 + TypeScript 6
 TailwindCSS v4 + @tailwindcss/vite

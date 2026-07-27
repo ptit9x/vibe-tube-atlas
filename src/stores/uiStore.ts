@@ -32,7 +32,7 @@ export interface UIState {
 
 const getStoredCurrency = (): Currency => {
   if (typeof window === 'undefined') return CURRENCIES[0]
-  const stored = localStorage.getItem('vibe-expense-currency')
+  const stored = localStorage.getItem('vibe-tube-atlas-currency')
   if (stored) {
     const found = CURRENCIES.find(c => c.code === stored)
     if (found) return found
@@ -49,7 +49,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   setShowBalance: (show) => set({ showBalance: show }),
   setCurrentMonth: (month) => set({ currentMonth: month }),
   setCurrency: (currency) => {
-    localStorage.setItem('vibe-expense-currency', currency.code)
+    localStorage.setItem('vibe-tube-atlas-currency', currency.code)
     set({ currency })
   },
   formatCurrency: (amount: number) => {

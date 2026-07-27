@@ -12,7 +12,7 @@ port = 54329
 
 [auth]
 enabled = true
-site_url = "https://vibe-expense-eight.vercel.app"
+site_url = "https://vibe-tube-atlas-eight.vercel.app"
 additional_redirect_urls = []
 jwt_expiry = 3600
 enable_refresh_token_rotation = true

@@ -28,7 +28,7 @@ const I18nProviderContext = createContext<I18nProviderState>(initialState)
 export function I18nProvider({
   children,
   defaultLanguage = 'vi',
-  storageKey = 'vibe-expense-language',
+  storageKey = 'vibe-tube-atlas-language',
   ...props
 }: I18nProviderProps) {
   const [language, setLanguageState] = useState<Language>(

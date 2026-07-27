@@ -1,4 +1,4 @@
-# Vibe Expense - Money Keeper Clone
+# Vibe Tube Atlas - Money Keeper Clone
 
 A personal finance management app built with React + Vite + TypeScript + TailwindCSS + Supabase.
 
@@ -88,7 +88,7 @@ npm run dev
 ## Project Structure
 
 ```
-vibe-expense/
+vibe-tube-atlas/
 ├── src/
 │   ├── pages/                    # Route pages (compositions only)
 │   ├── components/

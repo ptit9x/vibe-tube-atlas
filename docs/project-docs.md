@@ -1,4 +1,4 @@
-# Vibe Expense - Project Documentation
+# Vibe Tube Atlas - Project Documentation
 
 ## Overview
 

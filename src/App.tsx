@@ -11,7 +11,7 @@ const VerifyEmail = lazy(() => import('./pages/VerifyEmail'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const ResetPassword = lazy(() => import('./pages/ResetPassword'))
 
-// Vibe Expense pages (lazy loaded)
+// Vibe Tube Atlas pages (lazy loaded)
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const TransactionsPage = lazy(() => import('./pages/Transactions'))
 const AddTransactionPage = lazy(() => import('./pages/AddTransaction'))

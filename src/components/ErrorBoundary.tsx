@@ -14,7 +14,7 @@ interface ErrorBoundaryState {
 }
 
 function getLang(): Language {
-  return (localStorage.getItem('vibe-expense-language') as Language) || 'vi';
+  return (localStorage.getItem('vibe-tube-atlas-language') as Language) || 'vi';
 }
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {

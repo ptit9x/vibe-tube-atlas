@@ -1,4 +1,4 @@
-# Vibe Expense — Code Review & Fix Plan
+# Vibe Tube Atlas — Code Review & Fix Plan
 
 > **For Hermes:** Use subagent-driven-development skill to implement this plan task-by-task.
 
@@ -568,7 +568,7 @@ git commit -m "i18n: fix hardcoded English mock data to Vietnamese"
 ## Verification (after all tasks)
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense
+cd /home/vmo/vibe-coding/vibe-tube-atlas
 npm run build          # Must pass with 0 errors
 npx eslint .           # Must stay 0 errors
 npm run test           # All tests pass

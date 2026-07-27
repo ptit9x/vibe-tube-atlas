@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Vibe Expense is a personal finance management app (Money Keeper clone) targeting Vietnamese users. Mobile-first SPA with desktop sidebar support. Default language is Vietnamese (`vi`).
+Vibe Tube Atlas is a personal finance management app (Money Keeper clone) targeting Vietnamese users. Mobile-first SPA with desktop sidebar support. Default language is Vietnamese (`vi`).
 
 **Stack**: React 19 + Vite 8 + TypeScript 6 + TailwindCSS v4 + Supabase (PostgreSQL + Auth + Edge Functions)
 

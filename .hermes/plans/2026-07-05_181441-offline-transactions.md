@@ -74,7 +74,7 @@ export interface OutboxEntry {
 **Step 2: Verify**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit
 ```
 Expected: 0 errors.
 
@@ -164,7 +164,7 @@ export const useOutboxStore = create<OutboxState>()(
       getPending: () => get().entries.filter((e) => e.status === 'pending'),
     }),
     {
-      name: 'vibe-expense-outbox',
+      name: 'vibe-tube-atlas-outbox',
       // Chỉ persist mảng entries
       partialize: (state) => ({ entries: state.entries }),
     }
@@ -175,7 +175,7 @@ export const useOutboxStore = create<OutboxState>()(
 **Step 2: Verify**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit
 ```
 Expected: 0 errors.
 
@@ -226,7 +226,7 @@ export function useOnlineStatus(): boolean {
 **Step 2: Verify**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit
 ```
 
 **Step 3: Commit**
@@ -332,7 +332,7 @@ export function useOutboxSync() {
 **Step 2: Verify**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit
 ```
 
 **Step 3: Commit**
@@ -368,7 +368,7 @@ Trong hàm `AppContent()`, thêm ngay sau dòng `useAuthListener()`:
 **Step 2: Verify build**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit
 ```
 
 **Step 3: Commit**
@@ -522,7 +522,7 @@ export type { UUID }
 **Step 2: Verify**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit
 ```
 
 **Step 3: Commit**
@@ -692,7 +692,7 @@ export default function AddTransaction() {
 **Step 2: Verify build**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit && node -e "const{build}=require('vite');build().then(()=>console.log('BUILD OK'))"
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit && node -e "const{build}=require('vite');build().then(()=>console.log('BUILD OK'))"
 ```
 
 **Step 3: Commit**
@@ -822,7 +822,7 @@ export default function EditTransaction() {
 **Step 2: Verify**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit
 ```
 
 **Step 3: Commit**
@@ -905,7 +905,7 @@ Tìm file layout chính (xác định ở Task 10 bước đầu), thêm `<Offli
 **Step 4: Verify + Commit**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit
 git add src/components/shared/OfflineBanner.tsx src/components/shared/index.ts
 git commit -m "feat(offline): add OfflineBanner component"
 ```
@@ -938,7 +938,7 @@ import { OfflineBanner } from '@/components/shared'
 **Step 3: Verify build + Commit**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit
 git add src/layouts/MainLayout.tsx
 git commit -m "feat(offline): mount OfflineBanner in MainLayout"
 ```
@@ -989,7 +989,7 @@ Trong block `transaction` của `en` (sau `selectMonth`):
 **Step 4: Verify build**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx tsc --noEmit
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx tsc --noEmit
 ```
 
 **Step 5: Commit**
@@ -1082,7 +1082,7 @@ describe('outboxStore', () => {
 
 **Run:**
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx vitest run src/stores/outboxStore.test.ts
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx vitest run src/stores/outboxStore.test.ts
 ```
 Expected: 6 passed.
 
@@ -1125,7 +1125,7 @@ describe('useOnlineStatus', () => {
 
 **Run:**
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npx vitest run src/hooks/useOnlineStatus.test.ts
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npx vitest run src/hooks/useOnlineStatus.test.ts
 ```
 
 **Commit:**
@@ -1142,7 +1142,7 @@ git commit -m "test(offline): cover useOnlineStatus hook"
 
 **Step 1: Lint**
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npm run lint
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npm run lint
 ```
 
 **Step 2: Type check**

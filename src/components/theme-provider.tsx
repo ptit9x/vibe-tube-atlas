@@ -40,8 +40,8 @@ export function ThemeProvider({
     children,
     defaultTheme = "zinc",
     defaultMode = "system",
-    storageKey = "vibe-expense-theme",
-    modeStorageKey = "vibe-expense-mode",
+    storageKey = "vibe-tube-atlas-theme",
+    modeStorageKey = "vibe-tube-atlas-mode",
     ...props
 }: ThemeProviderProps) {
     const [theme, setThemeState] = useState<ThemeColor>(

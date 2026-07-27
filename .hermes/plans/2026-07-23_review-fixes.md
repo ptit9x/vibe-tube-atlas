@@ -1,4 +1,4 @@
-# Vibe Expense — Code Review & Fix Plan (2026-07-23)
+# Vibe Tube Atlas — Code Review & Fix Plan (2026-07-23)
 
 > **For Hermes:** Use subagent-driven-development skill to implement this plan task-by-task.
 
@@ -101,7 +101,7 @@ useEffect(() => {
 **Step 2: Build verify**
 
 ```bash
-cd /home/vmo/vibe-coding/vibe-expense && npm run build
+cd /home/vmo/vibe-coding/vibe-tube-atlas && npm run build
 ```
 
 **Step 3: Commit**

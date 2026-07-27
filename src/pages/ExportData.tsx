@@ -152,7 +152,7 @@ export default function ExportData() {
   const generateFilename = (ext: string) => {
     const date = new Date().toISOString().slice(0, 10)
     const suffix = dateFrom || dateTo ? `_${dateFrom || 'start'}-${dateTo || 'end'}` : `_${date}`
-    return `vibe-expense${suffix}.${ext}`
+    return `vibe-tube-atlas${suffix}.${ext}`
   }
 
   const escapeXML = (str: string) =>

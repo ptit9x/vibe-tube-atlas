@@ -98,7 +98,7 @@ function getMockNotifications(): AppNotification[] {
     {
       id: 'mock-1',
       user_id: 'mock',
-      title: 'Chào mừng đến Vibe Expense!',
+      title: 'Chào mừng đến Vibe Tube Atlas!',
       body: 'Bạn đã sẵn sàng quản lý chi tiêu chưa?',
       type: 'info',
       is_read: false,

@@ -23,8 +23,8 @@ export default defineConfig({
         enabled: false,
       },
       manifest: {
-        name: 'Vibe Expense',
-        short_name: 'Vibe Expense',
+        name: 'Vibe Tube Atlas',
+        short_name: 'Vibe Tube Atlas',
         description: 'Quản lý chi tiêu cá nhân',
         start_url: '/dashboard',
         display: 'standalone',

@@ -114,7 +114,7 @@ export const translations = {
     },
     // App
     app: {
-      appName: 'Vibe Expense',
+      appName: 'Vibe Tube Atlas',
     },
     // Dashboard
     dashboard: {
@@ -817,7 +817,7 @@ export const translations = {
     },
     // App
     app: {
-      appName: 'Vibe Expense',
+      appName: 'Vibe Tube Atlas',
     },
     // Dashboard
     dashboard: {

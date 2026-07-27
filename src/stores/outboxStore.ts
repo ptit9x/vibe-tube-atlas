@@ -104,7 +104,7 @@ export const useOutboxStore = create<OutboxState>()(
       getPending: () => get().entries.filter((e) => e.status === 'pending'),
     }),
     {
-      name: 'vibe-expense-outbox',
+      name: 'vibe-tube-atlas-outbox',
       partialize: (state) => ({ entries: state.entries }),
       // H1 fix: on rehydration, any entry left in 'syncing' state (from a crash
       // or tab close mid-sync) is reset to 'pending' so it gets retried. Without
