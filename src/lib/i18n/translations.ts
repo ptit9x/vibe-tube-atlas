@@ -275,6 +275,16 @@ export interface TranslationKey {
     reload: string
     errorBoundary: string
     errorBoundaryDesc: string
+    oops: string
+    somethingWentWrong: string
+    errorDescription: string
+    tryAgain: string
+    reloadPage: string
+    accessDenied: string
+    accessDeniedDesc: string
+    returnToDashboard: string
+    internalServerError: string
+    goToHome: string
   }
 }
 
@@ -546,6 +556,16 @@ export const translations: Record<Language, TranslationKey> = {
       reload: 'Tải lại',
       errorBoundary: 'Ứng dụng gặp lỗi',
       errorBoundaryDesc: 'Đã có lỗi xảy ra. Vui lòng tải lại trang.',
+      oops: 'Ối!',
+      somethingWentWrong: 'Đã xảy ra lỗi',
+      errorDescription: 'Ứng dụng gặp lỗi không mong muốn. Vui lòng thử lại hoặc tải lại trang.',
+      tryAgain: 'Thử lại',
+      reloadPage: 'Tải lại trang',
+      accessDenied: 'Truy cập bị từ chối',
+      accessDeniedDesc: 'Bạn không có quyền truy cập vào trang này.',
+      returnToDashboard: 'Về trang chính',
+      internalServerError: 'Lỗi máy chủ nội bộ',
+      goToHome: 'Về trang chủ',
     },
   },
 
@@ -816,6 +836,16 @@ export const translations: Record<Language, TranslationKey> = {
       reload: 'Reload',
       errorBoundary: 'App encountered an error',
       errorBoundaryDesc: 'An error occurred. Please reload the page.',
+      oops: 'Oops!',
+      somethingWentWrong: 'Something went wrong',
+      errorDescription: 'The app encountered an unexpected error. Please try again or reload the page.',
+      tryAgain: 'Try again',
+      reloadPage: 'Reload page',
+      accessDenied: 'Access denied',
+      accessDeniedDesc: 'You do not have permission to access this page.',
+      returnToDashboard: 'Return to dashboard',
+      internalServerError: 'Internal server error',
+      goToHome: 'Go home',
     },
   },
 }

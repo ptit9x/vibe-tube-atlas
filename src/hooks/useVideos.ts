@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase, requireAuth } from '@/lib/supabase'
 import { searchVideos } from '@/lib/youtube'
-import type { YouTubeVideo, SavedVideo, SearchVideosParams, SaveVideoInput } from '@/types'
+import type { SavedVideo, SearchVideosParams, SaveVideoInput } from '@/types'
 
 export function useVideoSearch(params: SearchVideosParams | null) {
   return useQuery({

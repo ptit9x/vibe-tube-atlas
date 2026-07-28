@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase, requireAuth } from '@/lib/supabase'
 import { searchChannelsByKeyword } from '@/lib/youtube'
-import type { YouTubeChannel, SavedChannel, SaveChannelInput } from '@/types'
+import type { SavedChannel, SaveChannelInput } from '@/types'
 
 export function useChannelSearch(keyword: string | null, maxResults = 10, regionCode = 'VN', relevanceLanguage = 'vi') {
   return useQuery({

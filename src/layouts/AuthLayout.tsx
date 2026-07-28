@@ -1,7 +1,7 @@
 import { Outlet, Link, useLocation, Navigate } from "react-router-dom"
-import { Play } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 import { useI18n } from "@/lib/i18n"
+import { Logo } from "@/components/Logo"
 
 export default function AuthLayout() {
   const location = useLocation()
@@ -72,11 +72,11 @@ export default function AuthLayout() {
       <div className="w-full max-w-md">
         {/* Branding - visible on all screens */}
         <div className="text-center mb-6 md:mb-8">
-          <div className="inline-flex items-center gap-2 mb-2">
-            <div className="w-12 h-12 clay-icon flex items-center justify-center bg-gradient-to-br from-red-400/20 to-pink-400/20">
-              <Play className="h-5 w-5 text-red-500 fill-red-500" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t.app.appName}</h1>
+          <div className="inline-flex items-center gap-2.5 mb-2">
+            <Logo size={44} />
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-red-500 via-rose-500 to-pink-500 bg-clip-text text-transparent">
+              {t.app.appName}
+            </h1>
           </div>
           <p className="text-muted-foreground text-sm hidden md:block">
             {getSubtitle()}

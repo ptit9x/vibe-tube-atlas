@@ -62,8 +62,8 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'Vibe Tube Atlas'
   const options = {
     body: data.body || 'Bạn có thông báo mới',
-    icon: '/icons/logo.png',
-    badge: '/icons/logo.png',
+    icon: '/icons/icon-192.svg',
+    badge: '/icons/icon-192.svg',
     data: { url: data.url || '/dashboard' },
     vibrate: [100, 50, 100],
   }

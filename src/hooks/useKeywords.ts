@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase, requireAuth } from '@/lib/supabase'
 import { analyzeKeyword } from '@/lib/youtube'
-import type { KeywordMetrics, SavedKeyword, AnalyzeKeywordParams, SaveKeywordInput } from '@/types'
+import type { SavedKeyword, AnalyzeKeywordParams, SaveKeywordInput } from '@/types'
 
 export function useAnalyzeKeyword(params: AnalyzeKeywordParams | null) {
   return useQuery({

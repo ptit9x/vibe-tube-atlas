@@ -73,7 +73,7 @@ export default function PasswordSettings() {
     <PageTransition>
     <div className="min-h-screen bg-gray-50 pb-20">
       <PageHeader>
-        <h1 className="text-xl font-semibold text-white">{t.passwordSettings.changePassword}</h1>
+        <h1 className="text-xl font-semibold text-white">{t.settings.changePassword}</h1>
       </PageHeader>
 
       <div className="bg-white mt-2 px-5 py-4">
@@ -148,7 +148,7 @@ export default function PasswordSettings() {
             disabled={isLoading}
             className="w-full h-12 text-base font-medium"
           >
-            {isLoading ? t.settings.processing : t.passwordSettings.changePassword}
+            {isLoading ? t.settings.processing : t.settings.changePassword}
           </Button>
         </form>
       </div>

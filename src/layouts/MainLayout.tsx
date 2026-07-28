@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 
 import { Avatar, OfflineBanner } from '@/components/shared'
+import { Logo } from '@/components/Logo'
 import { cn } from '@/lib/utils'
 
 const bottomNavItems = [
@@ -140,9 +141,10 @@ function DesktopSidebar({ user }: { user: import('@/types').AuthUser }) {
   return (
     <aside className="hidden lg:flex shrink-0 fixed left-0 top-0 h-full w-64 flex-col clay-navbar border-r z-40">
       {/* Logo */}
-      <div className="flex h-16 items-center px-6 border-b border-gray-100">
+      <div className="flex h-16 items-center gap-2.5 px-6 border-b border-gray-100">
+        <Logo size={28} />
         <span className="text-lg font-bold bg-gradient-to-r from-red-500 via-rose-500 to-pink-500 bg-clip-text text-transparent">
-          ▶ Vibe Tube Atlas
+          Vibe Tube Atlas
         </span>
       </div>
 
