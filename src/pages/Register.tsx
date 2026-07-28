@@ -30,10 +30,8 @@ export default function Register() {
 
     try {
       await register.mutateAsync({ email, password, full_name: fullName })
-      toast.success(`${t.auth.registerSuccess} ${t.verifyEmail.instruction}`, {
-        duration: 6000,
-      })
-      navigate("/verify-email")
+      toast.success(t.auth.registerSuccess, { duration: 4000 })
+      navigate("/dashboard")
     } catch (error) {
       toast.error(error instanceof Error ? error.message : t.auth.somethingWrong)
     }

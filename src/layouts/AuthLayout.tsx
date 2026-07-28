@@ -22,10 +22,8 @@ export default function AuthLayout() {
     )
   }
 
-  // If user is already logged in AND confirmed, redirect to dashboard
-  // Unconfirmed users should still be able to access login/register pages
-  // Forgot/reset password pages should remain accessible regardless
-  if (user && user.confirmed && !isForgot && !isReset) {
+  // If user is already logged in, redirect to dashboard
+  if (user && !isForgot && !isReset) {
     return <Navigate to="/dashboard" replace />
   }
 

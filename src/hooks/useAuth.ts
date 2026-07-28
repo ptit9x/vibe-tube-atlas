@@ -14,7 +14,7 @@ export function useAuth() {
           if (error || !user) return null
 
           // Check if email is confirmed
-          const emailConfirmed = !!user.email_confirmed_at || !!user.confirmed_at
+          // Email confirmation is disabled — all users are treated as confirmed
 
           const { data: profile } = await supabase
             .from('profiles')
@@ -27,7 +27,7 @@ export function useAuth() {
             email: user.email || '',
             full_name: profile?.full_name || user.user_metadata?.full_name || null,
             avatar_url: profile?.avatar_url || null,
-            confirmed: emailConfirmed,
+            confirmed: true,
           }
         } catch {
           if (import.meta.env.DEV) console.warn('Supabase auth failed, using mock auth')
@@ -90,16 +90,14 @@ export function useLogin() {
 
         if (error) throw error
 
-        const emailConfirmed = !!data.user?.email_confirmed_at || !!data.user?.confirmed_at
-
-        // Login successful
+        // Email confirmation disabled — login grants immediate access
 
         return {
           id: data.user.id,
           email: data.user.email || '',
           full_name: data.user.user_metadata?.full_name || null,
           avatar_url: null,
-          confirmed: emailConfirmed,
+          confirmed: true,
         }
       }
 
@@ -152,7 +150,7 @@ export function useRegister() {
           email: data.user.email || '',
           full_name: full_name,
           avatar_url: null,
-          confirmed: false, // Registration doesn't auto-confirm email
+          confirmed: true,
         }
       }
 

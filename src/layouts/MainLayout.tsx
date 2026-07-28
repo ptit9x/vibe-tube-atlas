@@ -40,10 +40,6 @@ export default function MainLayout() {
     return <Navigate to="/login" replace />
   }
 
-  if (!user.confirmed) {
-    return <Navigate to="/verify-email" replace />
-  }
-
   return (
     <div className="flex h-screen flex-col">
       <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
