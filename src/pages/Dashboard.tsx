@@ -1,143 +1,193 @@
-import { useMemo } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
-import { useAuth } from '@/hooks/useAuth'
-import { useTransactions } from '@/hooks/useTransactions'
-import { useWallets } from '@/hooks/useWallets'
+import { Link } from 'react-router-dom'
+import { PageTransition } from '@/components/shared'
+import PageHeader from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
-import {
-  SummaryCards,
-  ExpenseAnalysis,
-  RecentTransactions,
-  type ExpenseItem,
-  type TransactionItem,
-} from '@/components/dashboard'
-import { MonthlyChart, PullToRefreshWrapper, PageTransition, AnimatedFAB } from '@/components/shared'
-import { NotificationBell } from '@/components/notifications'
-import { useUIStore } from '@/stores/uiStore'
+import { Card, CardContent } from '@/components/ui/card'
 import { useI18n } from '@/lib/i18n'
-import { getLocale } from '@/lib/locale'
-import { computeMonthlyData } from '@/lib/computeMonthlyData'
-import type { Transaction } from '@/types'
-
-const RECENT_TRANSACTIONS_LIMIT = 10
-
-function computeExpenseBreakdown(transactions: Transaction[], otherCategoryName: string): ExpenseItem[] {
-  const expenses = transactions?.filter(t => t.type === 'expense') || []
-  const breakdown: Record<string, ExpenseItem> = {}
-
-  expenses.forEach(t => {
-    const catName = t.category?.name || otherCategoryName
-    const catColor = t.category?.color || '#6B7280'
-    const catIcon = t.category?.icon || '💰'
-
-    if (!breakdown[catName]) { // eslint-disable-line security/detect-object-injection
-      breakdown[catName] = { name: catName, value: 0, color: catColor, icon: catIcon }
-    }
-    breakdown[catName].value += Number(t.amount) // eslint-disable-line security/detect-object-injection
-  })
-
-  return Object.values(breakdown)
-}
+import { useApiUsage } from '@/hooks/useApiKey'
+import { useSearchHistory } from '@/hooks/useSearchHistory'
+import { useSavedKeywords } from '@/hooks/useKeywords'
+import { useSavedVideos } from '@/hooks/useVideos'
+import { useSavedChannels } from '@/hooks/useChannels'
+import { formatCompactNumber } from '@/lib/youtube'
+import { DEFAULT_QUOTA_LIMIT } from '@/constants/youtube'
+import {
+  Search,
+  TrendingUp,
+  Video,
+  KeyRound,
+  Bookmark,
+  History,
+  ChevronRight,
+  BarChart3,
+} from 'lucide-react'
 
 export default function Dashboard() {
-  const { data: user } = useAuth()
-  const { showBalance, toggleBalance, currentMonth, currency, formatCurrency } = useUIStore()
-  // Fetch 12 months for chart + expense breakdown
-  const { data: allTransactions, error: txError, refetch: refetchTransactions } = useTransactions(null)
-  const { data: wallets, error: walletError, refetch: refetchWallets } = useWallets()
-  const { t, language } = useI18n()
+  const { t } = useI18n()
+  const { data: usage } = useApiUsage()
+  const { data: searchHistory } = useSearchHistory(5)
+  const { data: savedKeywords } = useSavedKeywords()
+  const { data: savedVideos } = useSavedVideos()
+  const { data: savedChannels } = useSavedChannels()
 
-  const allTxns = useMemo(() => allTransactions || [], [allTransactions])
-  const totalBalance = useMemo(() => wallets?.reduce((sum, w) => sum + (w.balance || 0), 0) || 0, [wallets])
-  const currentMonthTxns = useMemo(() => allTxns.filter(t => t.transaction_date?.startsWith(currentMonth)), [allTxns, currentMonth])
-  const { income, expense } = useMemo(() => ({
-    income: currentMonthTxns.filter(t => t.type === 'income' || t.type === 'borrow').reduce((s, t) => s + Number(t.amount), 0),
-    expense: currentMonthTxns.filter(t => t.type === 'expense' || t.type === 'lend').reduce((s, t) => s + Number(t.amount), 0),
-  }), [currentMonthTxns])
-  const monthlyData = useMemo(() => computeMonthlyData(allTxns, 6, getLocale(language)), [allTxns, language])
-  const expenseBreakdown = useMemo(() => computeExpenseBreakdown(currentMonthTxns, t.dashboard.otherCategory), [currentMonthTxns, t.dashboard.otherCategory])
+  const quotaLimit = usage?.quotaLimit ?? DEFAULT_QUOTA_LIMIT
+  const quotaUsed = usage?.todayQuotaUsed ?? 0
+  const quotaPercent = Math.min(100, (quotaUsed / quotaLimit) * 100)
 
-  if (txError || walletError) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <p className="text-red-500 mb-2">{txError?.message || walletError?.message || t.common.error}</p>
-          <Button onClick={async () => { await Promise.all([refetchTransactions(), refetchWallets()]) }}>
-            {t.errors.tryAgain}
-          </Button>
-        </div>
-      </div>
-    )
-  }
+  const quickActions = [
+    { to: '/keywords', icon: Search, label: t.dashboard.analyzeKeyword, color: 'text-blue-600 bg-blue-50' },
+    { to: '/videos', icon: Video, label: t.dashboard.searchVideos, color: 'text-purple-600 bg-purple-50' },
+    { to: '/trending', icon: TrendingUp, label: t.dashboard.trending, color: 'text-red-600 bg-red-50' },
+  ]
 
-  // Recent transactions from current month only
-  const recentTransactions: TransactionItem[] = currentMonthTxns.slice(0, RECENT_TRANSACTIONS_LIMIT) as TransactionItem[]
-
-  const displayName = user?.full_name || user?.email?.split('@')[0] || ''
+  const savedCounts = [
+    { label: t.dashboard.savedKeywords, count: savedKeywords?.length ?? 0 },
+    { label: t.dashboard.savedVideos, count: savedVideos?.length ?? 0 },
+    { label: t.dashboard.savedChannels, count: savedChannels?.length ?? 0 },
+  ]
 
   return (
     <PageTransition>
-    <PullToRefreshWrapper
-      className="min-h-screen bg-gray-50 pb-20"
-      onRefresh={async () => { await Promise.all([refetchTransactions(), refetchWallets()]) }}
-    >
-      {/* Header - Greeting with User Name */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 px-4 pt-6 pb-8">
-        {/* Decorative blur circles */}
-        <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-        <div className="absolute -bottom-8 -left-4 w-24 h-24 bg-pink-300/20 rounded-full blur-2xl" />
-        <div className="absolute top-10 right-20 w-16 h-16 bg-indigo-300/15 rounded-full blur-xl" />
+      <div className="min-h-screen bg-gray-50 pb-20">
+        <PageHeader>
+          <h1 className="text-xl font-bold text-white">{t.dashboard.greeting}</h1>
+          <p className="text-sm text-white/80">{t.dashboard.subtitle}</p>
+        </PageHeader>
 
-        <div className="relative">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-white text-xl font-medium">{displayName ? `${t.dashboard.greeting} ${displayName}` : t.dashboard.greeting} 👋</h1>
-          <NotificationBell />
-        </div>
+        <div className="px-4 -mt-4 space-y-4">
+          {/* API Quota Card */}
+          <Card className="bg-white rounded-xl shadow-sm">
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-amber-50">
+                    <BarChart3 className="h-5 w-5 text-amber-600" />
+                  </div>
+                  <span className="font-semibold text-sm">{t.dashboard.apiQuota}</span>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {formatCompactNumber(quotaUsed)} / {formatCompactNumber(quotaLimit)}
+                </span>
+              </div>
+              <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all ${
+                    quotaPercent > 80 ? 'bg-red-500' : quotaPercent > 50 ? 'bg-amber-500' : 'bg-green-500'
+                  }`}
+                  style={{ width: `${quotaPercent}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>{t.dashboard.quotaRemaining}: {formatCompactNumber(quotaLimit - quotaUsed)}</span>
+                <span>{t.dashboard.searchesToday}: {usage?.searchCount ?? 0}</span>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Balance Card */}
-        <div className="bg-white/20 backdrop-blur-lg rounded-2xl p-5 shadow-lg border border-white/20">
-          <div className="flex items-center justify-between mb-1">
-            <p className="text-white/80 text-xs font-medium">{t.dashboard.totalBalance}</p>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 rounded-full hover:bg-white/20"
-              onClick={toggleBalance}
-              aria-label={showBalance ? t.dashboard.totalBalance : 'hidden'}
-            >
-              {showBalance ? (
-                <Eye className="h-4 w-4 text-white/70" />
-              ) : (
-                <EyeOff className="h-4 w-4 text-white/70" />
-              )}
-            </Button>
+          {/* Quick Actions */}
+          <div className="space-y-2">
+            <h2 className="text-sm font-semibold text-muted-foreground px-1">
+              {t.dashboard.quickActions}
+            </h2>
+            <div className="grid grid-cols-3 gap-3">
+              {quickActions.map(({ to, icon: Icon, label, color }) => (
+                <Link key={to} to={to}>
+                  <Card className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <CardContent className="p-3 flex flex-col items-center gap-2 text-center">
+                      <div className={`p-2.5 rounded-xl ${color}`}>
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <span className="text-xs font-medium leading-tight">{label}</span>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
           </div>
-          <p className="text-2xl font-bold text-white tracking-tight">
-            {showBalance ? (
-              <>
-                {currency.symbol}{formatCurrency(totalBalance)}
-              </>
-            ) : (
-              <span className="text-white/50">••••••••</span>
-            )}
-          </p>
-        </div>
-        </div>
-      </div>
 
-      {/* Content */}
-      <div className="px-4 -mt-4 space-y-4">
-        <SummaryCards totalBalance={totalBalance} income={income} expense={expense} showBalance={showBalance} />
-        <ExpenseAnalysis items={expenseBreakdown} />
-        <MonthlyChart data={monthlyData} />
-        <RecentTransactions transactions={recentTransactions} />
-      </div>
+          {/* Saved Items Count */}
+          <div className="space-y-2">
+            <h2 className="text-sm font-semibold text-muted-foreground px-1 flex items-center gap-1.5">
+              <Bookmark className="h-4 w-4" />
+              {t.common.save}
+            </h2>
+            <div className="grid grid-cols-3 gap-3">
+              {savedCounts.map(({ label, count }) => (
+                <Card key={label} className="bg-white rounded-xl shadow-sm">
+                  <CardContent className="p-3 text-center">
+                    <div className="text-2xl font-bold">{formatCompactNumber(count)}</div>
+                    <div className="text-[10px] text-muted-foreground leading-tight mt-1">{label}</div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
 
-      {/* FAB */}
-      <div className="fixed right-4 bottom-24 z-20">
-        <AnimatedFAB to="/add-transaction" ariaLabel={t.transaction.add} />
+          {/* Recent Searches */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between px-1">
+              <h2 className="text-sm font-semibold text-muted-foreground flex items-center gap-1.5">
+                <History className="h-4 w-4" />
+                {t.dashboard.recentSearches}
+              </h2>
+              <Link to="/keywords">
+                <Button variant="ghost" size="sm" className="h-7 text-xs">
+                  {t.common.search}
+                  <ChevronRight className="h-3 w-3" />
+                </Button>
+              </Link>
+            </div>
+            <Card className="bg-white rounded-xl shadow-sm">
+              <CardContent className="p-0">
+                {!searchHistory || searchHistory.length === 0 ? (
+                  <div className="p-6 text-center text-sm text-muted-foreground">
+                    {t.dashboard.noRecentSearches}
+                  </div>
+                ) : (
+                  <div className="divide-y divide-gray-100">
+                    {searchHistory.map((entry) => (
+                      <Link
+                        key={entry.id}
+                        to="/keywords"
+                        className="flex items-center justify-between p-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="p-1.5 rounded-lg bg-gray-100">
+                            <Search className="h-3.5 w-3.5 text-gray-500" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-sm font-medium truncate">{entry.query}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {entry.results_count} · {entry.search_type}
+                            </div>
+                          </div>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* API Key Status */}
+          <Link to="/settings/api-key">
+            <Card className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-green-50">
+                  <KeyRound className="h-5 w-5 text-green-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold">{t.apiKey.title}</div>
+                  <div className="text-xs text-muted-foreground">{t.apiKey.subtitle}</div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
       </div>
-    </PullToRefreshWrapper>
     </PageTransition>
   )
 }

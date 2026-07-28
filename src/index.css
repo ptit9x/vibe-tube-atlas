@@ -322,7 +322,7 @@ body {
   border-color: hsl(217 80% 55%);
 }
 .dark .border-indigo-400 {
-  border-color: hsl(243 60% 55%);
+  border-color: hsl(0 60% 52%);
 }
 
 /* Theme variants */
@@ -447,11 +447,11 @@ body {
 
 /* --- Clay Button Primary (colored gradient clay) --- */
 .clay-button-primary {
-  background: linear-gradient(145deg, hsl(243 75% 65%), hsl(243 75% 53%));
+  background: linear-gradient(145deg, hsl(0 75% 58%), hsl(0 75% 48%));
   border-radius: 1rem;
   box-shadow:
     -4px -4px 8px var(--clay-shadow-light),
-     4px  4px 8px rgba(99, 102, 241, 0.35);
+     4px  4px 8px rgba(239, 68, 68, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   transition: all 0.2s ease;
@@ -460,20 +460,20 @@ body {
 .clay-button-primary:hover {
   box-shadow:
     -2px -2px 6px var(--clay-shadow-light),
-     2px  2px 6px rgba(99, 102, 241, 0.3);
+     2px  2px 6px rgba(239, 68, 68, 0.3);
 }
 
 .clay-button-primary:active {
   box-shadow:
-    inset 4px 4px 8px rgba(67, 56, 202, 0.4),
-    inset -4px -4px 8px rgba(165, 180, 252, 0.2);
+    inset 4px 4px 8px rgba(220, 38, 38, 0.4),
+    inset -4px -4px 8px rgba(254, 202, 202, 0.2);
 }
 
 .dark .clay-button-primary {
-  background: linear-gradient(145deg, hsl(243 60% 55%), hsl(243 65% 43%));
+  background: linear-gradient(145deg, hsl(0 60% 52%), hsl(0 65% 40%));
   box-shadow:
     -4px -4px 8px rgba(45, 50, 80, 0.15),
-     4px  4px 8px rgba(79, 70, 229, 0.4);
+     4px  4px 8px rgba(239, 68, 68, 0.4);
 }
 
 /* --- Clay Input (inset, concave) --- */
@@ -491,7 +491,7 @@ body {
   box-shadow:
     inset 4px 4px 8px var(--clay-shadow-dark),
     inset -4px -4px 8px var(--clay-shadow-light),
-    0 0 0 3px rgba(99, 102, 241, 0.15);
+    0 0 0 3px rgba(239, 68, 68, 0.15);
 }
 
 .dark .clay-input {
@@ -521,24 +521,24 @@ body {
 
 /* --- Clay FAB (floating action button) --- */
 .clay-fab {
-  background: linear-gradient(145deg, hsl(243 75% 65%), hsl(263 75% 55%));
+  background: linear-gradient(145deg, hsl(0 75% 58%), hsl(340 75% 55%));
   border-radius: 9999px;
   box-shadow:
     -6px -6px 14px var(--clay-shadow-light),
-     6px  6px 14px rgba(99, 102, 241, 0.4);
+     6px  6px 14px rgba(239, 68, 68, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .clay-fab:active {
   box-shadow:
-    inset 4px 4px 10px rgba(67, 56, 202, 0.4),
-    inset -4px -4px 10px rgba(165, 180, 252, 0.2);
+    inset 4px 4px 10px rgba(220, 38, 38, 0.4),
+    inset -4px -4px 10px rgba(254, 202, 202, 0.2);
 }
 
 .dark .clay-fab {
   box-shadow:
     -6px -6px 14px rgba(45, 50, 80, 0.15),
-     6px  6px 14px rgba(79, 70, 229, 0.5);
+     6px  6px 14px rgba(239, 68, 68, 0.5);
 }
 
 /* --- Clay Navbar (bottom nav / sidebar) --- */
@@ -560,7 +560,7 @@ body {
 
 /* --- Clay Nav Item Active (puffy pill) --- */
 .clay-nav-active {
-  background: linear-gradient(145deg, hsl(243 75% 93%), hsl(243 75% 88%));
+  background: linear-gradient(145deg, hsl(0 75% 93%), hsl(0 75% 88%));
   border-radius: 1rem;
   box-shadow:
     -3px -3px 6px var(--clay-shadow-light),
@@ -568,7 +568,7 @@ body {
 }
 
 .dark .clay-nav-active {
-  background: linear-gradient(145deg, hsl(243 30% 20%), hsl(243 30% 15%));
+  background: linear-gradient(145deg, hsl(0 30% 20%), hsl(0 30% 15%));
   box-shadow:
     -3px -3px 6px rgba(45, 50, 80, 0.12),
      3px  3px 6px rgba(0, 0, 0, 0.4);
@@ -576,14 +576,14 @@ body {
 
 /* --- Clay Header (page top, colored) --- */
 .clay-header {
-  background: linear-gradient(145deg, hsl(243 75% 68%), hsl(263 65% 60%));
+  background: linear-gradient(145deg, hsl(0 75% 60%), hsl(340 65% 58%));
   box-shadow:
     -6px 6px 14px var(--clay-shadow-dark),
-     6px 6px 14px rgba(99, 102, 241, 0.25);
+     6px 6px 14px rgba(239, 68, 68, 0.25);
 }
 
 .dark .clay-header {
-  background: linear-gradient(145deg, hsl(243 50% 40%), hsl(263 45% 32%));
+  background: linear-gradient(145deg, hsl(0 50% 38%), hsl(340 45% 33%));
   box-shadow:
     -4px 4px 10px rgba(45, 50, 80, 0.15),
      4px 4px 10px rgba(0, 0, 0, 0.5);

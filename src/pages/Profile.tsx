@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Globe, DollarSign, Tags, Download, ChevronRight, Lock, MessageSquare, Bell, Sun, Moon, Camera, HeartPulse } from 'lucide-react'
+import { Globe, Key, ChevronRight, Lock, MessageSquare, Sun, Moon, Camera, History } from 'lucide-react'
 import { useAuth, useLogout, useUpdateProfile } from '@/hooks/useAuth'
 import { toast } from 'sonner'
 import { useI18n } from '@/lib/i18n'
@@ -14,13 +14,10 @@ import { Input } from '@/components/ui/input'
 
 
 const FEATURES = [
-  { icon: HeartPulse, labelKey: 'settings.financialHealth', href: '/financial-health', color: '#EC4899' },
+  { icon: Key, labelKey: 'settings.apiKey', href: '/settings/api-key', color: '#EF4444' },
+  { icon: History, labelKey: 'settings.history', href: '/history', color: '#8B5CF6' },
   { icon: Lock, labelKey: 'settings.password', href: '/settings/password', color: '#6366F1' },
-  { icon: Globe, labelKey: 'settings.language', href: '/settings/language', color: '#8B5CF6' },
-  { icon: DollarSign, labelKey: 'settings.currency', href: '/settings/currency', color: '#10B981' },
-  { icon: Tags, labelKey: 'settings.categories', href: '/categories', color: '#F59E0B' },
-  { icon: Download, labelKey: 'settings.export', href: '/settings/export', color: '#EF4444' },
-  { icon: Bell, labelKey: 'settings.notifications', href: '/notifications', color: '#06B6D4' },
+  { icon: Globe, labelKey: 'settings.language', href: '/settings/language', color: '#10B981' },
 ]
 
 const FEEDBACK_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScy98U6vpghurp-dkv5jKOnGlyUm3OkC05UoL82rSL17Biurg/viewform'
@@ -154,7 +151,7 @@ export default function Profile() {
               </div>
               <div className="text-left">
                 <p className="text-gray-900 font-medium">
-                  {resolvedMode === 'dark' ? t.darkMode.switchToLight : t.darkMode.switchToDark}
+                  {resolvedMode === 'dark' ? t.settings.lightMode : t.settings.darkMode}
                 </p>
               </div>
             </div>

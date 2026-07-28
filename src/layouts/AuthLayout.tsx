@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, Navigate } from "react-router-dom"
-import { Wallet } from "lucide-react"
+import { Play } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 import { useI18n } from "@/lib/i18n"
 
@@ -73,8 +73,8 @@ export default function AuthLayout() {
         {/* Branding - visible on all screens */}
         <div className="text-center mb-6 md:mb-8">
           <div className="inline-flex items-center gap-2 mb-2">
-            <div className="w-12 h-12 clay-icon flex items-center justify-center bg-gradient-to-br from-indigo-400/20 to-purple-400/20">
-              <Wallet className="h-5 w-5 text-indigo-500" />
+            <div className="w-12 h-12 clay-icon flex items-center justify-center bg-gradient-to-br from-red-400/20 to-pink-400/20">
+              <Play className="h-5 w-5 text-red-500 fill-red-500" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t.app.appName}</h1>
           </div>

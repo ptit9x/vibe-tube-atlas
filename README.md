@@ -1,184 +1,127 @@
-# Vibe Tube Atlas - Money Keeper Clone
+# ▶ Vibe Tube Atlas
 
-A personal finance management app built with React + Vite + TypeScript + TailwindCSS + Supabase.
+YouTube keyword research tool — analyze keywords, discover trending videos and channels, assess competition and engagement metrics.
 
-## Features
+## ✨ Features
 
-- **Auth**: Login/Register with Supabase Auth
-- **Dashboard**: Overview with balance, income/expense stats, charts, recent transactions
-- **Balance Toggle**: Hide/show balance amounts with eye icon for privacy
-- **Transactions**: Add, view, filter income/expense transactions
-- **Wallets**: Manage multiple wallets (Cash, Bank, E-wallet)
-- **Reports**: Monthly reports with bar charts, category breakdown
-- **Settings**: Language, currency, password, data export
-- **Profile**: User info, coins, referral code
+- **Keyword Explorer** — Analyze any keyword: competition level, avg views/likes/comments, engagement rate
+- **Video Search** — Search videos by keyword, sort by views/date/rating
+- **Channel Analyzer** — Find channels by keyword, view subscriber/video/total view counts
+- **Trending** — Trending videos by country and category
+- **Saved Items** — Bookmark keywords, videos, and channels
+- **Search History** — Track past searches with quota usage
+- **Per-user API Keys** — Each user provides their own YouTube Data API key (free 10,000 quota/day)
+- **Autocomplete** — Free keyword suggestions via Google suggest endpoint (zero quota cost)
+- **i18n** — Vietnamese (default) + English
+- **Dark mode** + responsive (mobile-first)
 
-## Tech Stack
+## 🛠 Tech Stack
 
-- **Frontend**: React 19 + Vite 8 + TypeScript 6 + TailwindCSS v4
-- **Backend**: Supabase (PostgreSQL + Auth + Realtime)
-- **State**: TanStack Query v5 (server state) + Zustand v5 (UI state)
-- **Charts**: Recharts
-- **Icons**: Lucide React
+- **Frontend:** React 19 + Vite 8 + TypeScript 6 + TailwindCSS v4
+- **UI:** shadcn/ui (new-york) + Lucide icons + Framer Motion
+- **Backend:** Supabase (PostgreSQL + Auth + Edge Functions)
+- **API:** YouTube Data API v3 (per-user keys)
+- **State:** TanStack Query v5 (server data)
 
----
-
-## State Management
-
-### Zustand (UI State)
-
-UI state that doesn't need server sync lives in Zustand stores under `src/stores/`:
+## 🏗 Architecture
 
 ```
-src/stores/
-├── addTransactionStore.ts  # Transaction form state
-├── dashboardStore.ts       # Dashboard UI state
-├── walletsStore.ts         # Wallets UI state
-└── reportsStore.ts          # Reports UI state
+User → React frontend → Supabase Edge Function (proxy) → YouTube Data API v3
+                         ↓ reads user's API key from user_api_keys table
+                         ↓ logs quota usage to api_usage table
+                         ↓ saves search to search_history table
 ```
 
-**Rules:**
-- Use Zustand for: toggle states, filters, form drafts, UI flags
-- Use TanStack Query for: server data (transactions, wallets, categories)
-- Stores persist in memory only (no localStorage unless needed)
+### Key Design Decisions
 
-### TanStack Query (Server State)
+1. **Per-user API keys** — Each user brings their own YouTube API key. Stored in `user_api_keys` table.
+2. **Edge Function proxy** (`youtube-search`) — Reads user's key server-side, proxies to YouTube API. Keeps keys out of client bundle.
+3. **Free autocomplete** (`youtube-suggest`) — Uses `suggestqueries.google.com` (public, no key, zero quota).
+4. **Estimated metrics** — Competition estimated from result count, engagement from average views/likes of top videos.
 
-All API data (transactions, wallets, categories) goes through React Query hooks in `src/hooks/`.
+## 📁 Project Structure
 
----
+```
+src/
+├── pages/
+│   ├── Dashboard.tsx           # Overview: quota, recent searches, saved items
+│   ├── KeywordExplorer.tsx     # Keyword analysis + metrics
+│   ├── Trending.tsx            # Trending by country/category
+│   ├── VideoAnalyzer.tsx       # Video search + stats
+│   ├── ChannelAnalyzer.tsx     # Channel search + stats
+│   ├── SearchHistory.tsx       # Past searches
+│   ├── ApiKeySettings.tsx      # YouTube API key management
+│   ├── Profile.tsx             # User profile + settings
+│   ├── Login/Register/...      # Auth pages
+│   └── NotFound/ServerError/...# Error pages
+├── hooks/
+│   ├── useKeywords.ts          # Keyword analysis + saved keywords
+│   ├── useVideos.ts            # Video search + saved videos
+│   ├── useChannels.ts          # Channel search + saved channels
+│   ├── useApiKey.ts            # API key CRUD + quota tracking
+│   └── useSearchHistory.ts     # History + clear
+├── lib/
+│   ├── youtube.ts              # YouTube API client (calls Edge Function proxy)
+│   ├── csv.ts                  # CSV export utility
+│   ├── dateUtils.ts            # Date formatting
+│   ├── supabase.ts             # Supabase client
+│   └── i18n/                   # Internationalization (vi/en)
+├── constants/
+│   └── youtube.ts              # Categories, countries, languages
+├── types/
+│   └── index.ts                # YouTube domain types
+└── components/
+    ├── ui/                     # shadcn/ui components
+    ├── shared/                 # Shared components (Avatar, EmptyState, etc.)
+    └── PageHeader.tsx          # Gradient page header
+```
 
-## Setup Instructions
+## 🚀 Setup
 
-### 1. Configure Supabase
+### 1. Install
 
-Create a Supabase project at [supabase.com](https://supabase.com), then update `.env`:
+```bash
+npm install
+```
+
+### 2. Configure environment
 
 ```env
+# .env
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-### 2. Deploy Database Schema
+### 3. Deploy backend
 
-The schema is in `supabase/migrations/` and auto-deploys via GitHub Actions when you push.
+The schema and Edge Functions auto-deploy via GitHub Actions when you push to `main`.
 
 **Required GitHub Secrets:**
 
-| Secret Name | How to Get |
-|-------------|------------|
-| `SUPABASE_ACCESS_TOKEN` | Supabase Dashboard → Avatar → Account Settings → Access Tokens → New access token |
-| `POSTGRES_PASSWORD` | Supabase Dashboard → Database → Settings → Connection string (password part) |
-| `PROJECT_REF` | Supabase Dashboard → Project Settings → General → Project Reference |
+| Secret | How to Get |
+|--------|------------|
+| `SUPABASE_ACCESS_TOKEN` | Supabase Dashboard → Settings → Access Tokens |
+| `POSTGRES_PASSWORD` | Supabase Dashboard → Database → Connection string |
+| `PROJECT_REF` | Supabase Dashboard → Settings → General → Project Ref |
 
-**Steps:**
-1. Go to your GitHub repo → Settings → Secrets and variables → Actions
-2. Add the 3 secrets above
-3. Push any change to trigger the deploy workflow
-
-### 3. Local Development
+### 4. Run
 
 ```bash
-npm install
-npm run dev
+npm run dev      # Dev server (port 5173)
+npm run build    # Production build
+npm run lint     # ESLint
 ```
 
----
+## 📊 YouTube API Quota
 
-## Project Structure
+| Endpoint | Cost |
+|----------|------|
+| `search.list` | **100 units** |
+| `videos.list` | 1 unit |
+| `channels.list` | 1 unit |
 
-```
-vibe-tube-atlas/
-├── src/
-│   ├── pages/                    # Route pages (compositions only)
-│   ├── components/
-│   │   ├── dashboard/           # Dashboard components
-│   │   ├── add-transaction/     # AddTransaction components
-│   │   ├── wallets/             # Wallets components
-│   │   ├── reports/             # Reports components
-│   │   └── ui/                  # shadcn/ui style components
-│   ├── stores/                  # Zustand stores
-│   ├── hooks/                   # TanStack Query hooks
-│   └── lib/                     # Utils
-├── docs/
-│   ├── project-docs.md          # Full project documentation
-│   └── code-review.md          # Code quality report
-└── vercel.json                  # SPA routing config
-```
+Free tier: **10,000 units/day** per API key (~100 searches/day).
 
----
+## 📝 License
 
-## Component Architecture
-
-### Principle: Pages compose components, don't contain logic
-
-**DO:**
-- Keep pages as thin compositions of reusable components
-- Create `components/[feature]/` folders for related components
-- Each component should be focused and single-purpose
-- Export types and interfaces from component files for reuse
-
-**DON'T:**
-- Write all page logic in a single `.tsx` file
-- Put component code directly in pages
-- Create monolithic files that handle multiple responsibilities
-
-### Feature Components
-
-| Feature | Components |
-|---------|------------|
-| Dashboard | SummaryCards, ExpenseAnalysis, MonthlyChart, RecentTransactions, QuickActions |
-| AddTransaction | AmountDisplay, CategorySelector, WalletSelector, TypeDropdown, SaveButton |
-| Wallets | TotalBalanceCard, WalletCard, WalletList, AddWalletModal, AddWalletFAB |
-| Reports | BalanceOverview, MonthlyChart, QuickActions, ReportComponents (shared) |
-| Settings | LanguageSettings, CurrencySettings, PasswordSettings, ExportData |
-
----
-
-## Pages & Routes
-
-| Route | Page | Description |
-|-------|------|-------------|
-| `/dashboard` | Dashboard | Balance overview, charts, recent transactions |
-| `/add-transaction` | AddTransaction | Add new income/expense transaction |
-| `/wallets` | Wallets | Manage wallets with balance |
-| `/reports` | Reports | Overview with quick actions |
-| `/reports/expense` | ExpenseReport | Expense bar chart, category breakdown |
-| `/reports/income` | IncomeReport | Income bar chart, category breakdown |
-| `/settings/language` | LanguageSettings | Change app language |
-| `/settings/currency` | CurrencySettings | Change currency |
-| `/settings/password` | PasswordSettings | Change account password |
-| `/settings/export` | ExportData | Export data to CSV/Excel |
-| `/budgets` | Profile | User profile, settings list |
-
----
-
-## Footer Navigation
-
-| Tab | Route |
-|-----|-------|
-| Home | /dashboard |
-| Account | /wallets |
-| Add (FAB) | /add-transaction |
-| Report | /reports |
-| Khác | /budgets |
-
----
-
-## Commands
-
-```bash
-npm run dev      # Start dev server
-npm run build    # Build production
-npm run preview  # Preview production build
-```
-
----
-
-## Notes
-
-- App uses mock data when Supabase credentials are placeholder
-- All monetary values stored as DECIMAL(15,2) - supports up to ~999 billion VND
-- Row Level Security (RLS) ensures data isolation between users
-- `vercel.json` configures SPA routing for client-side navigation
-- See `docs/code-review.md` for code quality report
+MIT

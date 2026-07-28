@@ -1,14 +1,293 @@
-export const translations = {
+// ===== Translation types =====
+export type Language = 'vi' | 'en'
+
+export interface TranslationKey {
+  nav: {
+    home: string
+    keywords: string
+    trending: string
+    videos: string
+    profile: string
+  }
+  common: {
+    save: string
+    cancel: string
+    delete: string
+    edit: string
+    add: string
+    confirm: string
+    loading: string
+    search: string
+    noData: string
+    success: string
+    error: string
+    retry: string
+    yes: string
+    no: string
+    select: string
+    all: string
+    total: string
+    justNow: string
+    minutesAgo: string
+    hoursAgo: string
+    daysAgo: string
+    offlineMode: string
+    saveKeyword: string
+    unsaveKeyword: string
+    saveVideo: string
+    unsaveVideo: string
+    saveChannel: string
+    unsaveChannel: string
+    export: string
+  }
+  auth: {
+    login: string
+    register: string
+    logout: string
+    email: string
+    password: string
+    fullName: string
+    forgotPassword: string
+    dontHaveAccount: string
+    alreadyHaveAccount: string
+    loginSuccess: string
+    registerSuccess: string
+    logoutSuccess: string
+    emailNotConfirmed: string
+    pleaseFillInfo: string
+    passwordMinLength: string
+    currentPasswordIncorrect: string
+    somethingWrong: string
+    registerNow: string
+  }
+  loginPage: {
+    welcomeBack: string
+    loginDescription: string
+    enterPassword: string
+    hidePassword: string
+    showPassword: string
+  }
+  registerPage: {
+    createAccount: string
+    registerDescription: string
+    enterFullName: string
+    atLeast6Chars: string
+  }
+  forgotPassword: {
+    title: string
+    description: string
+    sendResetLink: string
+    emailSent: string
+    checkYourEmail: string
+    sentTo: string
+    spamTip: string
+    backToLogin: string
+  }
+  resetPassword: {
+    title: string
+    description: string
+    newPassword: string
+    confirmNewPassword: string
+    passwordNotMatch: string
+    resetPassword: string
+    resetSuccess: string
+    resetSuccessTitle: string
+    resetSuccessDescription: string
+    invalidLink: string
+    invalidLinkDescription: string
+    requestNewLink: string
+  }
+  verifyEmail: {
+    title: string
+    emailNotConfirmed: string
+    subtitle: string
+    instruction: string
+    resendEmail: string
+    resending: string
+    logout: string
+    tip: string
+    tipText: string
+    emailSent: string
+    cannotResend: string
+  }
+  app: {
+    appName: string
+    appTagline: string
+  }
+  dashboard: {
+    greeting: string
+    subtitle: string
+    apiQuota: string
+    quotaUsed: string
+    recentSearches: string
+    savedKeywords: string
+    savedVideos: string
+    savedChannels: string
+    quickActions: string
+    analyzeKeyword: string
+    searchVideos: string
+    trending: string
+    noSavedKeywords: string
+    noSavedVideos: string
+    noRecentSearches: string
+    quotaRemaining: string
+    searchesToday: string
+  }
+  keywordExplorer: {
+    title: string
+    subtitle: string
+    enterKeyword: string
+    analyze: string
+    analyzing: string
+    searchPlaceholder: string
+    metrics: string
+    competition: string
+    avgViews: string
+    avgLikes: string
+    avgComments: string
+    engagementRate: string
+    resultCount: string
+    topVideos: string
+    competitionLevels: {
+      low: string
+      medium: string
+      high: string
+    }
+    engagementLevels: {
+      low: string
+      medium: string
+      high: string
+    }
+    quotaWarning: string
+    noResults: string
+    saveSuccess: string
+    unsaveSuccess: string
+    saved: string
+  }
+  trending: {
+    title: string
+    subtitle: string
+    country: string
+    category: string
+    loadTrending: string
+    noResults: string
+  }
+  videoAnalyzer: {
+    title: string
+    subtitle: string
+    searchPlaceholder: string
+    sortBy: string
+    sortDate: string
+    sortViews: string
+    sortRating: string
+    results: string
+    noResults: string
+    views: string
+    likes: string
+    comments: string
+    duration: string
+    publishedAt: string
+    videoSaved: string
+    videoUnsaved: string
+  }
+  channelAnalyzer: {
+    title: string
+    subtitle: string
+    searchPlaceholder: string
+    subscribers: string
+    videoCount: string
+    totalViews: string
+    noResults: string
+    channelSaved: string
+    channelUnsaved: string
+  }
+  apiKey: {
+    title: string
+    subtitle: string
+    description: string
+    howToGet: string
+    step1: string
+    step2: string
+    step3: string
+    step4: string
+    enterKey: string
+    save: string
+    delete: string
+    saveSuccess: string
+    deleteSuccess: string
+    keyActive: string
+    keyInactive: string
+    quotaUsage: string
+    quotaRemaining: string
+    searchesToday: string
+    freeQuota: string
+    apiKeyPlaceholder: string
+    getApiKey: string
+  }
+  settings: {
+    settings: string
+    language: string
+    password: string
+    apiKey: string
+    changePassword: string
+    currentPassword: string
+    newPassword: string
+    confirmPassword: string
+    enterCurrentPassword: string
+    enterNewPassword: string
+    enterConfirmPassword: string
+    passwordNotMatch: string
+    changePasswordSuccess: string
+    processing: string
+    feedback: string
+    editProfile: string
+    fullName: string
+    updateProfile: string
+    profileUpdated: string
+    enterFullName: string
+    passwordChangeFailed: string
+    avatarUpdated: string
+    avatarTooLarge: string
+    darkMode: string
+    lightMode: string
+    history: string
+  }
+  notifications: {
+    title: string
+  }
+  theme: {
+    theme: string
+    default: string
+    blue: string
+    green: string
+    orange: string
+    rose: string
+    violet: string
+  }
+  errors: {
+    pageNotFound: string
+    pageNotFoundDesc: string
+    takeMeHome: string
+    forbidden: string
+    forbiddenDesc: string
+    serverError: string
+    serverErrorDesc: string
+    reload: string
+    errorBoundary: string
+    errorBoundaryDesc: string
+  }
+}
+
+// ===== Vietnamese =====
+export const translations: Record<Language, TranslationKey> = {
   vi: {
-    // Navigation
     nav: {
       home: 'Trang chủ',
-      account: 'Tài khoản',
-      add: 'Thêm',
-      report: 'Báo cáo',
+      keywords: 'Từ khóa',
+      trending: 'Xu hướng',
+      videos: 'Video',
       profile: 'Khác',
     },
-    // Common
     common: {
       save: 'Lưu',
       cancel: 'Hủy',
@@ -32,11 +311,14 @@ export const translations = {
       hoursAgo: 'giờ trước',
       daysAgo: 'ngày trước',
       offlineMode: 'Đang ngoại tuyến',
-      pendingSync: 'đang chờ đồng bộ',
-      syncComplete: 'Đã đồng bộ xong',
-      syncFailed: 'Đồng bộ thất bại, sẽ thử lại',
+      saveKeyword: 'Lưu từ khóa',
+      unsaveKeyword: 'Bỏ lưu',
+      saveVideo: 'Lưu video',
+      unsaveVideo: 'Bỏ lưu',
+      saveChannel: 'Lưu kênh',
+      unsaveChannel: 'Bỏ lưu',
+      export: 'Xuất file',
     },
-    // Auth
     auth: {
       login: 'Đăng nhập',
       register: 'Đăng ký',
@@ -57,22 +339,19 @@ export const translations = {
       somethingWrong: 'Có lỗi xảy ra',
       registerNow: 'Đăng ký ngay',
     },
-    // Login Page
     loginPage: {
       welcomeBack: 'Chào mừng trở lại',
-      loginDescription: 'Đăng nhập để tiếp tục sử dụng ứng dụng',
+      loginDescription: 'Đăng nhập để tiếp tục nghiên cứu từ khóa YouTube',
       enterPassword: 'Nhập mật khẩu',
       hidePassword: 'Ẩn mật khẩu',
       showPassword: 'Hiện mật khẩu',
     },
-    // Register Page
     registerPage: {
       createAccount: 'Tạo tài khoản',
       registerDescription: 'Điền thông tin để đăng ký tài khoản mới',
       enterFullName: 'Nhập họ và tên',
       atLeast6Chars: 'Ít nhất 6 ký tự',
     },
-    // Forgot Password
     forgotPassword: {
       title: 'Quên mật khẩu',
       description: 'Nhập email đã đăng ký, chúng tôi sẽ gửi link đặt lại mật khẩu.',
@@ -83,7 +362,6 @@ export const translations = {
       spamTip: 'Nếu không thấy email, hãy kiểm tra hộp thư spam.',
       backToLogin: 'Quay lại đăng nhập',
     },
-    // Reset Password
     resetPassword: {
       title: 'Đặt lại mật khẩu',
       description: 'Nhập mật khẩu mới cho tài khoản của bạn',
@@ -98,7 +376,6 @@ export const translations = {
       invalidLinkDescription: 'Link đặt lại mật khẩu đã hết hạn hoặc không hợp lệ. Vui lòng yêu cầu link mới.',
       requestNewLink: 'Yêu cầu link mới',
     },
-    // Verify Email
     verifyEmail: {
       title: 'Xác nhận Email',
       emailNotConfirmed: 'Email chưa được xác nhận',
@@ -112,414 +389,143 @@ export const translations = {
       emailSent: 'Đã gửi lại email xác nhận',
       cannotResend: 'Không thể gửi lại email. Vui lòng thử lại.',
     },
-    // App
     app: {
       appName: 'Vibe Tube Atlas',
+      appTagline: 'Nghiên cứu từ khóa YouTube',
     },
-    // Dashboard
     dashboard: {
       greeting: 'Xin chào!',
-      totalBalance: 'Tổng số dư',
-      recentTransactions: 'Giao dịch gần đây',
-      expenseAnalysis: 'Phân tích chi tiêu',
-      monthlyOverview: 'Thu chi theo tháng',
-      noExpenses: 'Chưa có chi tiêu',
-      income: 'Thu nhập',
-      expense: 'Chi tiêu',
-      remaining: 'Còn lại',
-      otherCategory: 'Khác',
+      subtitle: 'Nghiên cứu từ khóa YouTube thông minh',
+      apiQuota: 'API Quota',
+      quotaUsed: 'Đã dùng',
+      recentSearches: 'Tìm kiếm gần đây',
+      savedKeywords: 'Từ khóa đã lưu',
+      savedVideos: 'Video đã lưu',
+      savedChannels: 'Kênh đã lưu',
+      quickActions: 'Truy cập nhanh',
+      analyzeKeyword: 'Phân tích từ khóa',
+      searchVideos: 'Tìm video',
+      trending: 'Xu hướng',
+      noSavedKeywords: 'Chưa có từ khóa nào được lưu',
+      noSavedVideos: 'Chưa có video nào được lưu',
+      noRecentSearches: 'Chưa có lịch sử tìm kiếm',
+      quotaRemaining: 'Còn lại',
+      searchesToday: 'Lượt tìm hôm nay',
     },
-    // Transaction
-    transaction: {
-      add: 'Thêm giao dịch',
-      edit: 'Sửa giao dịch',
-      amount: 'Số tiền',
+    keywordExplorer: {
+      title: 'Phân tích từ khóa',
+      subtitle: 'Đánh giá mức độ cạnh tranh và tương tác',
+      enterKeyword: 'Nhập từ khóa',
+      analyze: 'Phân tích',
+      analyzing: 'Đang phân tích...',
+      searchPlaceholder: 'VD: cooking, gaming, beauty...',
+      metrics: 'Chỉ số',
+      competition: 'Cạnh tranh',
+      avgViews: 'View trung bình',
+      avgLikes: 'Like trung bình',
+      avgComments: 'Comment trung bình',
+      engagementRate: 'Tỷ lệ tương tác',
+      resultCount: 'Số kết quả',
+      topVideos: 'Top video',
+      competitionLevels: { low: 'Thấp', medium: 'Trung bình', high: 'Cao' },
+      engagementLevels: { low: 'Thấp', medium: 'Trung bình', high: 'Cao' },
+      quotaWarning: 'Phân tích tốn ~120 quota units. Bạn còn đủ quota không?',
+      noResults: 'Không tìm thấy video cho từ khóa này',
+      saveSuccess: 'Đã lưu từ khóa',
+      unsaveSuccess: 'Đã bỏ lưu từ khóa',
+      saved: 'Đã lưu',
+    },
+    trending: {
+      title: 'Xu hướng',
+      subtitle: 'Video đang thịnh hành theo quốc gia',
+      country: 'Quốc gia',
       category: 'Danh mục',
-      wallet: 'Ví',
-      date: 'Ngày',
-      note: 'Ghi chú',
-      type: 'Loại',
-      expense: 'Chi tiêu',
-      income: 'Thu nhập',
-      lend: 'Cho vay',
-      borrow: 'Đi vay',
-      transfer: 'Chuyển khoản',
-      lender: 'Người vay',
-      borrower: 'Người cho vay',
-      lenderPlaceholder: 'Nhập tên người bạn cho vay',
-      borrowerPlaceholder: 'Nhập tên người cho bạn vay',
-      totalLent: 'Tổng đã cho vay',
-      totalBorrowed: 'Tổng đã đi vay',
-      contactPerson: 'Người liên hệ',
-      // Dropdown labels (slightly different)
-      expenseDropdown: 'Chi tiền',
-      incomeDropdown: 'Thu tiền',
-      saveSuccess: 'Thêm giao dịch thành công',
-      invalidAmount: 'Số tiền phải lớn hơn 0',
-      selectWallet: 'Vui lòng chọn ví',
-      selectToWallet: 'Vui lòng chọn ví đích',
-      fromWallet: 'Ví nguồn',
-      toWallet: 'Ví đích',
-      sameWallet: 'Ví nguồn và ví đích phải khác nhau',
-      invalidDecimals: 'Số tiền chỉ được tối đa 2 chữ số thập phân',
-      transactionsTitle: 'Giao dịch',
-      manageDaily: 'Quản lý thu chi hàng ngày',
-      all: 'Tất cả',
-      totalIncome: 'Tổng thu',
-      totalExpense: 'Tổng chi',
-      remainingBalance: 'Còn lại',
-      transactionList: 'Danh sách giao dịch',
-      noTransactions: 'Chưa có giao dịch nào trong tháng này',
-      recentTransactions: 'Lịch sử gần đây',
-      seeAll: 'Xem tất cả',
-      today: 'Hôm nay',
-      showingLast12Months: 'Hiển thị 12 tháng gần nhất',
-      selectMonth: 'Chọn tháng',
-      savedOffline: 'Đã lưu offline, sẽ đồng bộ khi có mạng',
-      outboxFull: 'Đã đạt giới hạn 20 giao dịch offline. Vui lòng kết nối mạng để đồng bộ.',
+      loadTrending: 'Xem xu hướng',
+      noResults: 'Không có video xu hướng',
     },
-    // Wallet
-    wallet: {
-      wallets: 'Tài khoản',
-      addWallet: 'Thêm ví',
-      walletName: 'Tên ví',
-      walletType: 'Loại ví',
-      cash: 'Tiền mặt',
-      bank: 'Thẻ ngân hàng',
-      eWallet: 'Ví điện tử',
-      initialBalance: 'Số dư ban đầu',
-      totalBalance: 'Tổng số dư',
-      deleteSuccess: 'Đã xóa ví',
-      cannotDeleteDefault: 'Không thể xóa ví mặc định',
-      spendingAccounts: 'Tài khoản chi tiêu',
-      noWallets: 'Chưa có ví nào. Nhấn + để tạo ví đầu tiên.',
+    videoAnalyzer: {
+      title: 'Tìm video',
+      subtitle: 'Tìm kiếm video theo từ khóa',
+      searchPlaceholder: 'Nhập từ khóa tìm kiếm...',
+      sortBy: 'Sắp xếp',
+      sortDate: 'Mới nhất',
+      sortViews: 'View cao nhất',
+      sortRating: 'Đánh giá cao',
+      results: 'Kết quả',
+      noResults: 'Không tìm thấy video',
+      views: 'lượt xem',
+      likes: 'lượt thích',
+      comments: 'bình luận',
+      duration: 'Thời lượng',
+      publishedAt: 'Đăng lúc',
+      videoSaved: 'Đã lưu video',
+      videoUnsaved: 'Đã bỏ lưu video',
     },
-    // Reports
-    reports: {
-      balance: 'Số dư',
-      debt: 'Nợ xấu',
-      reports: 'Báo cáo',
-      expenseReport: 'Báo cáo chi',
-      incomeReport: 'Báo cáo thu',
-      trackExpenses: 'Theo dõi chi tiêu',
-      trackIncome: 'Theo dõi thu nhập',
-      totalExpenseYear: 'Tổng chi năm',
-      totalIncomeYear: 'Tổng thu năm',
-      avgMonthly: 'Trung bình tháng',
-      allCategories: 'Tất cả danh mục',
-      allWallets: 'Tất cả tài khoản',
-      expenseByCategory: 'Chi tiêu theo danh mục',
-      expenseByMonth: 'Chi tiêu từng tháng',
-      incomeByCategory: 'Thu nhập theo danh mục',
-      incomeByMonth: 'Thu nhập từng tháng',
-      debtReport: 'Báo cáo vay nợ',
-      financialHealth: 'Sức khỏe tài chính',
-      expenseReportTitle: 'Báo cáo chi tiêu',
-      expenseReportSubtitle: 'Theo dõi chi tiêu theo năm',
-      incomeReportTitle: 'Báo cáo thu nhập',
-      incomeReportSubtitle: 'Theo dõi thu nhập theo năm',
+    channelAnalyzer: {
+      title: 'Phân tích kênh',
+      subtitle: 'Tìm kênh theo từ khóa',
+      searchPlaceholder: 'Nhập từ khóa...',
+      subscribers: 'subscribers',
+      videoCount: 'videos',
+      totalViews: 'total views',
+      noResults: 'Không tìm thấy kênh',
+      channelSaved: 'Đã lưu kênh',
+      channelUnsaved: 'Đã bỏ lưu kênh',
     },
-    // Debt Tracker
-    debtTracker: {
-      title: 'Theo dõi vay nợ',
-      reportTitle: 'Báo cáo vay nợ',
-      reportSubtitle: 'Tổng hợp cho vay và đi vay theo năm',
-      totalLent: 'Tổng cho vay',
-      totalBorrowed: 'Tổng đi vay',
-      netPosition: 'Vị thế nợ ròng',
-      youOwe: 'Bạn đang nợ:',
-      owedToYou: 'Người khác nợ bạn:',
-      youOweShort: 'Nợ',
-      owedToYouShort: 'Phải thu',
-      lendList: 'Danh sách cho vay',
-      borrowList: 'Danh sách đi vay',
-      byContact: 'Theo người liên hệ',
-      monthlyDebt: 'Vay nợ từng tháng',
-      unknown: 'Không rõ',
+    apiKey: {
+      title: 'API Key',
+      subtitle: 'Quản lý YouTube Data API key',
+      description: 'Mỗi user dùng API key riêng. Free 10,000 quota/ngày.',
+      howToGet: 'Hướng dẫn lấy API key',
+      step1: 'Truy cập Google Cloud Console',
+      step2: 'Tạo project mới hoặc chọn project có sẵn',
+      step3: 'Bật YouTube Data API v3',
+      step4: 'Tạo API key trong Credentials',
+      enterKey: 'Nhập API Key',
+      save: 'Lưu API Key',
+      delete: 'Xóa API Key',
+      saveSuccess: 'Đã lưu API key',
+      deleteSuccess: 'Đã xóa API key',
+      keyActive: 'API Key đang hoạt động',
+      keyInactive: 'Chưa có API Key',
+      quotaUsage: 'Quota sử dụng',
+      quotaRemaining: 'Quota còn lại',
+      searchesToday: 'Lượt tìm hôm nay',
+      freeQuota: 'Free 10,000 units/ngày',
+      apiKeyPlaceholder: 'AIza...',
+      getApiKey: 'Lấy API Key',
     },
-    // Categories
-    categories: {
-      expenseCategories: 'Danh mục chi',
-      incomeCategories: 'Danh mục thu',
-      addCategory: 'Thêm danh mục',
-      categoriesTitle: 'Danh mục thu chi',
-      // Expense categories
-      food: 'Ăn uống',
-      transport: 'Di chuyển',
-      housing: 'Nhà cửa',
-      entertainment: 'Giải trí',
-      shopping: 'Mua sắm',
-      health: 'Sức khỏe',
-      other: 'Chi tiêu khác',
-      lend: 'Cho vay',
-      repayDebt: 'Trả nợ',
-      children: 'Con cái',
-      // Income categories
-      salary: 'Lương',
-      gift: 'Quà tặng',
-      investment: 'Đầu tư',
-      borrow: 'Đi vay',
-      collectDebt: 'Thu nợ',
-      // Subcategories
-      dailyExpense: 'Đi chợ/Siêu thị',
-      diningOut: 'Ăn tiệm',
-      cafe: 'Cafe',
-      party: 'Tiệc tùng',
-      electricity: 'Tiền điện',
-      water: 'Tiền nước',
-      internet: 'Internet',
-      cableTV: 'Truyền hình cáp',
-      phoneBill: 'Điện thoại di động',
-      gas: 'Gas',
-      fuel: 'Đổ xăng',
-      maintenanceBike: 'Thay dầu/Bảo dưỡng xe',
-      grabBike: 'Taxi/Grab',
-      parking: 'Gửi xe',
-      bus: 'Vé xe buýt/Tàu hỏa',
-      clothes: 'Quần áo',
-      shoes: 'Giày dép',
-      accessories: 'Phụ kiện',
-      cosmetics: 'Mỹ phẩm',
-      barber: 'Cắt tóc/Làm đẹp',
-      medical: 'Khám chữa bệnh',
-      medicine: 'Thuốc men',
-      healthInsurance: 'Bảo hiểm sức khỏe',
-      tuition: 'Học phí',
-      books: 'Sách vở',
-      documents: 'Tài liệu',
-      skillsCourse: 'Khóa học kỹ năng',
-      travel: 'Du lịch',
-      movie: 'Xem phim',
-      musicBooks: 'Nhạc/Sách báo',
-      game: 'Đồ chơi/Game',
-      socialGift: 'Biếu quà',
-      wedding: 'Đám cưới',
-      funeral: 'Đám tang',
-      charity: 'Làm từ thiện',
-      milk: 'Sữa',
-      diaper: 'Tã bỉm',
-      childToys: 'Đồ chơi cho con',
-      childTuition: 'Học phí cho con',
-      rent: 'Tiền thuê nhà',
-      maintenance: 'Sửa chữa nhà',
-      household: 'Mua sắm đồ gia dụng',
-      officialSalary: 'Lương chính thức',
-      extraSalary: 'Lương làm thêm',
-      bonus: 'Tiền thưởng',
-      businessRevenue: 'Doanh thu bán hàng',
-      investmentInterest: 'Tiền lãi từ đầu tư/Chứng khoán',
-      receivedGift: 'Tiền được tặng/biếu',
-      bankInterest: 'Tiền lãi ngân hàng',
-      debtCollection: 'Thu nợ',
-      otherIncome: 'Thu nhập vãng lai',
-      lending: 'Cho vay',
-      repaying: 'Trả nợ',
-      borrowing: 'Đi vay',
-      collecting: 'Thu nợ',
-      // ── New parent categories ──
-      pets: 'Thú cưng',
-      sports: 'Thể thao & Fitness',
-      insurance: 'Bảo hiểm',
-      taxes: 'Thuế & Phí',
-      technology: 'Công nghệ',
-      rental: 'Cho thuê',
-      pension: 'Hưu trí & Trợ cấp',
-      // ── New subcategories: Thú cưng ──
-      petFood: 'Thức ăn thú cưng',
-      petVet: 'Khám thú y',
-      petAccessories: 'Phụ kiện thú cưng',
-      petGrooming: 'Tắm tỉa lông',
-      // ── Thể thao ──
-      gym: 'Gym/Yoga',
-      sportsGear: 'Đồ thể thao',
-      courtRental: 'Thuê sân',
-      swimming: 'Bơi lội',
-      // ── Bảo hiểm ──
-      insuranceVehicle: 'Bảo hiểm xe',
-      insuranceHome: 'Bảo hiểm nhà',
-      insuranceLife: 'Bảo hiểm nhân thọ',
-      insuranceTravel: 'Bảo hiểm du lịch',
-      // ── Thuế & Phí ──
-      incomeTax: 'Thuế thu nhập',
-      roadFee: 'Phí đường bộ',
-      fines: 'Phạt vi phạm',
-      licenseFee: 'Phí giấy phép',
-      // ── Công nghệ ──
-      techPhone: 'Điện thoại',
-      techLaptop: 'Laptop/Máy tính',
-      techAccessories: 'Phụ kiện công nghệ',
-      techRepair: 'Sửa chữa điện tử',
-      // ── Cho thuê (income) ──
-      rentalHouse: 'Cho thuê nhà',
-      rentalVehicle: 'Cho thuê xe',
-      rentalItems: 'Cho thuê đồ',
-      // ── Hưu trí (income) ──
-      pensionPay: 'Lương hưu',
-      familyAllowance: 'Trợ cấp gia đình',
-      socialWelfare: 'Trợ cấp xã hội',
-      // ── Ăn uống: sáng/trưa/tối + bổ sung ──
-      breakfast: 'Ăn sáng',
-      lunch: 'Ăn trưa',
-      dinner: 'Ăn tối',
-      drinks: 'Đồ uống (trà sữa)',
-      foodDelivery: 'Đặt đồ online',
-      snacks: 'Ăn vặt',
-      // ── Đi lại: bổ sung ──
-      carWash: 'Rửa xe',
-      trafficFines: 'Phạt vi phạm giao thông',
-      carInsurance: 'Bảo hiểm xe',
-      // ── Sức khỏe: bổ sung ──
-      dental: 'Nha khoa',
-      eyecare: 'Mắt kính',
-      checkup: 'Khám tổng quát',
-      // ── Hưởng thụ: bổ sung ──
-      karaoke: 'Karaoke',
-      subscription: 'Đăng ký dịch vụ (Netflix/Spotify)',
-      // ── Lương: bổ sung ──
-      dailyWage: 'Lương ngày',
-      fee: 'Thù lao',
-    },
-    savings: {
-      savings: 'Tiết kiệm',
-      addGoal: 'Thêm mục tiêu',
-      goalName: 'Tên mục tiêu',
-      targetAmount: 'Số tiền mục tiêu',
-      currentAmount: 'Đã có',
-      deadline: 'Hạn',
-      remaining: 'Còn lại',
-      totalSaved: 'Tổng đã tiết kiệm',
-      progress: 'Tiến độ chung',
-      target: 'Mục tiêu',
-      addSavingsGoal: 'Thêm mục tiêu tiết kiệm',
-      trackGoals: 'Theo dõi mục tiêu tài chính',
-      noSavingsGoals: 'Chưa có mục tiêu tiết kiệm nào. Nhấn "Thêm mục tiêu" để bắt đầu.',
-      enterGoalName: 'VD: Quỹ du lịch',
-      enterTargetAmount: 'VD: 50000000',
-      enterCurrentAmount: 'VD: 10000000',
-      deadlineLabel: 'Hạn',
-      featureInDev: 'Tính năng đang phát triển',
-      pleaseEnterGoalName: 'Vui lòng nhập tên mục tiêu',
-      targetMustBePositive: 'Số tiền mục tiêu phải lớn hơn 0',
-    },
-    // Settings
     settings: {
       settings: 'Cài đặt',
       language: 'Ngôn ngữ',
-      currency: 'Tiền tệ',
       password: 'Đổi mật khẩu',
-      export: 'Xuất dữ liệu',
-      categories: 'Danh mục',
-      financialHealth: 'Sức khỏe tài chính',
-      notifications: 'Thông báo',
+      apiKey: 'YouTube API Key',
       changePassword: 'Đổi mật khẩu',
       currentPassword: 'Mật khẩu hiện tại',
       newPassword: 'Mật khẩu mới',
       confirmPassword: 'Xác nhận mật khẩu',
-      currencySettings: 'Thiết lập tiền tệ',
-      selectCurrency: 'Chọn đơn vị tiền tệ',
       enterCurrentPassword: 'Nhập mật khẩu hiện tại',
       enterNewPassword: 'Nhập mật khẩu mới',
       enterConfirmPassword: 'Nhập lại mật khẩu mới',
       passwordNotMatch: 'Mật khẩu mới không khớp',
       changePasswordSuccess: 'Đổi mật khẩu thành công!',
       processing: 'Đang xử lý...',
-      exportData: 'Xuất dữ liệu',
-      exportDescription: 'Xuất dữ liệu chi tiêu của bạn ra file',
-      exportExcel: 'Xuất Excel (.xlsx)',
-      exportCSV: 'Xuất CSV (.csv)',
-      suitableForSheets: 'Phù hợp với Google Sheets',
-      basicFormat: 'Định dạng cơ bản',
-      transactionUpdated: 'Cập nhật giao dịch thành công',
-      transactionNotFound: 'Không tìm thấy giao dịch',
-      goBack: 'Quay lại',
-      deleteWallet: 'Xóa ví',
-      deleteWalletConfirm: 'Bạn có chắc muốn xóa',
-      thisCannotBeUndone: 'Không thể hoàn tác',
-      walletDeactivated: 'Ví đã ẩn',
-      hiddenAccounts: 'Ví đã ẩn',
-      editWallet: 'Sửa ví',
-      saveChanges: 'Lưu thay đổi',
-      walletName: 'Tên ví',
-      availableRecords: 'Số bản ghi:',
-      transactions: 'giao dịch',
-      exportSuccess: 'Xuất dữ liệu thành công',
       feedback: 'Góp ý',
-      exportFailed: 'Xuất dữ liệu thất bại',
-      avatarUpdated: 'Cập nhật ảnh đại diện thành công',
-      avatarTooLarge: 'File quá lớn. Tối đa 2MB.',
       editProfile: 'Chỉnh sửa thông tin',
       fullName: 'Họ và tên',
       updateProfile: 'Cập nhật',
       profileUpdated: 'Cập nhật thông tin thành công',
       enterFullName: 'Nhập họ và tên',
       passwordChangeFailed: 'Đổi mật khẩu thất bại',
+      avatarUpdated: 'Cập nhật ảnh đại diện thành công',
+      avatarTooLarge: 'File quá lớn. Tối đa 2MB.',
+      darkMode: 'Chế độ tối',
+      lightMode: 'Chế độ sáng',
+      history: 'Lịch sử tìm kiếm',
     },
-    // Wallet card
-    walletCard: {
-      edit: 'Sửa',
-      hide: 'Ẩn',
-      show: 'Hiện',
-      delete: 'Xóa',
-      inactive: 'Đã ẩn',
-      noOtherWallets: 'Không có ví khác',
+    notifications: {
+      title: 'Thông báo',
     },
-    // Category management
-    categoryManager: {
-      addCategory: 'Thêm danh mục',
-      editCategory: 'Sửa danh mục',
-      saveChanges: 'Lưu thay đổi',
-      name: 'Tên',
-      categoryName: 'Tên danh mục',
-      icon: 'Biểu tượng',
-      color: 'Màu sắc',
-      parentCategory: 'Danh mục cha',
-      noneTopLevel: 'Không (Cấp cao nhất)',
-      myCategories: 'Danh mục của tôi',
-      systemCategories: 'Danh mục hệ thống',
-      addSubcategory: 'Thêm danh mục con',
-      deleteCategory: 'Xóa danh mục',
-      deleteCategoryConfirm: 'Bạn có chắc muốn xóa',
-      thisCannotBeUndone: 'Không thể hoàn tác.',
-      deleteSubcategory: 'Xóa danh mục con',
-      deleteSubcategoryConfirm: 'Bạn có chắc muốn xóa danh mục con này?',
-      categoryCreated: 'Đã tạo danh mục',
-      categoryUpdated: 'Đã cập nhật danh mục',
-      categoryDeleted: 'Đã xóa danh mục',
-      subcategoryDeleted: 'Đã xóa danh mục con',
-      failedToCreate: 'Không thể tạo danh mục',
-      failedToUpdate: 'Không thể cập nhật danh mục',
-      failedToDelete: 'Không thể xóa danh mục',
-      failedToDeleteSub: 'Không thể xóa danh mục con',
-      noCategories: 'Không có danh mục',
-      selectCategory: 'Chọn danh mục',
-      confirmDelete: 'Xóa',
-    },
-    // Savings page
-    savingsPage: {
-      goalCreated: 'Đã tạo mục tiêu thành công',
-      processing: 'Đang xử lý...',
-      editWalletComingSoon: 'Sửa ví sắp ra mắt',
-      account: 'tài khoản',
-      accounts: 'tài khoản',
-    },
-    // Error pages
-    errors: {
-      oops: 'Ối!',
-      somethingWentWrong: 'Đã xảy ra lỗi',
-      errorDescription: 'Đã xảy ra lỗi không mong muốn. Vui lòng thử tải lại trang. Nếu vấn đề vẫn tiếp diễn, hãy liên hệ hỗ trợ.',
-      tryAgain: 'Thử lại',
-      reloadPage: 'Tải lại trang',
-      pageNotFound: 'Không tìm thấy trang',
-      pageNotFoundDesc: 'Trang bạn đang tìm không tồn tại hoặc đã được chuyển đi.',
-      takeMeHome: 'Về trang chủ',
-      accessDenied: 'Truy cập bị từ chối',
-      accessDeniedDesc: 'Bạn không có quyền truy cập tài nguyên này. Vui lòng liên hệ quản trị viên nếu bạn cho rằng đây là lỗi.',
-      returnToDashboard: 'Quay lại trang chính',
-      internalServerError: 'Lỗi máy chủ nội bộ',
-      serverErrorDesc: 'Rất tiếc, đã có lỗi xảy ra từ phía chúng tôi. Vui lòng thử tải lại trang hoặc quay lại sau.',
-      goToHome: 'Về trang chủ',
-    },
-    // Theme
     theme: {
       theme: 'Giao diện',
       default: 'Mặc định',
@@ -529,189 +535,29 @@ export const translations = {
       rose: 'Hồng',
       violet: 'Tím',
     },
-    // Profile/Budgets page
-    profile: {
-      coins: 'tiền thưởng',
-      accumulated: 'Đã tích lũy',
-      referralCode: 'Mã giới thiệu:',
-      selectCurrency: 'Chọn đơn vị tiền tệ bạn muốn sử dụng',
-    },
-    // Password settings specific
-    passwordSettings: {
-      changePassword: 'Đổi mật khẩu',
-    },
-    // Notifications
-    notifications: {
-      title: '🔔 Thông báo',
-      unread: 'chưa đọc',
-      empty: 'Không có thông báo',
-      emptyDesc: 'Các thông báo sẽ xuất hiện ở đây khi bạn có cập nhật.',
-      markAllRead: 'Đánh dấu tất cả đã đọc',
-      markRead: 'Đánh dấu đã đọc',
-      delete: 'Xóa',
-      viewAll: 'Xem tất cả thông báo',
-      inactivityReminder: {
-        title: 'Nhắc nhở hoạt động',
-        body: 'Bạn đã không ghi nhận giao dịch nào trong 7 ngày qua. Hãy mở app và kiểm tra tài khoản nhé!',
-      },
-    },
-    // Financial Health
-    financialHealth: {
-      title: '🏥 Sức khỏe tài chính',
-      subtitle: 'Phân tích bởi AI',
-      analyzeNow: 'Phân tích ngay',
-      analyzing: 'Đang phân tích...',
-      loadingReport: 'Đang tải báo cáo...',
-      noReport: 'Chưa có báo cáo',
-      noReportDesc: 'Nhấn "Phân tích ngay" để AI đánh giá sức khỏe tài chính của bạn',
-      createFirstReport: 'Tạo báo cáo đầu tiên',
-      aiAnalysis: 'AI Phân tích',
-      findings: 'Phát hiện',
-      riskWarnings: 'Cảnh báo rủi ro',
-      actionSuggestions: 'Đề xuất hành động',
-      actionPlan: 'Kế hoạch hành động',
-      priorityHigh: 'Quan trọng',
-      priorityMedium: 'Nên làm',
-      priorityLow: 'Tuỳ chọn',
-      financialRunway: 'Chỉ số sinh tồn',
-      months: 'tháng',
-      assetAllocation: 'Phân bổ tài sản',
-      emergencyFund: 'Quỹ dự phòng',
-      investCapital: 'Vốn đầu tư',
-      investmentChannels: 'Kênh đầu tư',
-      riskLow: 'Rủi ro thấp',
-      riskMediumLow: 'Rủi ro thấp-trung bình',
-      riskMedium: 'Rủi ro trung bình',
-      metrics: {
-        savingsRate: 'Tỷ lệ tiết kiệm',
-        debtToIncome: 'Tỷ lệ nợ / thu nhập',
-        spendingTrend: 'Xu hướng chi tiêu',
-        expenseToIncome: 'Chi / Thu',
-        totalAssets: 'Tổng tài sản',
-        netWorth: 'Tài sản ròng',
-      },
-      trend: {
-        increasing: 'Tăng',
-        decreasing: 'Giảm',
-        stable: 'Ổn định',
-        insufficient: 'Chưa đủ dữ liệu',
-      },
-      grade: 'Hạng',
-      billion: 'tỷ',
-      million: 'triệu',
-      history: {
-        title: 'Lịch sử báo cáo',
-        monthlyReport: 'Báo cáo tháng',
-        weeklyReport: 'Báo cáo tuần',
-      },
-    },
-    // Dark mode toggle
-    darkMode: {
-      switchToLight: 'Chế độ sáng',
-      switchToDark: 'Chế độ tối',
-    },
-    // Auth errors
-    authErrors: {
-      invalidCredentials: 'Email hoặc mật khẩu không đúng',
-    },
-    // Local Analysis (generateLocalAnalysis fallback)
-    localAnalysis: {
-      // Savings insights
-      savingsGood_title: 'Tỷ lệ tiết kiệm tốt',
-      savingsGood_desc: 'Bạn đang tiết kiệm {rate}% thu nhập — vượt mức khuyến nghị 20%!',
-      savingsLow_title: 'Tỷ lệ tiết kiệm thấp',
-      savingsLow_desc: 'Tiết kiệm {rate}% thu nhập. Nên đạt ít nhất 20%.',
-      overspending_title: 'Chi tiêu vượt thu nhập',
-      overspending_desc: 'Bạn đang chi tiêu nhiều hơn thu nhập {rate}%. Cần cắt giảm ngay!',
-      // Debt insights
-      hasDebt_title: 'Đang có khoản nợ',
-      hasDebt_desc: 'Tổng nợ {debt} ({ratio}% thu nhập).',
-      debtTooHigh_title: 'Nợ quá cao',
-      debtTooHigh_desc: 'Tỷ lệ nợ/thu nhập {ratio}% vượt ngưỡng an toàn 30%.',
-      // Net worth insights
-      netWorthPositive_title: 'Tài sản ròng dương',
-      netWorthPositive_desc: 'Tổng tài sản {assets}, không có nợ. Tình trạng tài chính rất ổn định!',
-      assetsStrong_title: 'Tài sản đủ mạnh',
-      assetsStrong_desc: 'Tổng tài sản {assets} gấp {multiple} lần tổng nợ. Nợ được bảo đảm tốt.',
-      assetsCoverDebt_title: 'Tài sản đủ cover nợ',
-      assetsCoverDebt_desc: 'Tổng tài sản {assets} đủ để trả toàn bộ nợ ({debt}).',
-      assetsInsufficient_title: 'Tài sản chưa đủ cover nợ',
-      assetsInsufficient_desc: 'Tổng tài sản {assets} thấp hơn tổng nợ {debt}. Tài sản ròng âm.',
-      negativeNetWorth_title: 'Tài sản ròng âm',
-      negativeNetWorth_riskDesc: 'Tổng nợ ({debt}) vượt tổng tài sản ({assets}). Nợ không được bảo đảm.',
-      negativeNetWorth_insightDesc: 'Tổng nợ vượt tổng tài sản. Tài sản ròng: {netWorth}.',
-      negativeNetWorth_riskDescShort: 'Tổng nợ ({debt}) vượt tổng tài sản ({assets}).',
-      noAssetsHasDebt_title: 'Không có tài sản, đang có nợ',
-      noAssetsHasDebt_desc: 'Bạn có nợ {debt} nhưng chưa có tài sản nào. Tạo ví để theo dõi!',
-      createWallet_title: 'Tạo ví và tích lũy tài sản',
-      createWallet_desc: 'Tạo ví tiền mặt/ngân hàng để theo dõi tài sản và xây dựng quỹ dự phòng.',
-      // Top category
-      topCategory_title: 'Chi nhiều nhất: {name}',
-      topCategory_desc: '{percentage}% tổng chi tiêu ({amount}).',
-      // Spending trend
-      spendingIncreasing_title: 'Chi tiêu đang tăng',
-      spendingIncreasing_desc: 'So với tháng trước, chi tiêu của bạn có xu hướng tăng.',
-      createBudget_title: 'Lập ngân sách chi tiêu',
-      createBudget_desc: 'Tạo budget cho các danh mục chi tiêu chính để kiểm soát tốt hơn.',
-      spendingDecreasing_title: 'Chi tiêu đang giảm',
-      spendingDecreasing_desc: 'Tốt! Chi tiêu đang có xu hướng giảm so với trước.',
-      // Budget alerts
-      overBudget_title: '{count} danh mục vượt ngân sách',
-      // Recommendations
-      increaseSavings_title: 'Tăng tỷ lệ tiết kiệm',
-      increaseSavings_desc: 'Đặt mục tiêu tiết kiệm ít nhất 20% thu nhập hàng tháng.',
-      debtPlan_title: 'Lên kế hoạch trả nợ',
-      debtPlan_desc: 'Ưu tiên trả các khoản nợ lãi suất cao trước.',
-      weeklyTracking_title: 'Theo dõi chi tiêu hàng tuần',
-      weeklyTracking_desc: 'Kiểm tra báo cáo chi tiêu hàng tuần để phát hiện sớm các khoản bất thường.',
-      // Summary
-      summary_good: 'Sức khỏe tài chính của bạn ở mức tốt (điểm {score}/100, hạng {grade}). Tiết kiệm {savingsRate}% thu nhập. Tiếp tục duy trì!',
-      summary_average: 'Sức khỏe tài chính ở mức trung bình (điểm {score}/100, hạng {grade}). Tiết kiệm {savingsRate}% thu nhập. Cần cải thiện một số chỉ số.',
-      summary_poor: 'Sức khỏe tài chính cần cải thiện (điểm {score}/100, hạng {grade}). Chi tiêu vượt thu nhập hoặc nợ quá cao. Hãy xem các đề xuất bên dưới.',
-      // Financial runway
-      runway_safe: 'Với tài sản ròng {netWorth}, bạn có thể sống {months} tháng không có thu nhập. Đủ an toàn!',
-      runway_ok: 'Tài sản ròng {netWorth} đủ cho {months} tháng. Nên tăng quỹ dự phòng lên 6 tháng.',
-      runway_short: 'Chỉ có đủ cho {months} tháng. Ưu tiên xây quỹ dự phòng 3-6 tháng chi tiêu.',
-      runway_none: 'Tài sản ròng chưa đủ để cover chi tiêu. Cần ưu tiên tích lũy ngay.',
-      // Asset allocation
-      emergencyFund_desc: 'Quỹ dự phòng 3-6 tháng chi tiêu, đặt tại tài khoản tiết kiệm dễ rút.',
-      investmentCapital_desc: 'Phần tài sản còn lại sau quỹ dự phòng, dùng để đầu tư sinh lời.',
-      allocation_strong: 'Tài sản ròng đủ mạnh. Đã có quỹ dự phòng, phần còn lại nên đầu tư sinh lời.',
-      allocation_weak: 'Ưu tiên xây quỹ dự phòng 3-6 tháng trước khi nghĩ đến đầu tư.',
-      // Investment channels
-      channel_savings: 'Tiết kiệm ngân hàng',
-      channel_savings_desc: 'Gửi tiết kiệm kỳ hạn 6-12 tháng, lãi suất ổn định, rủi ro gần như bằng 0.',
-      channel_etf: 'Chứng chỉ quỹ ETF',
-      channel_etf_desc: 'Đầu tư thụ động qua quỹ chỉ số, phân tán rủi ro, phù hợp người mới.',
-      channel_gold: 'Vàng',
-      channel_gold_desc: 'Tránh lạm phát, tính thanh khoản cao. Nên mua vàng miếng SJC hoặc quỹ vàng.',
-      channel_selfInvest: 'Đầu tư phát triển bản thân',
-      channel_selfInvest_desc: 'Học kỹ năng mới, chứng chỉ chuyên môn — khoản đầu tư ROI cao nhất.',
-      // Action plan
-      action_emergency_title: 'Xây quỹ dự phòng',
-      action_emergency_desc: 'Mục tiêu: {target} (6 tháng chi tiêu). Mở sổ tiết kiệm riêng.',
-      timeline_1_3_months: '1-3 tháng',
-      action_weeklyTracking_desc: 'Kiểm tra báo cáo chi tiêu mỗi tuần để phát hiện khoản bất thường sớm.',
-      timeline_ongoing: 'Liên tục',
-      action_savingsGoal_title: 'Đặt mục tiêu tiết kiệm',
-      action_savingsGoal_desc: 'Tạo mục tiêu tiết kiệm trong app để theo dõi tiến độ. Mục tiêu: 20% thu nhập.',
-      timeline_1_month: '1 tháng',
-      action_debtPlan_desc: 'Tổng nợ {debt}. Ưu tiên trả nợ lãi suất cao trước.',
-      timeline_3_6_months: '3-6 tháng',
-      action_startInvesting_title: 'Bắt đầu đầu tư',
-      action_startInvesting_desc: 'Tài chính ổn, không có nợ. Bắt đầu đầu tư nhỏ qua quỹ ETF hoặc vàng.',
+    errors: {
+      pageNotFound: 'Không tìm thấy trang',
+      pageNotFoundDesc: 'Trang bạn tìm không tồn tại hoặc đã được di chuyển.',
+      takeMeHome: 'Về trang chủ',
+      forbidden: 'Không có quyền truy cập',
+      forbiddenDesc: 'Bạn không có quyền truy cập trang này.',
+      serverError: 'Lỗi máy chủ',
+      serverErrorDesc: 'Đã có lỗi xảy ra ở máy chủ. Vui lòng thử lại sau.',
+      reload: 'Tải lại',
+      errorBoundary: 'Ứng dụng gặp lỗi',
+      errorBoundaryDesc: 'Đã có lỗi xảy ra. Vui lòng tải lại trang.',
     },
   },
+
+  // ===== English =====
   en: {
-    // Navigation
     nav: {
       home: 'Home',
-      account: 'Account',
-      add: 'Add',
-      report: 'Report',
-      profile: 'Profile',
+      keywords: 'Keywords',
+      trending: 'Trending',
+      videos: 'Videos',
+      profile: 'More',
     },
-    // Common
     common: {
       save: 'Save',
       cancel: 'Cancel',
@@ -731,499 +577,225 @@ export const translations = {
       all: 'All',
       total: 'Total',
       justNow: 'Just now',
-      minutesAgo: 'minutes ago',
-      hoursAgo: 'hours ago',
+      minutesAgo: 'min ago',
+      hoursAgo: 'hr ago',
       daysAgo: 'days ago',
-      offlineMode: 'Offline mode',
-      pendingSync: 'pending sync',
-      syncComplete: 'Sync complete',
-      syncFailed: 'Sync failed, will retry',
+      offlineMode: 'Offline',
+      saveKeyword: 'Save keyword',
+      unsaveKeyword: 'Unsave',
+      saveVideo: 'Save video',
+      unsaveVideo: 'Unsave',
+      saveChannel: 'Save channel',
+      unsaveChannel: 'Unsave',
+      export: 'Export',
     },
-    // Auth
     auth: {
       login: 'Login',
       register: 'Register',
       logout: 'Logout',
       email: 'Email',
       password: 'Password',
-      fullName: 'Full name',
+      fullName: 'Full Name',
       forgotPassword: 'Forgot password?',
-      dontHaveAccount: "Don't have an account?",
+      dontHaveAccount: 'Don\'t have an account?',
       alreadyHaveAccount: 'Already have an account?',
       loginSuccess: 'Login successful!',
       registerSuccess: 'Registration successful!',
-      logoutSuccess: 'Logout successful',
+      logoutSuccess: 'Logged out',
       emailNotConfirmed: 'Email not confirmed',
-      pleaseFillInfo: 'Please fill in all required fields',
+      pleaseFillInfo: 'Please fill in all fields',
       passwordMinLength: 'Password must be at least 8 characters',
       currentPasswordIncorrect: 'Current password is incorrect',
-      somethingWrong: 'An error occurred',
+      somethingWrong: 'Something went wrong',
       registerNow: 'Register now',
     },
-    // Login Page
     loginPage: {
       welcomeBack: 'Welcome back',
-      loginDescription: 'Login to continue using the app',
+      loginDescription: 'Sign in to continue researching YouTube keywords',
       enterPassword: 'Enter password',
       hidePassword: 'Hide password',
       showPassword: 'Show password',
     },
-    // Register Page
     registerPage: {
       createAccount: 'Create account',
-      registerDescription: 'Fill in your information to register',
+      registerDescription: 'Fill in your details to create a new account',
       enterFullName: 'Enter your full name',
       atLeast6Chars: 'At least 6 characters',
     },
-    // Forgot Password
     forgotPassword: {
       title: 'Forgot Password',
-      description: "Enter your registered email and we'll send you a reset link.",
-      sendResetLink: 'Send Reset Link',
-      emailSent: 'Reset password email sent',
+      description: 'Enter your registered email and we\'ll send you a reset link.',
+      sendResetLink: 'Send reset link',
+      emailSent: 'Reset link sent',
       checkYourEmail: 'Check your email',
-      sentTo: 'We sent a reset link to',
-      spamTip: "If you don't see the email, check your spam folder.",
+      sentTo: 'We\'ve sent a reset link to',
+      spamTip: 'If you don\'t see the email, check your spam folder.',
       backToLogin: 'Back to login',
     },
-    // Reset Password
     resetPassword: {
       title: 'Reset Password',
       description: 'Enter a new password for your account',
-      newPassword: 'New Password',
-      confirmNewPassword: 'Confirm New Password',
-      passwordNotMatch: 'Passwords do not match',
-      resetPassword: 'Reset Password',
+      newPassword: 'New password',
+      confirmNewPassword: 'Confirm new password',
+      passwordNotMatch: 'Passwords don\'t match',
+      resetPassword: 'Reset password',
       resetSuccess: 'Password reset successfully!',
-      resetSuccessTitle: 'Password Updated',
-      resetSuccessDescription: 'You can now login with your new password.',
-      invalidLink: 'Invalid Link',
+      resetSuccessTitle: 'Password updated',
+      resetSuccessDescription: 'You can now log in with your new password.',
+      invalidLink: 'Invalid link',
       invalidLinkDescription: 'This reset link has expired or is invalid. Please request a new one.',
       requestNewLink: 'Request new link',
     },
-    // Verify Email
     verifyEmail: {
-      title: 'Confirm Email',
+      title: 'Verify Email',
       emailNotConfirmed: 'Email not confirmed',
-      subtitle: 'We sent a confirmation email to',
-      instruction: 'Please click the link in the email to confirm your account before using the app.',
-      resendEmail: 'Resend Confirmation Email',
+      subtitle: 'We\'ve sent a confirmation email to',
+      instruction: 'Please click the link in the email to verify your account before using the app.',
+      resendEmail: 'Resend verification email',
       resending: 'Sending...',
       logout: 'Logout',
       tip: 'Tip',
-      tipText: "If you don't see the email, check your spam folder or try resending after a few minutes.",
-      emailSent: 'Confirmation email sent',
+      tipText: 'If you don\'t see the email, check your spam folder or try resending after a few minutes.',
+      emailSent: 'Verification email resent',
       cannotResend: 'Cannot resend email. Please try again.',
     },
-    // App
     app: {
       appName: 'Vibe Tube Atlas',
+      appTagline: 'YouTube Keyword Research',
     },
-    // Dashboard
     dashboard: {
       greeting: 'Hello!',
-      totalBalance: 'Total Balance',
-      recentTransactions: 'Recent Transactions',
-      expenseAnalysis: 'Expense Analysis',
-      monthlyOverview: 'Monthly Overview',
-      noExpenses: 'No expenses yet',
-      income: 'Income',
-      expense: 'Expense',
-      remaining: 'Remaining',
-      otherCategory: 'Other',
+      subtitle: 'Smart YouTube keyword research',
+      apiQuota: 'API Quota',
+      quotaUsed: 'Used',
+      recentSearches: 'Recent searches',
+      savedKeywords: 'Saved keywords',
+      savedVideos: 'Saved videos',
+      savedChannels: 'Saved channels',
+      quickActions: 'Quick actions',
+      analyzeKeyword: 'Analyze keyword',
+      searchVideos: 'Search videos',
+      trending: 'Trending',
+      noSavedKeywords: 'No saved keywords yet',
+      noSavedVideos: 'No saved videos yet',
+      noRecentSearches: 'No search history yet',
+      quotaRemaining: 'Remaining',
+      searchesToday: 'Searches today',
     },
-    // Transaction
-    transaction: {
-      add: 'Add Transaction',
-      edit: 'Edit Transaction',
-      amount: 'Amount',
+    keywordExplorer: {
+      title: 'Keyword Explorer',
+      subtitle: 'Assess competition and engagement',
+      enterKeyword: 'Enter keyword',
+      analyze: 'Analyze',
+      analyzing: 'Analyzing...',
+      searchPlaceholder: 'e.g., cooking, gaming, beauty...',
+      metrics: 'Metrics',
+      competition: 'Competition',
+      avgViews: 'Avg views',
+      avgLikes: 'Avg likes',
+      avgComments: 'Avg comments',
+      engagementRate: 'Engagement rate',
+      resultCount: 'Result count',
+      topVideos: 'Top videos',
+      competitionLevels: { low: 'Low', medium: 'Medium', high: 'High' },
+      engagementLevels: { low: 'Low', medium: 'Medium', high: 'High' },
+      quotaWarning: 'Analysis costs ~120 quota units. Do you have enough quota?',
+      noResults: 'No videos found for this keyword',
+      saveSuccess: 'Keyword saved',
+      unsaveSuccess: 'Keyword unsaved',
+      saved: 'Saved',
+    },
+    trending: {
+      title: 'Trending',
+      subtitle: 'Trending videos by country',
+      country: 'Country',
       category: 'Category',
-      wallet: 'Wallet',
-      date: 'Date',
-      note: 'Note',
-      type: 'Type',
-      expense: 'Expense',
-      income: 'Income',
-      lend: 'Lend',
-      borrow: 'Borrow',
-      transfer: 'Transfer',
-      lender: 'Borrower',
-      borrower: 'Lender',
-      lenderPlaceholder: 'Enter name of person you lent to',
-      borrowerPlaceholder: 'Enter name of person you borrowed from',
-      totalLent: 'Total Lent',
-      totalBorrowed: 'Total Borrowed',
-      contactPerson: 'Contact Person',
-      // Dropdown labels
-      expenseDropdown: 'Expense',
-      incomeDropdown: 'Income',
-      saveSuccess: 'Transaction added successfully',
-      invalidAmount: 'Amount must be greater than 0',
-      selectWallet: 'Please select a wallet',
-      selectToWallet: 'Please select destination wallet',
-      fromWallet: 'From Wallet',
-      toWallet: 'To Wallet',
-      sameWallet: 'Source and destination wallets must be different',
-      invalidDecimals: 'Amount can have at most 2 decimal places',
-      transactionsTitle: 'Transactions',
-      manageDaily: 'Manage daily income and expenses',
-      all: 'All',
-      totalIncome: 'Total Income',
-      totalExpense: 'Total Expense',
-      remainingBalance: 'Remaining',
-      transactionList: 'Transaction List',
-      noTransactions: 'No transactions this month',
-      recentTransactions: 'Recent Transactions',
-      seeAll: 'See all',
-      today: 'Today',
-      showingLast12Months: 'Showing last 12 months',
-      selectMonth: 'Select month',
-      savedOffline: 'Saved offline, will sync when online',
-      outboxFull: 'Reached the 20 offline transactions limit. Please connect to sync.',
+      loadTrending: 'Load trending',
+      noResults: 'No trending videos',
     },
-    // Wallet
-    wallet: {
-      wallets: 'Wallets',
-      addWallet: 'Add Wallet',
-      walletName: 'Wallet Name',
-      walletType: 'Wallet Type',
-      cash: 'Cash',
-      bank: 'Bank Card',
-      eWallet: 'E-Wallet',
-      initialBalance: 'Initial Balance',
-      totalBalance: 'Total Balance',
-      deleteSuccess: 'Wallet deleted',
-      cannotDeleteDefault: 'Cannot delete default wallet',
-      spendingAccounts: 'Spending Accounts',
-      noWallets: 'No wallets yet. Press + to create your first wallet.',
+    videoAnalyzer: {
+      title: 'Video Search',
+      subtitle: 'Search videos by keyword',
+      searchPlaceholder: 'Enter search keyword...',
+      sortBy: 'Sort by',
+      sortDate: 'Newest',
+      sortViews: 'Most viewed',
+      sortRating: 'Highest rated',
+      results: 'Results',
+      noResults: 'No videos found',
+      views: 'views',
+      likes: 'likes',
+      comments: 'comments',
+      duration: 'Duration',
+      publishedAt: 'Published',
+      videoSaved: 'Video saved',
+      videoUnsaved: 'Video unsaved',
     },
-    // Reports
-    reports: {
-      balance: 'Balance',
-      debt: 'Bad Debt',
-      reports: 'Reports',
-      expenseReport: 'Expense Report',
-      incomeReport: 'Income Report',
-      trackExpenses: 'Track expenses',
-      trackIncome: 'Track income',
-      totalExpenseYear: 'Total Expense This Year',
-      totalIncomeYear: 'Total Income This Year',
-      avgMonthly: 'Monthly Average',
-      allCategories: 'All categories',
-      allWallets: 'All wallets',
-      expenseByCategory: 'Expense by Category',
-      expenseByMonth: 'Monthly Expenses',
-      incomeByCategory: 'Income by Category',
-      incomeByMonth: 'Monthly Income',
-      debtReport: 'Debt Report',
-      financialHealth: 'Financial Health',
-      expenseReportTitle: 'Expense Report',
-      expenseReportSubtitle: 'Track expenses by year',
-      incomeReportTitle: 'Income Report',
-      incomeReportSubtitle: 'Track income by year',
+    channelAnalyzer: {
+      title: 'Channel Search',
+      subtitle: 'Find channels by keyword',
+      searchPlaceholder: 'Enter keyword...',
+      subscribers: 'subscribers',
+      videoCount: 'videos',
+      totalViews: 'total views',
+      noResults: 'No channels found',
+      channelSaved: 'Channel saved',
+      channelUnsaved: 'Channel unsaved',
     },
-    // Debt Tracker
-    debtTracker: {
-      title: 'Debt Tracker',
-      reportTitle: 'Debt Report',
-      reportSubtitle: 'Lending and borrowing summary by year',
-      totalLent: 'Total Lent',
-      totalBorrowed: 'Total Borrowed',
-      netPosition: 'Net Debt Position',
-      youOwe: 'You owe:',
-      owedToYou: 'Owed to you:',
-      youOweShort: 'Owe',
-      owedToYouShort: 'Owed',
-      lendList: 'Lending List',
-      borrowList: 'Borrowing List',
-      byContact: 'By Contact',
-      monthlyDebt: 'Monthly Debt',
-      unknown: 'Unknown',
+    apiKey: {
+      title: 'API Key',
+      subtitle: 'Manage your YouTube Data API key',
+      description: 'Each user uses their own API key. Free 10,000 quota/day.',
+      howToGet: 'How to get an API key',
+      step1: 'Go to Google Cloud Console',
+      step2: 'Create a new project or select existing',
+      step3: 'Enable YouTube Data API v3',
+      step4: 'Create an API key in Credentials',
+      enterKey: 'Enter API Key',
+      save: 'Save API Key',
+      delete: 'Delete API Key',
+      saveSuccess: 'API key saved',
+      deleteSuccess: 'API key deleted',
+      keyActive: 'API Key is active',
+      keyInactive: 'No API Key set',
+      quotaUsage: 'Quota usage',
+      quotaRemaining: 'Quota remaining',
+      searchesToday: 'Searches today',
+      freeQuota: 'Free 10,000 units/day',
+      apiKeyPlaceholder: 'AIza...',
+      getApiKey: 'Get API Key',
     },
-    // Categories
-    categories: {
-      expenseCategories: 'Expense Categories',
-      incomeCategories: 'Income Categories',
-      addCategory: 'Add Category',
-      categoriesTitle: 'Categories',
-      // Expense categories
-      food: 'Food',
-      transport: 'Transport',
-      housing: 'Housing',
-      entertainment: 'Entertainment',
-      shopping: 'Shopping',
-      health: 'Health',
-      other: 'Other Expenses',
-      lend: 'Lend',
-      repayDebt: 'Repay Debt',
-      children: 'Children',
-      // Income categories
-      salary: 'Salary',
-      gift: 'Gift',
-      investment: 'Investment',
-      borrow: 'Borrow',
-      collectDebt: 'Collect Debt',
-      // Subcategories
-      dailyExpense: 'Grocery/Market',
-      diningOut: 'Dining Out',
-      cafe: 'Cafe',
-      party: 'Party',
-      electricity: 'Electricity',
-      water: 'Water',
-      internet: 'Internet',
-      cableTV: 'Cable TV',
-      phoneBill: 'Phone Bill',
-      gas: 'Gas',
-      fuel: 'Fueling',
-      maintenanceBike: 'Maintenance',
-      grabBike: 'Taxi/Grab',
-      parking: 'Parking',
-      bus: 'Bus/Train Ticket',
-      clothes: 'Clothes',
-      shoes: 'Shoes',
-      accessories: 'Accessories',
-      cosmetics: 'Cosmetics',
-      barber: 'Barber/Beauty',
-      medical: 'Medical Exam',
-      medicine: 'Medicine',
-      healthInsurance: 'Health Insurance',
-      tuition: 'Tuition',
-      books: 'Books',
-      documents: 'Documents',
-      skillsCourse: 'Skills Course',
-      travel: 'Travel',
-      movie: 'Movies',
-      musicBooks: 'Music/Books',
-      game: 'Toys/Game',
-      socialGift: 'Gifts',
-      wedding: 'Wedding',
-      funeral: 'Funeral',
-      charity: 'Charity',
-      milk: 'Milk',
-      diaper: 'Diaper',
-      childToys: 'Toys for Kids',
-      childTuition: 'Tuition for Kids',
-      rent: 'Rent',
-      maintenance: 'House Repair',
-      household: 'Household Appliances',
-      officialSalary: 'Official Salary',
-      extraSalary: 'Extra Salary',
-      bonus: 'Bonus',
-      businessRevenue: 'Business Revenue',
-      investmentInterest: 'Investment Interest',
-      receivedGift: 'Gifts/Donations',
-      bankInterest: 'Bank Interest',
-      debtCollection: 'Debt Collection',
-      otherIncome: 'Miscellaneous Income',
-      lending: 'Lending',
-      repaying: 'Repaying Debt',
-      borrowing: 'Borrowing',
-      collecting: 'Collecting Debt',
-      // ── New parent categories ──
-      pets: 'Pets',
-      sports: 'Sports & Fitness',
-      insurance: 'Insurance',
-      taxes: 'Taxes & Fees',
-      technology: 'Technology',
-      rental: 'Rental',
-      pension: 'Pension & Benefits',
-      // ── New subcategories: Pets ──
-      petFood: 'Pet Food',
-      petVet: 'Vet',
-      petAccessories: 'Pet Accessories',
-      petGrooming: 'Grooming',
-      // ── Sports ──
-      gym: 'Gym/Yoga',
-      sportsGear: 'Sports Gear',
-      courtRental: 'Court Rental',
-      swimming: 'Swimming',
-      // ── Insurance ──
-      insuranceVehicle: 'Vehicle Insurance',
-      insuranceHome: 'Home Insurance',
-      insuranceLife: 'Life Insurance',
-      insuranceTravel: 'Travel Insurance',
-      // ── Taxes & Fees ──
-      incomeTax: 'Income Tax',
-      roadFee: 'Road Fee',
-      fines: 'Fines',
-      licenseFee: 'License Fee',
-      // ── Technology ──
-      techPhone: 'Phone',
-      techLaptop: 'Laptop/Computer',
-      techAccessories: 'Tech Accessories',
-      techRepair: 'Electronics Repair',
-      // ── Rental (income) ──
-      rentalHouse: 'House Rental',
-      rentalVehicle: 'Vehicle Rental',
-      rentalItems: 'Item Rental',
-      // ── Pension (income) ──
-      pensionPay: 'Pension',
-      familyAllowance: 'Family Allowance',
-      socialWelfare: 'Social Welfare',
-      // ── Food: breakfast/lunch/dinner ──
-      breakfast: 'Breakfast',
-      lunch: 'Lunch',
-      dinner: 'Dinner',
-      drinks: 'Drinks (Milk Tea)',
-      foodDelivery: 'Food Delivery',
-      snacks: 'Snacks',
-      // ── Transport: additions ──
-      carWash: 'Car Wash',
-      trafficFines: 'Traffic Fines',
-      carInsurance: 'Car Insurance',
-      // ── Health: additions ──
-      dental: 'Dental',
-      eyecare: 'Eyecare',
-      checkup: 'General Checkup',
-      // ── Entertainment: additions ──
-      karaoke: 'Karaoke',
-      subscription: 'Subscription (Netflix/Spotify)',
-      // ── Salary: additions ──
-      dailyWage: 'Daily Wage',
-      fee: 'Freelance Fee',
-    },
-    // Savings
-    savings: {
-      savings: 'Savings',
-      addGoal: 'Add Goal',
-      goalName: 'Goal Name',
-      targetAmount: 'Target Amount',
-      currentAmount: 'Current Amount',
-      deadline: 'Deadline',
-      remaining: 'Remaining',
-      totalSaved: 'Total Saved',
-      progress: 'Overall Progress',
-      target: 'Target',
-      addSavingsGoal: 'Add Savings Goal',
-      trackGoals: 'Track financial goals',
-      noSavingsGoals: 'No savings goals yet. Press "Add Goal" to get started.',
-      enterGoalName: 'e.g. Travel Fund',
-      enterTargetAmount: 'e.g. 50000000',
-      enterCurrentAmount: 'e.g. 10000000',
-      deadlineLabel: 'Deadline',
-      featureInDev: 'Feature under development',
-      pleaseEnterGoalName: 'Please enter goal name',
-      targetMustBePositive: 'Target amount must be greater than 0',
-    },
-    // Settings
     settings: {
       settings: 'Settings',
       language: 'Language',
-      currency: 'Currency',
-      password: 'Change Password',
-      export: 'Export Data',
-      categories: 'Categories',
-      financialHealth: 'Financial Health',
-      notifications: 'Notifications',
-      changePassword: 'Change Password',
-      currentPassword: 'Current Password',
-      newPassword: 'New Password',
-      confirmPassword: 'Confirm Password',
-      currencySettings: 'Currency Settings',
-      selectCurrency: 'Select currency',
+      password: 'Change password',
+      apiKey: 'YouTube API Key',
+      changePassword: 'Change password',
+      currentPassword: 'Current password',
+      newPassword: 'New password',
+      confirmPassword: 'Confirm password',
       enterCurrentPassword: 'Enter current password',
       enterNewPassword: 'Enter new password',
       enterConfirmPassword: 'Re-enter new password',
-      passwordNotMatch: 'New password does not match',
+      passwordNotMatch: 'Passwords don\'t match',
       changePasswordSuccess: 'Password changed successfully!',
       processing: 'Processing...',
-      exportData: 'Export Data',
-      exportDescription: 'Export your expense data to file',
-      exportExcel: 'Export Excel (.xlsx)',
-      exportCSV: 'Export CSV (.csv)',
-      suitableForSheets: 'Works with Google Sheets',
-      basicFormat: 'Basic format',
-      transactionUpdated: 'Transaction updated',
-      transactionNotFound: 'Transaction not found',
-      goBack: 'Go back',
-      deleteWallet: 'Delete Wallet',
-      deleteWalletConfirm: 'Are you sure you want to delete',
-      thisCannotBeUndone: 'This cannot be undone',
-      walletDeactivated: 'Wallet deactivated',
-      hiddenAccounts: 'Hidden Accounts',
-      editWallet: 'Edit Wallet',
-      saveChanges: 'Save Changes',
-      walletName: 'Wallet name',
-      availableRecords: 'Available records:',
-      transactions: 'transactions',
-      exportSuccess: 'Exported successfully',
       feedback: 'Feedback',
-      exportFailed: 'Failed to export data',
-      avatarUpdated: 'Avatar updated successfully',
-      avatarTooLarge: 'File too large. Max 2MB.',
-      editProfile: 'Edit Profile',
-      fullName: 'Full Name',
+      editProfile: 'Edit profile',
+      fullName: 'Full name',
       updateProfile: 'Update',
       profileUpdated: 'Profile updated successfully',
       enterFullName: 'Enter your full name',
       passwordChangeFailed: 'Password change failed',
+      avatarUpdated: 'Avatar updated successfully',
+      avatarTooLarge: 'File too large. Max 2MB.',
+      darkMode: 'Dark mode',
+      lightMode: 'Light mode',
+      history: 'Search history',
     },
-    // Wallet card
-    walletCard: {
-      edit: 'Edit',
-      hide: 'Hide',
-      show: 'Show',
-      delete: 'Delete',
-      inactive: 'Inactive',
-      noOtherWallets: 'No other wallets',
+    notifications: {
+      title: 'Notifications',
     },
-    // Category management
-    categoryManager: {
-      addCategory: 'Add Category',
-      editCategory: 'Edit Category',
-      saveChanges: 'Save Changes',
-      name: 'Name',
-      categoryName: 'Category name',
-      icon: 'Icon',
-      color: 'Color',
-      parentCategory: 'Parent Category',
-      noneTopLevel: 'None (Top-level)',
-      myCategories: 'My Categories',
-      systemCategories: 'System Categories',
-      addSubcategory: 'Add subcategory',
-      deleteCategory: 'Delete Category',
-      deleteCategoryConfirm: 'Are you sure you want to delete',
-      thisCannotBeUndone: 'This cannot be undone.',
-      deleteSubcategory: 'Delete Subcategory',
-      deleteSubcategoryConfirm: 'Are you sure you want to delete this subcategory?',
-      categoryCreated: 'Category created',
-      categoryUpdated: 'Category updated',
-      categoryDeleted: 'Category deleted',
-      subcategoryDeleted: 'Subcategory deleted',
-      failedToCreate: 'Failed to create category',
-      failedToUpdate: 'Failed to update category',
-      failedToDelete: 'Failed to delete category',
-      failedToDeleteSub: 'Failed to delete subcategory',
-      noCategories: 'No categories',
-      selectCategory: 'Select category',
-      confirmDelete: 'Delete',
-    },
-    // Savings page
-    savingsPage: {
-      goalCreated: 'Goal created successfully',
-      processing: 'Processing...',
-      editWalletComingSoon: 'Edit wallet coming soon',
-      account: 'account',
-      accounts: 'accounts',
-    },
-    // Error pages
-    errors: {
-      oops: 'Oops!',
-      somethingWentWrong: 'Something went wrong',
-      errorDescription: 'An unexpected error occurred. Please try reloading the page. If the problem persists, contact support.',
-      tryAgain: 'Try again',
-      reloadPage: 'Reload page',
-      pageNotFound: 'Page Not Found',
-      pageNotFoundDesc: "Oops! The page you're looking for doesn't exist or has been moved.",
-      takeMeHome: 'Take me home',
-      accessDenied: 'Access Denied',
-      accessDeniedDesc: "You don't have permission to access this resource. Please contact the administrator if you believe this is an error.",
-      returnToDashboard: 'Return to Dashboard',
-      internalServerError: 'Internal Server Error',
-      serverErrorDesc: "We're sorry, something went wrong on our end. Please try refreshing the page or come back later.",
-      goToHome: 'Go to home',
-    },
-    // Theme
     theme: {
       theme: 'Theme',
       default: 'Default',
@@ -1233,186 +805,17 @@ export const translations = {
       rose: 'Rose',
       violet: 'Violet',
     },
-    // Profile/Budgets page
-    profile: {
-      coins: 'coins',
-      accumulated: 'Accumulated',
-      referralCode: 'Referral code:',
-      selectCurrency: 'Select your preferred currency',
-    },
-    // Password settings specific
-    passwordSettings: {
-      changePassword: 'Change Password',
-    },
-    // Notifications
-    notifications: {
-      title: '🔔 Notifications',
-      unread: 'unread',
-      empty: 'No notifications',
-      emptyDesc: 'Notifications will appear here when you have updates.',
-      markAllRead: 'Mark all as read',
-      markRead: 'Mark as read',
-      delete: 'Delete',
-      viewAll: 'View all notifications',
-      inactivityReminder: {
-        title: 'Activity Reminder',
-        body: "You haven't logged any transactions in 7 days. Open the app and check your accounts!",
-      },
-    },
-    // Financial Health
-    financialHealth: {
-      title: '🏥 Financial Health',
-      subtitle: 'Powered by AI',
-      analyzeNow: 'Analyze Now',
-      analyzing: 'Analyzing...',
-      loadingReport: 'Loading report...',
-      noReport: 'No Report Yet',
-      noReportDesc: 'Tap "Analyze Now" to let AI evaluate your financial health',
-      createFirstReport: 'Create First Report',
-      aiAnalysis: 'AI Analysis',
-      findings: 'Findings',
-      riskWarnings: 'Risk Warnings',
-      actionSuggestions: 'Recommendations',
-      actionPlan: 'Action Plan',
-      priorityHigh: 'High',
-      priorityMedium: 'Medium',
-      priorityLow: 'Optional',
-      financialRunway: 'Financial Runway',
-      months: 'months',
-      assetAllocation: 'Asset Allocation',
-      emergencyFund: 'Emergency Fund',
-      investCapital: 'Investment Capital',
-      investmentChannels: 'Investment Channels',
-      riskLow: 'Low Risk',
-      riskMediumLow: 'Low-Medium Risk',
-      riskMedium: 'Medium Risk',
-      metrics: {
-        savingsRate: 'Savings Rate',
-        debtToIncome: 'Debt / Income Ratio',
-        spendingTrend: 'Spending Trend',
-        expenseToIncome: 'Expense / Income',
-        totalAssets: 'Total Assets',
-        netWorth: 'Net Worth',
-      },
-      trend: {
-        increasing: 'Increasing',
-        decreasing: 'Decreasing',
-        stable: 'Stable',
-        insufficient: 'Insufficient data',
-      },
-      grade: 'Rank',
-      billion: 'B',
-      million: 'M',
-      history: {
-        title: 'Report History',
-        monthlyReport: 'Monthly Report',
-        weeklyReport: 'Weekly Report',
-      },
-    },
-    // Dark mode toggle
-    darkMode: {
-      switchToLight: 'Light Mode',
-      switchToDark: 'Dark Mode',
-    },
-    // Auth errors
-    authErrors: {
-      invalidCredentials: 'Invalid email or password',
-    },
-    // Local Analysis (generateLocalAnalysis fallback)
-    localAnalysis: {
-      // Savings insights
-      savingsGood_title: 'Good savings rate',
-      savingsGood_desc: 'You are saving {rate}% of your income — exceeding the recommended 20%!',
-      savingsLow_title: 'Low savings rate',
-      savingsLow_desc: 'Saving {rate}% of income. Should reach at least 20%.',
-      overspending_title: 'Spending exceeds income',
-      overspending_desc: 'You are spending {rate}% more than your income. Cut back immediately!',
-      // Debt insights
-      hasDebt_title: 'Outstanding debt',
-      hasDebt_desc: 'Total debt {debt} ({ratio}% of income).',
-      debtTooHigh_title: 'Debt too high',
-      debtTooHigh_desc: 'Debt-to-income ratio {ratio}% exceeds safe threshold of 30%.',
-      // Net worth insights
-      netWorthPositive_title: 'Positive net worth',
-      netWorthPositive_desc: 'Total assets {assets}, no debt. Financial situation is very stable!',
-      assetsStrong_title: 'Strong assets',
-      assetsStrong_desc: 'Total assets {assets} are {multiple}x total debt. Debt is well-covered.',
-      assetsCoverDebt_title: 'Assets cover debt',
-      assetsCoverDebt_desc: 'Total assets {assets} are enough to cover all debt ({debt}).',
-      assetsInsufficient_title: 'Assets insufficient to cover debt',
-      assetsInsufficient_desc: 'Total assets {assets} are less than total debt {debt}. Negative net worth.',
-      negativeNetWorth_title: 'Negative net worth',
-      negativeNetWorth_riskDesc: 'Total debt ({debt}) exceeds total assets ({assets}). Debt is unsecured.',
-      negativeNetWorth_insightDesc: 'Total debt exceeds total assets. Net worth: {netWorth}.',
-      negativeNetWorth_riskDescShort: 'Total debt ({debt}) exceeds total assets ({assets}).',
-      noAssetsHasDebt_title: 'No assets, has debt',
-      noAssetsHasDebt_desc: 'You have {debt} in debt but no assets. Create a wallet to track!',
-      createWallet_title: 'Create wallet and build assets',
-      createWallet_desc: 'Create a cash/bank wallet to track assets and build an emergency fund.',
-      // Top category
-      topCategory_title: 'Top spending: {name}',
-      topCategory_desc: '{percentage}% of total spending ({amount}).',
-      // Spending trend
-      spendingIncreasing_title: 'Spending is increasing',
-      spendingIncreasing_desc: 'Compared to last month, your spending is trending up.',
-      createBudget_title: 'Set a spending budget',
-      createBudget_desc: 'Create budgets for main expense categories for better control.',
-      spendingDecreasing_title: 'Spending is decreasing',
-      spendingDecreasing_desc: 'Great! Spending is trending down compared to before.',
-      // Budget alerts
-      overBudget_title: '{count} categories over budget',
-      // Recommendations
-      increaseSavings_title: 'Increase savings rate',
-      increaseSavings_desc: 'Set a goal to save at least 20% of monthly income.',
-      debtPlan_title: 'Make a debt repayment plan',
-      debtPlan_desc: 'Prioritize paying off high-interest debt first.',
-      weeklyTracking_title: 'Track weekly spending',
-      weeklyTracking_desc: 'Check weekly expense reports to spot unusual charges early.',
-      // Summary
-      summary_good: 'Your financial health is good (score {score}/100, grade {grade}). Saving {savingsRate}% of income. Keep it up!',
-      summary_average: 'Financial health is average (score {score}/100, grade {grade}). Saving {savingsRate}% of income. Some metrics need improvement.',
-      summary_poor: 'Financial health needs improvement (score {score}/100, grade {grade}). Spending exceeds income or debt is too high. See recommendations below.',
-      // Financial runway
-      runway_safe: 'With net worth of {netWorth}, you can live {months} months without income. Safe enough!',
-      runway_ok: 'Net worth {netWorth} covers {months} months. Should increase emergency fund to 6 months.',
-      runway_short: 'Only enough for {months} months. Prioritize building a 3-6 month emergency fund.',
-      runway_none: 'Net worth insufficient to cover expenses. Prioritize saving immediately.',
-      // Asset allocation
-      emergencyFund_desc: 'Emergency fund for 3-6 months of expenses, kept in an easy-access savings account.',
-      investmentCapital_desc: 'Remaining assets after emergency fund, used for income-generating investments.',
-      allocation_strong: 'Net worth is strong. Emergency fund covered, invest the rest for returns.',
-      allocation_weak: 'Prioritize building a 3-6 month emergency fund before considering investing.',
-      // Investment channels
-      channel_savings: 'Bank savings',
-      channel_savings_desc: '6-12 month term deposits, stable interest, near-zero risk.',
-      channel_etf: 'ETF Fund Certificates',
-      channel_etf_desc: 'Passive investing via index funds, diversified risk, beginner-friendly.',
-      channel_gold: 'Gold',
-      channel_gold_desc: 'Hedge against inflation, high liquidity. Buy SJC gold bars or gold funds.',
-      channel_selfInvest: 'Self-development investment',
-      channel_selfInvest_desc: 'Learn new skills, professional certificates — the highest ROI investment.',
-      // Action plan
-      action_emergency_title: 'Build emergency fund',
-      action_emergency_desc: 'Target: {target} (6 months of expenses). Open a dedicated savings account.',
-      timeline_1_3_months: '1-3 months',
-      action_weeklyTracking_desc: 'Check expense reports weekly to spot unusual charges early.',
-      timeline_ongoing: 'Ongoing',
-      action_savingsGoal_title: 'Set a savings goal',
-      action_savingsGoal_desc: 'Create a savings goal in the app to track progress. Target: 20% of income.',
-      timeline_1_month: '1 month',
-      action_debtPlan_desc: 'Total debt {debt}. Prioritize paying off high-interest debt.',
-      timeline_3_6_months: '3-6 months',
-      action_startInvesting_title: 'Start investing',
-      action_startInvesting_desc: 'Finances are stable, no debt. Start small with ETF funds or gold.',
+    errors: {
+      pageNotFound: 'Page not found',
+      pageNotFoundDesc: 'The page you are looking for does not exist or has been moved.',
+      takeMeHome: 'Take me home',
+      forbidden: 'Access forbidden',
+      forbiddenDesc: 'You do not have permission to access this page.',
+      serverError: 'Server error',
+      serverErrorDesc: 'Something went wrong on our end. Please try again later.',
+      reload: 'Reload',
+      errorBoundary: 'App encountered an error',
+      errorBoundaryDesc: 'An error occurred. Please reload the page.',
     },
   },
-} as const
-
-export type Language = keyof typeof translations
-// Structural type so translations.en is assignable to translations.vi despite
-// differing string literals. All code consuming `t` should accept this widened
-// type (or typeof translations.vi, which is assignable to it).
-type DeepString<T> = {
-  [K in keyof T]: T[K] extends string ? string : DeepString<T[K]>
 }
-export type TranslationKey = DeepString<typeof translations.vi>

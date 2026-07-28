@@ -1,16 +1,14 @@
 import { Outlet, Link, useLocation, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth, useLogout } from '@/hooks/useAuth'
 import { useI18n } from '@/lib/i18n'
-import { useAppNotifications } from '@/hooks/useAppNotifications'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   LayoutDashboard,
-  Wallet,
-  Plus,
-  BarChart3,
+  Search,
+  TrendingUp,
+  Video,
   Menu,
   LogOut,
-  Bell,
 } from 'lucide-react'
 
 import { Avatar, OfflineBanner } from '@/components/shared'
@@ -18,9 +16,9 @@ import { cn } from '@/lib/utils'
 
 const bottomNavItems = [
   { icon: LayoutDashboard, labelKey: 'nav.home', href: '/dashboard' },
-  { icon: Wallet, labelKey: 'nav.account', href: '/wallets' },
-  { icon: Plus, labelKey: 'nav.add', href: '/add-transaction', isPlus: true },
-  { icon: BarChart3, labelKey: 'nav.report', href: '/reports' },
+  { icon: Search, labelKey: 'nav.keywords', href: '/keywords' },
+  { icon: TrendingUp, labelKey: 'nav.trending', href: '/trending', isCenter: true },
+  { icon: Video, labelKey: 'nav.videos', href: '/videos' },
   { icon: Menu, labelKey: 'nav.profile', href: '/profile' },
 ]
 
@@ -66,7 +64,7 @@ export default function MainLayout() {
               const isActive = location.pathname.startsWith(item.href)
               const Icon = item.icon
 
-              if (item.isPlus) {
+              if (item.isCenter) {
                 return (
                   <Link
                     key={item.href}
@@ -91,7 +89,6 @@ export default function MainLayout() {
                   to={item.href}
                   className="relative flex flex-col items-center justify-center gap-0.5 py-2 px-3 min-w-[56px]"
                 >
-                  {/* Active pill background */}
                   {isActive && (
                     <motion.div
                       layoutId="bottomNavPill"
@@ -106,12 +103,12 @@ export default function MainLayout() {
                     >
                       <Icon className={cn(
                         "h-5 w-5 transition-colors",
-                        isActive ? "text-indigo-600 stroke-[2.5]" : "text-zinc-400 dark:text-zinc-500"
+                        isActive ? "text-red-600 stroke-[2.5]" : "text-zinc-400 dark:text-zinc-500"
                       )} />
                     </motion.div>
                     <span className={cn(
                       "text-xs leading-tight transition-colors",
-                      isActive ? "font-semibold text-indigo-600" : "font-medium text-zinc-400 dark:text-zinc-500"
+                      isActive ? "font-semibold text-red-600" : "font-medium text-zinc-400 dark:text-zinc-500"
                     )}>
                       {t.nav[item.labelKey.split('.')[1] as keyof typeof t.nav]}
                     </span>
@@ -133,8 +130,6 @@ function DesktopSidebar({ user }: { user: import('@/types').AuthUser }) {
   const { t } = useI18n()
   const logout = useLogout()
   const navigate = useNavigate()
-  const { data: notifications } = useAppNotifications()
-  const unreadCount = notifications?.filter(n => !n.is_read).length ?? 0
 
   const handleLogout = () => {
     logout.mutate(undefined, {
@@ -145,22 +140,10 @@ function DesktopSidebar({ user }: { user: import('@/types').AuthUser }) {
   return (
     <aside className="hidden lg:flex shrink-0 fixed left-0 top-0 h-full w-64 flex-col clay-navbar border-r z-40">
       {/* Logo */}
-      <div className="flex h-16 items-center justify-between px-6 border-b border-gray-100">
-        <span className="text-lg font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          💰 Vibe Tube Atlas
+      <div className="flex h-16 items-center px-6 border-b border-gray-100">
+        <span className="text-lg font-bold bg-gradient-to-r from-red-500 via-rose-500 to-pink-500 bg-clip-text text-transparent">
+          ▶ Vibe Tube Atlas
         </span>
-        <Link
-          to="/notifications"
-          className="relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-          aria-label={t.notifications.title}
-        >
-          <Bell className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-          {unreadCount && unreadCount > 0 ? (
-            <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center px-1">
-              {unreadCount > 9 ? '9+' : unreadCount}
-            </span>
-          ) : null}
-        </Link>
       </div>
 
       {/* Nav items */}
@@ -179,7 +162,6 @@ function DesktopSidebar({ user }: { user: import('@/types').AuthUser }) {
                   : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-gray-100/60 dark:hover:bg-white/5"
               )}
             >
-              {/* Active gradient bg */}
               {isActive && (
                 <motion.div
                   layoutId="sidebarPill"
@@ -196,7 +178,6 @@ function DesktopSidebar({ user }: { user: import('@/types').AuthUser }) {
 
       {/* User info + Logout */}
       <div className="border-t border-gray-100 p-3 space-y-1">
-        {/* User info */}
         {user && (
           <div className="flex items-center gap-3 px-3 py-2 mb-1">
             <Avatar src={user.avatar_url} name={user.full_name || user.email?.split('@')[0]} size="sm" />

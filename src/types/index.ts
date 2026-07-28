@@ -2,175 +2,147 @@
 
 export type UUID = string
 export type DateString = string
+export type ISOString = string
 
-// ===== Enums =====
+// ===== YouTube Domain Types =====
 
-export type TransactionType = 'income' | 'expense' | 'lend' | 'borrow' | 'transfer'
-export type WalletType = 'cash' | 'bank' | 'e_wallet'
-export type BudgetPeriod = 'monthly' | 'weekly'
+export type YouTubeSearchType = 'video' | 'channel'
+export type CompetitionLevel = 'low' | 'medium' | 'high'
+export type EngagementLevel = 'low' | 'medium' | 'high'
 
-// ===== Database Entities =====
+/** Video search result from YouTube Data API v3 search.list */
+export interface YouTubeVideo {
+  id: UUID                    // YouTube video ID
+  title: string
+  description: string
+  channelId: UUID
+  channelTitle: string
+  publishedAt: ISOString
+  thumbnails: YouTubeThumbnails
+  duration?: string           // ISO 8601 (e.g., PT4M13S)
+  viewCount?: number
+  likeCount?: number
+  commentCount?: number
+  tags?: string[]
+  categoryId?: string
+}
 
-export interface Wallet {
+export interface YouTubeThumbnails {
+  default?: { url: string; width: number; height: number }
+  medium?: { url: string; width: number; height: number }
+  high?: { url: string; width: number; height: number }
+}
+
+export interface YouTubeChannel {
+  id: UUID                    // YouTube channel ID
+  title: string
+  description: string
+  customUrl?: string          // e.g., @MrrGaming
+  publishedAt: ISOString
+  thumbnails: YouTubeThumbnails
+  subscriberCount?: number
+  videoCount?: number
+  viewCount?: number
+  country?: string
+}
+
+// ===== Keyword Analysis =====
+
+export interface KeywordMetrics {
+  keyword: string
+  resultCount: number         // totalResults from search
+  competition: CompetitionLevel
+  avgViews: number
+  avgLikes: number
+  avgComments: number
+  engagementRate: number      // (likes + comments) / views * 100
+  engagementLevel: EngagementLevel
+  topVideos: YouTubeVideo[]
+  analyzedAt: ISOString
+}
+
+export interface SearchSuggestion {
+  keyword: string
+}
+
+// ===== Saved Items =====
+
+export interface SavedKeyword {
   id: UUID
   user_id: UUID
-  name: string
-  type: WalletType
-  icon: string
-  color: string
-  initial_balance: number
-  is_active: boolean  // false = deactivated, hidden from selection but kept for history
-  created_at: DateString
-  updated_at: DateString
-  // Computed
-  balance?: number
+  keyword: string
+  metrics: KeywordMetrics
+  note?: string
+  created_at: ISOString
 }
 
-export interface Category {
-  id: UUID
-  user_id: UUID | null  // null = system default
-  name: string
-  type: TransactionType
-  icon: string
-  color: string
-  slug?: string          // stable identifier for system categories (e.g. 'lend', 'borrow')
-  parent_id: UUID | null
-  is_system: boolean
-  created_at: DateString
-}
-
-export interface Transaction {
+export interface SavedVideo {
   id: UUID
   user_id: UUID
-  wallet_id: UUID | null
-  to_wallet_id: UUID | null  // Transfer destination wallet
-  category_id: UUID | null
-  type: TransactionType
-  amount: number
-  description: string | null
-  contact_person: string | null
-  transaction_date: DateString
-  created_at: DateString
-  updated_at: DateString
-  // Relations
-  wallet?: Wallet
-  to_wallet?: Wallet
-  category?: Category
+  video_id: string
+  title: string
+  channel_title: string
+  thumbnail_url?: string
+  view_count?: number
+  like_count?: number
+  comment_count?: number
+  published_at?: ISOString
+  note?: string
+  created_at: ISOString
 }
 
-export interface Budget {
+export interface SavedChannel {
   id: UUID
   user_id: UUID
-  category_id: UUID
-  amount: number
-  period: BudgetPeriod
-  start_date: DateString
-  end_date: DateString | null
-  created_at: DateString
-  // Relations
-  categories?: Category
-}
-
-export interface SavingsGoal {
-  id: UUID
-  user_id: UUID
-  name: string
-  target_amount: number
-  current_amount: number
-  deadline: DateString | null
-  icon: string
-  color: string
-  created_at: DateString
-  updated_at: DateString
-}
-
-// ===== API Request/Response Types =====
-
-export interface CreateTransactionInput {
-  wallet_id?: UUID
-  to_wallet_id?: UUID
-  category_id?: UUID
-  type: TransactionType
-  amount: number
+  channel_id: string
+  title: string
   description?: string
-  contact_person?: string
-  transaction_date: DateString
+  thumbnail_url?: string
+  subscriber_count?: number
+  video_count?: number
+  view_count?: number
+  note?: string
+  created_at: ISOString
 }
 
-export interface UpdateTransactionInput extends Partial<CreateTransactionInput> {
+// ===== Search History & API Usage =====
+
+export interface SearchHistoryEntry {
   id: UUID
+  user_id: UUID
+  query: string
+  search_type: YouTubeSearchType
+  country: string
+  results_count: number
+  created_at: ISOString
 }
 
-export interface CreateWalletInput {
-  name: string
-  type: WalletType
-  icon?: string
-  color?: string
-  initial_balance?: number
-}
-
-export interface UpdateWalletInput extends Partial<CreateWalletInput> {
+export interface ApiUsageEntry {
   id: UUID
+  user_id: UUID
+  endpoint: string
+  quota_cost: number
+  created_at: ISOString
 }
 
-export interface CreateCategoryInput {
-  name: string
-  type: TransactionType
-  icon?: string
-  color?: string
-  parent_id?: UUID
+export interface ApiUsageSummary {
+  totalQuotaUsed: number
+  quotaLimit: number          // default 10000
+  remainingQuota: number
+  searchCount: number
+  todayQuotaUsed: number
 }
 
-export interface CreateBudgetInput {
-  category_id: UUID
-  amount: number
-  period: BudgetPeriod
-  start_date: DateString
-  end_date?: DateString
-}
+// ===== API Key =====
 
-export interface UpdateBudgetInput extends Partial<CreateBudgetInput> {
+export interface UserApiKey {
   id: UUID
-}
-
-export interface CreateSavingsGoalInput {
-  name: string
-  target_amount: number
-  current_amount?: number
-  deadline?: DateString
-  icon?: string
-  color?: string
-}
-
-export interface UpdateSavingsGoalInput extends Partial<CreateSavingsGoalInput> {
-  id: UUID
-}
-
-// ===== Dashboard Types =====
-
-export interface MonthlyReport {
-  month: string  // YYYY-MM
-  total_income: number
-  total_expense: number
-  net_balance: number
-  by_category: {
-    category_id: UUID
-    category_name: string
-    category_icon: string
-    category_color: string
-    total: number
-    count: number
-  }[]
-}
-
-export interface CategorySummary {
-  category_id: UUID
-  category_name: string
-  category_icon: string
-  category_color: string
-  total: number
-  percentage: number
-  count: number
+  user_id: UUID
+  provider: string            // 'youtube'
+  api_key_encrypted: string   // stored encrypted in DB
+  is_active: boolean
+  created_at: ISOString
+  updated_at: ISOString
 }
 
 // ===== Auth Types =====
@@ -180,7 +152,7 @@ export interface AuthUser {
   email: string
   full_name: string | null
   avatar_url: string | null
-  confirmed: boolean  // email confirmed flag
+  confirmed: boolean
 }
 
 export interface LoginInput {
@@ -201,105 +173,51 @@ export interface AuthResponse {
   }
 }
 
-// ===== Financial Health Report =====
+// ===== Input Types =====
 
-export type ReportPeriod = 'weekly' | 'monthly'
-export type HealthGrade = 'A+' | 'A' | 'B+' | 'B' | 'C+' | 'C' | 'D' | 'F'
-
-export interface FinancialHealthMetrics {
-  totalIncome: number
-  totalExpense: number
-  totalDebt: number       // borrow - lend (positive = owing)
-  totalLent: number       // money lent to others
-  totalAssets: number     // sum of all active wallet balances
-  netWorth: number        // totalAssets - totalDebt
-  assetToDebtRatio: number // totalAssets / totalDebt * 100 (0 if no debt)
-  savingsRate: number     // (income - expense) / income * 100
-  expenseToIncomeRatio: number  // expense / income * 100
-  debtToIncomeRatio: number     // debt / income * 100
-  spendingTrend: 'increasing' | 'decreasing' | 'stable' | 'insufficient_data'
-  topExpenseCategories: CategorySummary[]
-  budgetUsage: { category_name: string; spent: number; budget: number; percentage: number }[]
-  savingsGoalProgress: { name: string; target: number; current: number; percentage: number }[]
-  monthlyExpenseComparison: { month: string; total: number }[]
+export interface SearchVideosParams {
+  keyword: string
+  type?: YouTubeSearchType
+  maxResults?: number
+  order?: 'date' | 'rating' | 'relevance' | 'viewCount'
+  publishedAfter?: ISOString
+  regionCode?: string
+  relevanceLanguage?: string
+  videoCategoryId?: string
 }
 
-export interface AIAnalysis {
-  overall_score: number   // 0-100
-  grade: HealthGrade
-  summary: string
-  insights: { icon: string; title: string; description: string; severity: 'positive' | 'neutral' | 'negative' }[]
-  recommendations: { icon: string; title: string; description: string; priority: 'high' | 'medium' | 'low' }[]
-  risk_flags: { title: string; description: string; severity: 'warning' | 'danger' }[]
-  // New: Financial Runway & Deep Analysis
-  financial_runway: {
-    months: number            // how many months user can survive without income
-    description: string       // explanation in user's language
-  }
-  // New: Asset Allocation Strategy
-  asset_allocation: {
-    emergency_fund: { percentage: number; amount: number; description: string }
-    investment_capital: { percentage: number; amount: number; description: string }
-    description: string       // overall strategy description
-  }
-  // New: Investment Channels
-  investment_channels: {
-    name: string
-    risk_level: 'low' | 'medium_low' | 'medium'
-    suggested_percentage: number
-    description: string
-  }[]
-  // New: Action Plan (next steps)
-  action_plan: {
-    icon: string
-    title: string
-    description: string
-    timeline: string           // e.g. "1-3 tháng", "6-12 tháng"
-    priority: 'high' | 'medium' | 'low'
-  }[]
+export interface AnalyzeKeywordParams {
+  keyword: string
+  maxResults?: number
+  regionCode?: string
+  relevanceLanguage?: string
 }
 
-export interface FinancialReport {
-  id: UUID
-  user_id: UUID
-  period_type: ReportPeriod
-  period_start: DateString
-  period_end: DateString
-  health_data: FinancialHealthMetrics
-  ai_analysis: AIAnalysis
-  overall_score: number
-  grade: HealthGrade
-  created_at: DateString
+export interface SaveKeywordInput {
+  keyword: string
+  metrics: KeywordMetrics
+  note?: string
 }
 
-// ===== Offline Outbox =====
-
-export type OutboxStatus = 'pending' | 'syncing' | 'failed'
-
-export interface OutboxBase {
-  tempId: string              // crypto.randomUUID() — khóa chính trong outbox
-  createdAt: string           // ISO timestamp
-  status: OutboxStatus
-  attempts: number            // số lần thử sync thất bại
-  lastError?: string          // message lỗi gần nhất (debug)
-}
-
-/** Discriminated union — operation determines payload type */
-export type OutboxEntry =
-  | (OutboxBase & { operation: 'create'; payload: CreateTransactionInput })
-  | (OutboxBase & { operation: 'update'; payload: UpdateTransactionInput })
-
-// ===== In-App Notifications =====
-
-export type NotificationType = 'info' | 'warning' | 'success' | 'budget_alert' | 'debt_reminder' | 'inactivity_reminder' | 'financial_health'
-
-export interface AppNotification {
-  id: UUID
-  user_id: UUID
+export interface SaveVideoInput {
+  video_id: string
   title: string
-  body: string
-  type: NotificationType
-  is_read: boolean
-  link_url: string | null
-  created_at: DateString
+  channel_title: string
+  thumbnail_url?: string
+  view_count?: number
+  like_count?: number
+  comment_count?: number
+  published_at?: string
+  note?: string
+}
+
+export interface SaveChannelInput {
+  channel_id: string
+  title: string
+  description?: string
+  thumbnail_url?: string
+  subscriber_count?: number
+  video_count?: number
+  view_count?: number
+  note?: string
 }

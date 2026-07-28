@@ -13,23 +13,15 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'))
 
 // Vibe Tube Atlas pages (lazy loaded)
 const Dashboard = lazy(() => import('./pages/Dashboard'))
-const TransactionsPage = lazy(() => import('./pages/Transactions'))
-const AddTransactionPage = lazy(() => import('./pages/AddTransaction'))
-const EditTransactionPage = lazy(() => import('./pages/EditTransaction'))
-const WalletsPage = lazy(() => import('./pages/Wallets'))
-const ReportsPage = lazy(() => import('./pages/Reports'))
-const ExpenseReportPage = lazy(() => import('./pages/ExpenseReport'))
-const IncomeReportPage = lazy(() => import('./pages/IncomeReport'))
-const DebtReportPage = lazy(() => import('./pages/DebtReport'))
+const KeywordExplorer = lazy(() => import('./pages/KeywordExplorer'))
+const TrendingPage = lazy(() => import('./pages/Trending'))
+const VideoAnalyzer = lazy(() => import('./pages/VideoAnalyzer'))
+const ChannelAnalyzer = lazy(() => import('./pages/ChannelAnalyzer'))
+const SearchHistoryPage = lazy(() => import('./pages/SearchHistory'))
+const ApiKeySettings = lazy(() => import('./pages/ApiKeySettings'))
 const ProfilePage = lazy(() => import('./pages/Profile'))
 const LanguageSettingsPage = lazy(() => import('./pages/LanguageSettings'))
-const CurrencySettingsPage = lazy(() => import('./pages/CurrencySettings'))
-const ExportDataPage = lazy(() => import('./pages/ExportData'))
 const PasswordSettingsPage = lazy(() => import('./pages/PasswordSettings'))
-const CategoriesPage = lazy(() => import('./pages/Categories'))
-const SavingsPage = lazy(() => import('./pages/Savings'))
-const NotificationsPage = lazy(() => import('./pages/Notifications'))
-const FinancialHealthPage = lazy(() => import('./pages/FinancialHealth'))
 
 // Error pages (lazy loaded)
 const NotFound = lazy(() => import('./pages/NotFound'))
@@ -38,13 +30,10 @@ const Forbidden = lazy(() => import('./pages/Forbidden'))
 
 import { Toaster } from '@/components/ui/sonner'
 import { useAuthListener } from '@/hooks/useAuth'
-import { useOutboxSync } from '@/hooks/useOutboxSync'
 import './App.css'
 import ErrorBoundary from './components/ErrorBoundary'
 
-/** Scroll to top on route change.
- *  The scrollable container is <main> (has overflow-y-auto), not window.
- *  Fallback to window for pages rendered outside MainLayout (auth/error pages). */
+/** Scroll to top on route change. */
 function ScrollToTop() {
   const { pathname } = useLocation()
   useEffect(() => {
@@ -68,14 +57,13 @@ function LoadingSpinner() {
 
 function AppContent() {
   useAuthListener()
-  useOutboxSync()
 
   return (
     <>
       <ScrollToTop />
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
-          {/* Auth Routes - Shared mobile-first layout */}
+          {/* Auth Routes */}
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -83,30 +71,22 @@ function AppContent() {
             <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
 
-          {/* Standalone route for email verification - no layout wrapper needed */}
+          {/* Standalone route for email verification */}
           <Route path="/verify-email" element={<VerifyEmail />} />
 
           {/* Main App Routes */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/transactions" element={<TransactionsPage />} />
-            <Route path="/add-transaction" element={<AddTransactionPage />} />
-            <Route path="/edit-transaction/:id" element={<EditTransactionPage />} />
-            <Route path="/wallets" element={<WalletsPage />} />
-            <Route path="/reports" element={<ReportsPage />} />
-            <Route path="/reports/expense" element={<ExpenseReportPage />} />
-            <Route path="/reports/income" element={<IncomeReportPage />} />
-            <Route path="/reports/debt" element={<DebtReportPage />} />
+            <Route path="/keywords" element={<KeywordExplorer />} />
+            <Route path="/trending" element={<TrendingPage />} />
+            <Route path="/videos" element={<VideoAnalyzer />} />
+            <Route path="/channels" element={<ChannelAnalyzer />} />
+            <Route path="/history" element={<SearchHistoryPage />} />
+            <Route path="/settings/api-key" element={<ApiKeySettings />} />
             <Route path="/settings/language" element={<LanguageSettingsPage />} />
-            <Route path="/settings/currency" element={<CurrencySettingsPage />} />
-            <Route path="/settings/export" element={<ExportDataPage />} />
             <Route path="/settings/password" element={<PasswordSettingsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/categories" element={<CategoriesPage />} />
-            <Route path="/savings" element={<SavingsPage />} />
-            <Route path="/notifications" element={<NotificationsPage />} />
-          <Route path="/financial-health" element={<FinancialHealthPage />} />
           </Route>
 
           {/* Error Pages */}
