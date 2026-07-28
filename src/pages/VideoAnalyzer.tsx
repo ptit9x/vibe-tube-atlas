@@ -106,7 +106,7 @@ export default function VideoAnalyzer() {
           {/* Search + Sort */}
           <div className="relative space-y-2">
             <form onSubmit={handleSubmit} className="flex gap-2">
-              <div className="relative flex-1">
+              <div className="relative flex-1 min-w-0">
                 <Input
                   value={input}
                   onChange={(e) => {
@@ -120,7 +120,7 @@ export default function VideoAnalyzer() {
                 />
                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               </div>
-              <Button type="submit" disabled={isLoading || !input.trim()}>
+              <Button type="submit" disabled={isLoading || !input.trim()} className="shrink-0">
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : t.common.search}
               </Button>
             </form>
@@ -147,10 +147,10 @@ export default function VideoAnalyzer() {
 
           {/* Sort selector */}
           {keyword && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm text-muted-foreground shrink-0">{t.videoAnalyzer.sortBy}:</span>
               <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as SortOrder)}>
-                <SelectTrigger className="h-9 w-40 text-sm">
+                <SelectTrigger className="h-9 w-full sm:w-40 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -205,7 +205,7 @@ export default function VideoAnalyzer() {
                       <div className="flex-1 min-w-0">
                         <h3 className="text-sm font-medium line-clamp-2">{video.title}</h3>
                         <p className="text-xs text-muted-foreground mt-0.5">{video.channelTitle}</p>
-                        <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-muted-foreground">
                           {video.viewCount != null && (
                             <span className="flex items-center gap-1">
                               <Eye className="h-3 w-3" />

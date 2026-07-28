@@ -114,7 +114,7 @@ export default function Profile() {
                 <p className="text-lg font-semibold text-white truncate">{displayName}</p>
                 <button
                   onClick={openProfileDialog}
-                  className="opacity-60 hover:opacity-100 transition-opacity flex-shrink-0"
+                  className="p-1.5 -mr-1.5 opacity-60 hover:opacity-100 transition-opacity flex-shrink-0"
                   aria-label="Edit profile"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">

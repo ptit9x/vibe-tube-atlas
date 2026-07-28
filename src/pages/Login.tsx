@@ -74,7 +74,7 @@ export default function Login() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600"
               aria-label={showPassword ? t.loginPage.hidePassword : t.loginPage.showPassword}
             >
               {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -83,7 +83,7 @@ export default function Login() {
         </div>
 
         <div className="text-right">
-          <button type="button" onClick={() => navigate('/forgot-password')} className="text-sm text-indigo-500 hover:text-indigo-600">
+          <button type="button" onClick={() => navigate('/forgot-password')} className="text-sm text-indigo-500 hover:text-indigo-600 py-1">
             {t.auth.forgotPassword}
           </button>
         </div>

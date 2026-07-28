@@ -43,7 +43,7 @@ export default function AuthLayout() {
         <div className="mt-6 text-center text-sm">
           <Link
             to="/login"
-            className="text-indigo-500 font-medium hover:text-indigo-600 underline underline-offset-2"
+            className="text-indigo-500 font-medium hover:text-indigo-600 underline underline-offset-2 inline-block py-2"
           >
             {t.forgotPassword.backToLogin}
           </Link>
@@ -72,7 +72,7 @@ export default function AuthLayout() {
         <div className="text-center mb-6 md:mb-8">
           <div className="inline-flex items-center gap-2.5 mb-2">
             <Logo size={44} />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-red-500 via-rose-500 to-pink-500 bg-clip-text text-transparent">
+            <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-red-500 via-rose-500 to-pink-500 bg-clip-text text-transparent">
               {t.app.appName}
             </h1>
           </div>

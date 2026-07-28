@@ -157,7 +157,7 @@ export default function Dashboard() {
                           </div>
                           <div className="min-w-0">
                             <div className="text-sm font-medium truncate">{entry.query}</div>
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-xs text-muted-foreground truncate">
                               {entry.results_count} · {entry.search_type}
                             </div>
                           </div>

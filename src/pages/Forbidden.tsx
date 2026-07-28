@@ -14,7 +14,7 @@ const Forbidden = () => {
                 </div>
                 <div className="space-y-2">
                     <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">403</h1>
-                    <h2 className="text-2xl font-semibold tracking-tight">{t.errors.accessDenied}</h2>
+                    <h2 className="text-xl sm:text-2xl font-semibold tracking-tight">{t.errors.accessDenied}</h2>
                 </div>
                 <p className="max-w-[600px] text-muted-foreground">
                     {t.errors.accessDeniedDesc}

@@ -47,7 +47,7 @@ export default function VerifyEmail() {
     <div className="min-h-screen bg-gradient-to-b from-blue-500 to-blue-600 flex flex-col">
       {/* Header */}
       <div className="px-5 pt-12 pb-6">
-        <h1 className="text-2xl font-bold text-white">{t.verifyEmail.title}</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-white">{t.verifyEmail.title}</h1>
       </div>
 
       {/* Content */}

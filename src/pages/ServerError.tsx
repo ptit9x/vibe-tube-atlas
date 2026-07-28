@@ -13,21 +13,23 @@ const ServerError = () => {
                 </div>
                 <div className="space-y-2">
                     <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">500</h1>
-                    <h2 className="text-2xl font-semibold tracking-tight">{t.errors.internalServerError}</h2>
+                    <h2 className="text-xl sm:text-2xl font-semibold tracking-tight">{t.errors.internalServerError}</h2>
                 </div>
                 <p className="max-w-[600px] text-muted-foreground">
                     {t.errors.serverErrorDesc}
                 </p>
-                <div className="flex gap-4 mt-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4 w-full sm:w-auto">
                     <Button
                         variant="outline"
                         size="lg"
+                        className="w-full sm:w-auto"
                         onClick={() => window.location.reload()}
                     >
                         {t.errors.tryAgain}
                     </Button>
                     <Button
                         size="lg"
+                        className="w-full sm:w-auto"
                         onClick={() => window.location.href = '/'}
                     >
                         {t.errors.goToHome}

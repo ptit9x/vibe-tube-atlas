@@ -95,7 +95,7 @@ export default function ChannelAnalyzer() {
           {/* Search */}
           <div className="relative">
             <form onSubmit={handleSubmit} className="flex gap-2">
-              <div className="relative flex-1">
+              <div className="relative flex-1 min-w-0">
                 <Input
                   value={input}
                   onChange={(e) => {
@@ -109,7 +109,7 @@ export default function ChannelAnalyzer() {
                 />
                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               </div>
-              <Button type="submit" disabled={isLoading || !input.trim()}>
+              <Button type="submit" disabled={isLoading || !input.trim()} className="shrink-0">
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : t.common.search}
               </Button>
             </form>

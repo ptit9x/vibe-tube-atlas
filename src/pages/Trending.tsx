@@ -134,7 +134,7 @@ export default function Trending() {
                     <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-medium line-clamp-2">{video.title}</h3>
                       <p className="text-xs text-muted-foreground mt-0.5">{video.channelTitle}</p>
-                      <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-muted-foreground">
                         {video.viewCount != null && (
                           <span className="flex items-center gap-1">
                             <Eye className="h-3 w-3" />

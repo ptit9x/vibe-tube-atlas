@@ -89,7 +89,7 @@ export default function KeywordExplorer() {
           {/* Search */}
           <div className="relative">
             <form onSubmit={handleSubmit} className="flex gap-2">
-              <div className="relative flex-1">
+              <div className="relative flex-1 min-w-0">
                 <Input
                   value={input}
                   onChange={(e) => {
@@ -103,7 +103,7 @@ export default function KeywordExplorer() {
                 />
                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               </div>
-              <Button type="submit" disabled={isLoading || !input.trim()}>
+              <Button type="submit" disabled={isLoading || !input.trim()} className="shrink-0">
                 {isLoading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -159,13 +159,14 @@ export default function KeywordExplorer() {
             <>
               <Card className="bg-white rounded-xl shadow-sm">
                 <CardContent className="p-4 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h2 className="font-bold text-lg">{metrics.keyword}</h2>
+                  <div className="flex items-center justify-between gap-2">
+                    <h2 className="font-bold text-lg min-w-0 flex-1 truncate">{metrics.keyword}</h2>
                     <Button
                       variant={isSaved ? 'secondary' : 'outline'}
                       size="sm"
                       onClick={handleSave}
                       disabled={saveMutation.isPending}
+                      className="shrink-0"
                     >
                       <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current' : ''}`} />
                       {isSaved ? t.keywordExplorer.saved : t.common.saveKeyword}
@@ -240,7 +241,7 @@ export default function KeywordExplorer() {
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm font-medium line-clamp-2">{video.title}</h3>
                             <p className="text-xs text-muted-foreground mt-1">{video.channelTitle}</p>
-                            <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-muted-foreground">
                               {video.viewCount != null && (
                                 <span className="flex items-center gap-1">
                                   <Eye className="h-3 w-3" />

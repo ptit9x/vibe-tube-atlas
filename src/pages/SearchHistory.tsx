@@ -36,7 +36,7 @@ export default function SearchHistory() {
             {history && history.length > 0 && (
               <button
                 onClick={() => setShowClearConfirm(true)}
-                className="flex items-center gap-1.5 text-sm text-white/80 hover:text-white"
+                className="flex items-center gap-1.5 text-sm text-white/80 hover:text-white py-1 px-2 -mr-2"
               >
                 <Trash2 className="h-4 w-4" />
                 {t.common.delete}
@@ -69,7 +69,7 @@ export default function SearchHistory() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-gray-900 truncate">{entry.query}</p>
-                    <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-500 mt-0.5">
                       <span className="capitalize">{entry.search_type}</span>
                       <span>·</span>
                       <span>{entry.country}</span>
