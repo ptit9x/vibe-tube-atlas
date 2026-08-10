@@ -12,12 +12,13 @@ import { QUOTA_COSTS } from '@/constants/youtube'
 
 // ===== Edge Function Proxy Calls =====
 
-interface ProxyResponse<T> {
+interface ProxyEnvelope<T> {
   data?: T
+  totalResults?: number
   error?: string
 }
 
-async function callProxy<T>(action: string, params: Record<string, unknown>): Promise<T> {
+async function callProxyRaw<T>(action: string, params: Record<string, unknown>): Promise<{ data: T; totalResults: number }> {
   // supabase.functions.invoke automatically sends both Authorization (JWT)
   // and apikey headers — required by Supabase Edge Functions
   const { data, error } = await supabase.functions.invoke('youtube-search', {
@@ -26,10 +27,16 @@ async function callProxy<T>(action: string, params: Record<string, unknown>): Pr
 
   if (error) throw error
 
-  const result = data as ProxyResponse<T>
+  const result = data as ProxyEnvelope<T>
   if (result.error) throw new Error(result.error)
   if (!result.data) throw new Error('No data returned from proxy')
-  return result.data
+  const fallback = Array.isArray(result.data) ? (result.data as unknown[]).length : 0
+  return { data: result.data, totalResults: result.totalResults ?? fallback }
+}
+
+async function callProxy<T>(action: string, params: Record<string, unknown>): Promise<T> {
+  const { data } = await callProxyRaw<T>(action, params)
+  return data
 }
 
 // ===== Autocomplete (Free, No API Key) =====
@@ -52,8 +59,8 @@ export async function getSuggestions(query: string, hl = 'vi', gl = 'VN'): Promi
 
 // ===== Search Videos =====
 
-export async function searchVideos(params: SearchVideosParams): Promise<YouTubeVideo[]> {
-  return callProxy<YouTubeVideo[]>('search', {
+export async function searchVideos(params: SearchVideosParams): Promise<{ results: YouTubeVideo[]; totalResults: number }> {
+  const { data, totalResults } = await callProxyRaw<YouTubeVideo[]>('search', {
     keyword: params.keyword,
     type: params.type ?? 'video',
     maxResults: params.maxResults ?? 20,
@@ -63,6 +70,7 @@ export async function searchVideos(params: SearchVideosParams): Promise<YouTubeV
     relevanceLanguage: params.relevanceLanguage ?? 'vi',
     videoCategoryId: params.videoCategoryId,
   })
+  return { results: data, totalResults }
 }
 
 // ===== Get Video Statistics (batch up to 50 IDs) =====
@@ -70,6 +78,21 @@ export async function searchVideos(params: SearchVideosParams): Promise<YouTubeV
 export async function getVideoStats(videoIds: string[]): Promise<YouTubeVideo[]> {
   if (videoIds.length === 0) return []
   return callProxy<YouTubeVideo[]>('videos', { ids: videoIds.join(',') })
+}
+
+// ===== Trending Videos (chart=mostPopular) =====
+
+export async function getTrendingVideos(
+  regionCode = 'VN',
+  videoCategoryId?: string,
+  maxResults = 20,
+): Promise<YouTubeVideo[]> {
+  return callProxy<YouTubeVideo[]>('videos', {
+    chart: 'mostPopular',
+    regionCode,
+    videoCategoryId,
+    maxResults,
+  })
 }
 
 // ===== Get Channel Statistics (batch up to 50 IDs) =====
@@ -90,7 +113,7 @@ export async function searchChannelsByKeyword(
   relevanceLanguage = 'vi',
 ): Promise<YouTubeChannel[]> {
   // Step 1: Search videos to discover channels
-  const videos = await searchVideos({
+  const { results: videos } = await searchVideos({
     keyword,
     maxResults: Math.min(maxResults * 3, 50),  // over-fetch to find unique channels
     regionCode,
@@ -126,7 +149,7 @@ export async function analyzeKeyword(params: AnalyzeKeywordParams): Promise<Keyw
   const maxResults = params.maxResults ?? 20
 
   // Step 1: Search for videos with this keyword
-  const videos = await searchVideos({
+  const { results: videos, totalResults } = await searchVideos({
     keyword: params.keyword,
     maxResults,
     regionCode: params.regionCode ?? 'VN',
@@ -138,14 +161,7 @@ export async function analyzeKeyword(params: AnalyzeKeywordParams): Promise<Keyw
   const videoIds = videos.map(v => v.id)
   const detailedVideos = await getVideoStats(videoIds)
 
-  // Step 3: Calculate metrics
-  const resultCount = videos.length > 0 && detailedVideos.length > 0
-    ? Math.min(...detailedVideos.map(v => v.viewCount ?? 0)) > 0
-      ? 50_000  // Estimate based on having results
-      : 0
-    : 0
-
-  // Better estimate: use the first video's data to estimate total results
+  // Step 3: Calculate metrics from detailed stats
   const totalViews = detailedVideos.reduce((sum, v) => sum + (v.viewCount ?? 0), 0)
   const totalLikes = detailedVideos.reduce((sum, v) => sum + (v.likeCount ?? 0), 0)
   const totalComments = detailedVideos.reduce((sum, v) => sum + (v.commentCount ?? 0), 0)
@@ -160,8 +176,8 @@ export async function analyzeKeyword(params: AnalyzeKeywordParams): Promise<Keyw
 
   return {
     keyword: params.keyword,
-    resultCount: totalViews > 0 ? Math.round(totalViews / 100) * 100 : 0,
-    competition: calcCompetitionLevel(resultCount || totalViews),
+    resultCount: totalResults,
+    competition: calcCompetitionLevel(totalResults),
     avgViews,
     avgLikes,
     avgComments,

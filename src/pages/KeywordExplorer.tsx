@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { PageTransition } from '@/components/shared'
 import PageHeader from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
@@ -14,10 +15,23 @@ import { Search, Bookmark, TrendingUp, Eye, ThumbsUp, MessageCircle, Sparkles, L
 
 export default function KeywordExplorer() {
   const { t } = useI18n()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [input, setInput] = useState('')
   const [params, setParams] = useState<AnalyzeKeywordParams | null>(null)
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
+
+  // Honor ?q= deep-link from SearchHistory — run once on mount.
+  useEffect(() => {
+    const q = searchParams.get('q')
+    if (q) {
+      setInput(q)
+      setParams({ keyword: q })
+      searchParams.delete('q')
+      setSearchParams(searchParams, { replace: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const { data: metrics, isLoading, error } = useAnalyzeKeyword(params)
   const { data: savedKeywords } = useSavedKeywords()

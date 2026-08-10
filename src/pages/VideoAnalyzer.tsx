@@ -32,7 +32,8 @@ export default function VideoAnalyzer() {
     ? { keyword, order: sortOrder, type: 'video', maxResults: 20 }
     : null
 
-  const { data: videos, isLoading, error } = useVideoSearch(params)
+  const { data: searchResult, isLoading, error } = useVideoSearch(params)
+  const videos = searchResult?.results
   const { data: savedVideos } = useSavedVideos()
   const saveMutation = useSaveVideo()
   const deleteMutation = useDeleteVideo()

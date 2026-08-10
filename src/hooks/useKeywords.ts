@@ -5,7 +5,7 @@ import type { SavedKeyword, AnalyzeKeywordParams, SaveKeywordInput } from '@/typ
 
 export function useAnalyzeKeyword(params: AnalyzeKeywordParams | null) {
   return useQuery({
-    queryKey: ['keyword-analysis', params?.keyword],
+    queryKey: ['keyword-analysis', params?.keyword, params?.regionCode, params?.maxResults],
     queryFn: () => analyzeKeyword(params!),
     enabled: !!params?.keyword?.trim(),
     staleTime: 30 * 60_000,  // 30 min cache — searches are expensive (100+ quota)

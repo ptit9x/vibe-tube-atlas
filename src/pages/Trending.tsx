@@ -11,15 +11,14 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useI18n } from '@/lib/i18n'
-import { searchVideos, formatCompactNumber, parseISODuration } from '@/lib/youtube'
+import { getTrendingVideos, formatCompactNumber, parseISODuration } from '@/lib/youtube'
 import { YOUTUBE_COUNTRIES, YOUTUBE_CATEGORIES } from '@/constants/youtube'
 import type { YouTubeVideo } from '@/types'
 import { toast } from 'sonner'
 import { Flame, Eye, ThumbsUp, Calendar, Loader2 } from 'lucide-react'
 
 export default function Trending() {
-  const { t } = useI18n()
-  const { language } = useI18n()
+  const { t, language } = useI18n()
   const [country, setCountry] = useState('VN')
   const [category, setCategory] = useState<string>('all')
   const [videos, setVideos] = useState<YouTubeVideo[]>([])
@@ -29,14 +28,11 @@ export default function Trending() {
   const handleLoadTrending = async () => {
     setIsLoading(true)
     try {
-      const result = await searchVideos({
-        keyword: '', // empty keyword for chart/trending
-        type: 'video',
-        maxResults: 20,
-        order: 'viewCount',
-        regionCode: country,
-        videoCategoryId: category === 'all' ? undefined : category,
-      } as Parameters<typeof searchVideos>[0])
+      const result = await getTrendingVideos(
+        country,
+        category === 'all' ? undefined : category,
+        20,
+      )
       setVideos(result)
       setHasLoaded(true)
       if (result.length === 0) {

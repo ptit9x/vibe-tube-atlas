@@ -1,12 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase, requireAuth } from '@/lib/supabase'
 import { searchVideos } from '@/lib/youtube'
-import type { SavedVideo, SearchVideosParams, SaveVideoInput } from '@/types'
+import type { SavedVideo, SearchVideosParams, SaveVideoInput, YouTubeVideo } from '@/types'
 
 export function useVideoSearch(params: SearchVideosParams | null) {
   return useQuery({
     queryKey: ['video-search', params?.keyword, params?.order, params?.regionCode],
-    queryFn: () => searchVideos(params!),
+    queryFn: async (): Promise<{ results: YouTubeVideo[]; totalResults: number }> => {
+      const { results, totalResults } = await searchVideos(params!)
+      return { results, totalResults }
+    },
     enabled: !!params?.keyword?.trim(),
     staleTime: 10 * 60_000,
   })

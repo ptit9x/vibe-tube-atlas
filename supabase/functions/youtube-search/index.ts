@@ -188,9 +188,18 @@ Deno.serve(async (req: Request) => {
         const p = new URLSearchParams({
           key: apiKey,
           part: "snippet,statistics,contentDetails",
-          id: params.ids as string,
-          maxResults: String(params.ids?.split(",").length || 50),
         });
+        if (params.chart === "mostPopular") {
+          p.set("chart", "mostPopular");
+          p.set("regionCode", (params.regionCode as string) || "VN");
+          p.set("maxResults", String(params.maxResults || 20));
+          if (params.videoCategoryId) {
+            p.set("videoCategoryId", params.videoCategoryId as string);
+          }
+        } else {
+          p.set("id", params.ids as string);
+          p.set("maxResults", String(params.ids?.split(",").length || 50));
+        }
         youtubeUrl = `https://www.googleapis.com/youtube/v3/videos?${p}`;
         break;
       }
@@ -254,7 +263,8 @@ Deno.serve(async (req: Request) => {
 
     // Parse and return data
     const parsed = parseYouTubeResponse(action, ytData);
-    return jsonResponse({ data: parsed });
+    const totalResults = ytData.pageInfo?.totalResults ?? parsed.length;
+    return jsonResponse({ data: parsed, totalResults });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return jsonResponse({ error: message }, 500);
