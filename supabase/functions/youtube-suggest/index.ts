@@ -26,7 +26,10 @@ Deno.serve(async (req: Request) => {
     }`;
 
     const response = await fetch(url);
-    const text = await response.text();
+    // Google returns charset=ISO-8859-1, but the body is actually UTF-8.
+    // response.text() would misdecode Vietnamese chars — decode as UTF-8 manually.
+    const buffer = await response.arrayBuffer();
+    const text = new TextDecoder("utf-8").decode(buffer);
 
     // Response is JSONP: window.google.ac.h(["query",[["suggestion1",0],["suggestion2",0],...]])
     // Extract the JSON array from the JSONP wrapper
