@@ -103,7 +103,7 @@ export default function VideoAnalyzer() {
           <p className="text-sm text-white/80">{t.videoAnalyzer.subtitle}</p>
         </PageHeader>
 
-        <div className="px-4 -mt-4 space-y-4">
+        <div className="px-4 mt-4 space-y-4">
           {/* Search + Sort */}
           <div className="relative space-y-2">
             <form onSubmit={handleSubmit} className="flex gap-2">

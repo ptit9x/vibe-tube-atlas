@@ -91,7 +91,7 @@ export default function ChannelAnalyzer() {
           <p className="text-sm text-white/80">{t.channelAnalyzer.subtitle}</p>
         </PageHeader>
 
-        <div className="px-4 -mt-4 space-y-4">
+        <div className="px-4 mt-4 space-y-4">
           {/* Search */}
           <div className="relative">
             <form onSubmit={handleSubmit} className="flex gap-2">

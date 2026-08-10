@@ -20,7 +20,7 @@ type PageHeaderProps = {
 export default function PageHeader({ children, className }: PageHeaderProps) {
   return (
     <header className={cn(
-      "clay-header relative overflow-hidden px-5 pt-6 pb-10 rounded-b-3xl lg:rounded-br-[2rem]",
+      "clay-header relative overflow-hidden px-5 pt-6 pb-6 rounded-b-3xl lg:rounded-br-[2rem]",
       className
     )}>
       {/* Subtle top-edge highlight */}

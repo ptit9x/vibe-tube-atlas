@@ -57,7 +57,7 @@ export default function ApiKeySettings() {
           <p className="text-sm text-white/80">{t.apiKey.subtitle}</p>
         </PageHeader>
 
-        <div className="px-4 -mt-4 space-y-4">
+        <div className="px-4 mt-4 space-y-4">
           {keyLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />

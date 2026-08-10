@@ -53,7 +53,7 @@ export default function Trending() {
           <p className="text-sm text-white/80">{t.trending.subtitle}</p>
         </PageHeader>
 
-        <div className="px-4 -mt-4 space-y-4">
+        <div className="px-4 mt-4 space-y-4">
           {/* Filters */}
           <Card className="bg-white rounded-xl shadow-sm">
             <CardContent className="p-4 space-y-3">
