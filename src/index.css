@@ -576,17 +576,17 @@ body {
 
 /* --- Clay Header (page top, colored) --- */
 .clay-header {
-  background: linear-gradient(145deg, hsl(0 75% 60%), hsl(340 65% 58%));
+  background: linear-gradient(135deg, hsl(0 75% 60%), hsl(340 65% 58%));
   box-shadow:
-    -6px 6px 14px var(--clay-shadow-dark),
-     6px 6px 14px rgba(239, 68, 68, 0.25);
+    0 4px 20px rgba(239, 68, 68, 0.18),
+    0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .dark .clay-header {
-  background: linear-gradient(145deg, hsl(0 50% 38%), hsl(340 45% 33%));
+  background: linear-gradient(135deg, hsl(0 50% 38%), hsl(340 45% 33%));
   box-shadow:
-    -4px 4px 10px rgba(45, 50, 80, 0.15),
-     4px 4px 10px rgba(0, 0, 0, 0.5);
+    0 4px 20px rgba(0, 0, 0, 0.35),
+    0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* --- Clay Inset (for list items, "pressed" area) --- */
