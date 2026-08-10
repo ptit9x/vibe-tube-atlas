@@ -164,6 +164,17 @@ export interface TranslationKey {
     unsaveSuccess: string
     saved: string
   }
+  keywordExtra: {
+    opportunityScore: string
+    opportunityHint: string
+    scoreExcellent: string
+    scoreGood: string
+    scoreFair: string
+    scorePoor: string
+    viewsDistribution: string
+    relatedKeywords: string
+    relatedEmpty: string
+  }
   trending: {
     title: string
     subtitle: string
@@ -444,6 +455,17 @@ export const translations: Record<Language, TranslationKey> = {
       unsaveSuccess: 'Đã bỏ lưu từ khóa',
       saved: 'Đã lưu',
     },
+    keywordExtra: {
+      opportunityScore: 'Điểm cơ hội',
+      opportunityHint: 'Dựa trên cạnh tranh, views và tương tác',
+      scoreExcellent: 'Cơ hội tuyệt vời',
+      scoreGood: 'Cơ hội tốt',
+      scoreFair: 'Cơ hội khá',
+      scorePoor: 'Khó cạnh tranh',
+      viewsDistribution: 'Phân bố views',
+      relatedKeywords: 'Từ khóa tương tự',
+      relatedEmpty: 'Không có từ khóa gợi ý',
+    },
     trending: {
       title: 'Xu hướng',
       subtitle: 'Video đang thịnh hành theo quốc gia',
@@ -722,6 +744,17 @@ export const translations: Record<Language, TranslationKey> = {
       saveSuccess: 'Keyword saved',
       unsaveSuccess: 'Keyword unsaved',
       saved: 'Saved',
+    },
+    keywordExtra: {
+      opportunityScore: 'Opportunity Score',
+      opportunityHint: 'Based on competition, views and engagement',
+      scoreExcellent: 'Excellent opportunity',
+      scoreGood: 'Good opportunity',
+      scoreFair: 'Fair opportunity',
+      scorePoor: 'Hard to compete',
+      viewsDistribution: 'Views distribution',
+      relatedKeywords: 'Related keywords',
+      relatedEmpty: 'No related keywords found',
     },
     trending: {
       title: 'Trending',

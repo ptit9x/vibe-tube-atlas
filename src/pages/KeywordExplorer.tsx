@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useI18n } from '@/lib/i18n'
 import { useAnalyzeKeyword, useSaveKeyword, useSavedKeywords } from '@/hooks/useKeywords'
-import { getSuggestions, formatCompactNumber, parseISODuration } from '@/lib/youtube'
+import { getSuggestions, getRelatedKeywords, formatCompactNumber, parseISODuration, calcOpportunityScore } from '@/lib/youtube'
 import type { AnalyzeKeywordParams, CompetitionLevel } from '@/types'
 import { toast } from 'sonner'
 import { Search, Bookmark, TrendingUp, Eye, ThumbsUp, MessageCircle, Sparkles, Loader2 } from 'lucide-react'
@@ -20,6 +20,7 @@ export default function KeywordExplorer() {
   const [params, setParams] = useState<AnalyzeKeywordParams | null>(null)
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [relatedKeywords, setRelatedKeywords] = useState<string[]>([])
 
   // Honor ?q= deep-link from SearchHistory — run once on mount.
   useEffect(() => {
@@ -51,6 +52,15 @@ export default function KeywordExplorer() {
     return () => clearTimeout(timer)
   }, [input, params?.keyword])
 
+  // Fetch related keywords when a search completes (free, 0 quota)
+  useEffect(() => {
+    if (!params?.keyword) {
+      setRelatedKeywords([])
+      return
+    }
+    getRelatedKeywords(params.keyword).then(setRelatedKeywords).catch(() => setRelatedKeywords([]))
+  }, [params?.keyword])
+
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault()
@@ -66,6 +76,11 @@ export default function KeywordExplorer() {
     setInput(suggestion)
     setParams({ keyword: suggestion })
     setShowSuggestions(false)
+  }
+
+  const handleRelatedClick = (kw: string) => {
+    setInput(kw)
+    setParams({ keyword: kw })
   }
 
   const handleSave = () => {
@@ -229,6 +244,58 @@ export default function KeywordExplorer() {
                 </CardContent>
               </Card>
 
+              {/* Opportunity Score Gauge */}
+              {(() => {
+                const score = calcOpportunityScore(metrics)
+                const label = score >= 75 ? t.keywordExtra.scoreExcellent
+                  : score >= 50 ? t.keywordExtra.scoreGood
+                  : score >= 30 ? t.keywordExtra.scoreFair
+                  : t.keywordExtra.scorePoor
+                const gaugeColor = score >= 75 ? 'text-emerald-500'
+                  : score >= 50 ? 'text-blue-500'
+                  : score >= 30 ? 'text-amber-500'
+                  : 'text-red-500'
+                const barColor = score >= 75 ? 'bg-emerald-500'
+                  : score >= 50 ? 'bg-blue-500'
+                  : score >= 30 ? 'bg-amber-500'
+                  : 'bg-red-500'
+                return (
+                  <div className="rounded-lg bg-gray-50 p-4 text-center">
+                    <div className="text-xs text-muted-foreground mb-1">{t.keywordExtra.opportunityScore}</div>
+                    <div className={`text-4xl font-bold ${gaugeColor}`}>{score}<span className="text-lg text-muted-foreground">/100</span></div>
+                    <div className={`text-xs font-medium mt-0.5 ${gaugeColor}`}>{label}</div>
+                    {/* Score bar */}
+                    <div className="mt-2 h-2 rounded-full bg-gray-200 overflow-hidden">
+                      <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${score}%` }} />
+                    </div>
+                    <div className="text-[10px] text-muted-foreground mt-1.5">{t.keywordExtra.opportunityHint}</div>
+                  </div>
+                )
+              })()}
+
+              {/* Views Distribution Chart */}
+              {metrics.topVideos.length > 1 && (
+                <ViewsDistribution videos={metrics.topVideos.slice(0, 10)} />
+              )}
+
+              {/* Related Keywords */}
+              {relatedKeywords.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-muted-foreground px-1">{t.keywordExtra.relatedKeywords}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {relatedKeywords.map((kw) => (
+                      <button
+                        key={kw}
+                        onClick={() => handleRelatedClick(kw)}
+                        className="px-3 py-1.5 rounded-full bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium transition-colors border border-red-100"
+                      >
+                        {kw}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Top Videos */}
               {metrics.topVideos.length > 0 && (
                 <div className="space-y-2">
@@ -310,6 +377,43 @@ function MetricCard({
         {label}
       </div>
       <div className="text-lg font-bold">{value}</div>
+    </div>
+  )
+}
+
+function ViewsDistribution({ videos }: { videos: import('@/types').YouTubeVideo[] }) {
+  const { t } = useI18n()
+  const maxViews = Math.max(...videos.map(v => v.viewCount ?? 0), 1)
+
+  return (
+    <div className="rounded-lg bg-gray-50 p-4 space-y-2">
+      <h3 className="text-sm font-semibold text-muted-foreground">{t.keywordExtra.viewsDistribution}</h3>
+      <div className="space-y-1.5">
+        {videos.map((v, i) => {
+          const views = v.viewCount ?? 0
+          const pct = (views / maxViews) * 100
+          // Gradient from red (top) to lighter (bottom)
+          const opacity = 1 - (i / videos.length) * 0.6
+          return (
+            <div key={v.id} className="flex items-center gap-2">
+              <div className="w-5 text-[10px] font-medium text-muted-foreground text-right shrink-0">{i + 1}</div>
+              <div className="flex-1 min-w-0">
+                <div className="h-5 rounded bg-gray-200 overflow-hidden">
+                  <div
+                    className="h-full rounded transition-all duration-500 flex items-center justify-end pr-1.5"
+                    style={{
+                      width: `${Math.max(pct, 3)}%`,
+                      backgroundColor: `rgb(239, 68, 68, ${opacity})`,
+                    }}
+                  >
+                    <span className="text-[9px] font-medium text-white whitespace-nowrap">{formatCompactNumber(views)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

@@ -188,6 +188,51 @@ export async function analyzeKeyword(params: AnalyzeKeywordParams): Promise<Keyw
   }
 }
 
+// ===== Opportunity Score =====
+// A 0-100 score combining competition (inverted), average views, and engagement.
+// Higher = better opportunity (low competition + high views + high engagement).
+
+export function calcOpportunityScore(metrics: KeywordMetrics): number {
+  // Competition score: fewer results = better (0-40 points)
+  // <1K results = 40, <10K = 30, <50K = 20, <100K = 10, else 5
+  let competitionScore: number
+  if (metrics.resultCount < 1_000) competitionScore = 40
+  else if (metrics.resultCount < 10_000) competitionScore = 30
+  else if (metrics.resultCount < 50_000) competitionScore = 20
+  else if (metrics.resultCount < 100_000) competitionScore = 10
+  else competitionScore = 5
+
+  // Views score: log scale (0-35 points)
+  // 1M avg views ≈ 35, 100K ≈ 28, 10K ≈ 21, 1K ≈ 14, 100 ≈ 7
+  const viewsScore = metrics.avgViews > 0
+    ? Math.min(35, Math.log10(metrics.avgViews + 1) * 5.8)
+    : 0
+
+  // Engagement score: direct mapping (0-25 points)
+  // >10% = 25, >5% = 20, >2% = 15, >1% = 10, else 5
+  let engagementScore: number
+  if (metrics.engagementRate > 10) engagementScore = 25
+  else if (metrics.engagementRate > 5) engagementScore = 20
+  else if (metrics.engagementRate > 2) engagementScore = 15
+  else if (metrics.engagementRate > 1) engagementScore = 10
+  else engagementScore = 5
+
+  return Math.round(competitionScore + viewsScore + engagementScore)
+}
+
+// ===== Related Keywords (Free, No Quota) =====
+// Uses YouTube autocomplete suggestions with the keyword as prefix,
+// which returns variations and related searches.
+
+export async function getRelatedKeywords(keyword: string, hl = 'vi', gl = 'VN'): Promise<string[]> {
+  const suggestions = await getSuggestions(keyword, hl, gl)
+  // Filter out the exact keyword and deduplicate (case-insensitive)
+  const lower = keyword.toLowerCase()
+  return suggestions
+    .filter(s => s.toLowerCase() !== lower)
+    .slice(0, 10)
+}
+
 // ===== ISO 8601 Duration Parser =====
 
 export function parseISODuration(iso: string): string {
