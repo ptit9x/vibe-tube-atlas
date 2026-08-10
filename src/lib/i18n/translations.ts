@@ -239,7 +239,6 @@ export interface TranslationKey {
     passwordNotMatch: string
     changePasswordSuccess: string
     processing: string
-    feedback: string
     editProfile: string
     fullName: string
     updateProfile: string
@@ -520,7 +519,6 @@ export const translations: Record<Language, TranslationKey> = {
       passwordNotMatch: 'Mật khẩu mới không khớp',
       changePasswordSuccess: 'Đổi mật khẩu thành công!',
       processing: 'Đang xử lý...',
-      feedback: 'Góp ý',
       editProfile: 'Chỉnh sửa thông tin',
       fullName: 'Họ và tên',
       updateProfile: 'Cập nhật',
@@ -800,7 +798,6 @@ export const translations: Record<Language, TranslationKey> = {
       passwordNotMatch: 'Passwords don\'t match',
       changePasswordSuccess: 'Password changed successfully!',
       processing: 'Processing...',
-      feedback: 'Feedback',
       editProfile: 'Edit profile',
       fullName: 'Full name',
       updateProfile: 'Update',

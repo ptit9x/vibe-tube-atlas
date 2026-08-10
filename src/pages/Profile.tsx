@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Globe, Key, ChevronRight, Lock, MessageSquare, Sun, Moon, Camera, History } from 'lucide-react'
+import { Globe, Key, ChevronRight, Lock, Sun, Moon, Camera, History } from 'lucide-react'
 import { useAuth, useLogout, useUpdateProfile } from '@/hooks/useAuth'
 import { toast } from 'sonner'
 import { useI18n } from '@/lib/i18n'
@@ -19,8 +19,6 @@ const FEATURES = [
   { icon: Lock, labelKey: 'settings.password', href: '/settings/password', color: '#6366F1' },
   { icon: Globe, labelKey: 'settings.language', href: '/settings/language', color: '#10B981' },
 ]
-
-const FEEDBACK_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScy98U6vpghurp-dkv5jKOnGlyUm3OkC05UoL82rSL17Biurg/viewform'
 
 import { PageTransition } from '@/components/shared'
 
@@ -184,23 +182,6 @@ export default function Profile() {
             )
           })}
 
-          {/* Feedback */}
-          <a
-            href={FEEDBACK_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center justify-between p-3.5 hover:bg-gray-50 transition-all"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-pink-50">
-                <MessageSquare className="h-5 w-5 text-pink-500" />
-              </div>
-              <div className="text-left">
-                <p className="text-gray-900 font-medium">{t.settings.feedback}</p>
-              </div>
-            </div>
-            <ChevronRight className="h-5 w-5 text-gray-400" />
-          </a>
         </div>
 
         {/* Logout — separate danger card */}
