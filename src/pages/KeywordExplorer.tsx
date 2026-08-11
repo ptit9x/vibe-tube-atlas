@@ -8,20 +8,27 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useI18n } from '@/lib/i18n'
 import { useAnalyzeKeyword, useSaveKeyword, useSavedKeywords } from '@/hooks/useKeywords'
-import { getSuggestions, getRelatedKeywords, formatCompactNumber, parseISODuration, calcOpportunityScore } from '@/lib/youtube'
+import {
+  getSuggestions,
+  getRelatedKeywords,
+  getQuestionKeywords,
+  formatCompactNumber,
+  parseISODuration,
+} from '@/lib/youtube'
 import { exportKeywordsCSV } from '@/lib/csv'
-import type { AnalyzeKeywordParams, CompetitionLevel } from '@/types'
+import type { AnalyzeKeywordParams, CompetitionLevel, DifficultyLevel } from '@/types'
 import { toast } from 'sonner'
-import { Search, Bookmark, TrendingUp, Eye, ThumbsUp, MessageCircle, Sparkles, Loader2, Download } from 'lucide-react'
+import { Search, Bookmark, TrendingUp, Eye, ThumbsUp, Users, Flame, HelpCircle, Sparkles, Loader2, Download } from 'lucide-react'
 
 export default function KeywordExplorer() {
-  const { t } = useI18n()
+  const { t, language: lang } = useI18n()
   const [searchParams, setSearchParams] = useSearchParams()
   const [input, setInput] = useState('')
   const [params, setParams] = useState<AnalyzeKeywordParams | null>(null)
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [relatedKeywords, setRelatedKeywords] = useState<string[]>([])
+  const [questionKeywords, setQuestionKeywords] = useState<string[]>([])
 
   // Honor ?q= deep-link from SearchHistory — run once on mount.
   useEffect(() => {
@@ -57,10 +64,12 @@ export default function KeywordExplorer() {
   useEffect(() => {
     if (!params?.keyword) {
       setRelatedKeywords([])
+      setQuestionKeywords([])
       return
     }
     getRelatedKeywords(params.keyword).then(setRelatedKeywords).catch(() => setRelatedKeywords([]))
-  }, [params?.keyword])
+    getQuestionKeywords(params.keyword, lang).then(setQuestionKeywords).catch(() => setQuestionKeywords([]))
+  }, [params?.keyword, lang])
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -105,6 +114,12 @@ export default function KeywordExplorer() {
     low: 'bg-gray-100 text-gray-700',
     medium: 'bg-blue-100 text-blue-700',
     high: 'bg-purple-100 text-purple-700',
+  }
+
+  const difficultyColor: Record<DifficultyLevel, string> = {
+    low: 'bg-green-100 text-green-700 border-green-200',
+    medium: 'bg-amber-100 text-amber-700 border-amber-200',
+    high: 'bg-red-100 text-red-700 border-red-200',
   }
 
   return (
@@ -222,7 +237,7 @@ export default function KeywordExplorer() {
                     </div>
                   </div>
 
-                  {/* Competition + Engagement badges */}
+                  {/* Competition + Engagement + Difficulty badges */}
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="outline" className={competitionColor[metrics.competition]}>
                       {t.keywordExplorer.competition}: {t.keywordExplorer.competitionLevels[metrics.competition]}
@@ -230,9 +245,14 @@ export default function KeywordExplorer() {
                     <Badge variant="outline" className={engagementColor[metrics.engagementLevel]}>
                       {t.keywordExplorer.engagementRate}: {t.keywordExplorer.engagementLevels[metrics.engagementLevel]}
                     </Badge>
+                    {metrics.difficultyLevel && (
+                      <Badge variant="outline" className={difficultyColor[metrics.difficultyLevel]}>
+                        {t.keywordExtra.difficultyScore}: {t.keywordExtra.difficultyLevels[metrics.difficultyLevel]}
+                      </Badge>
+                    )}
                   </div>
 
-                  {/* Metrics grid */}
+                  {/* Enhanced metrics grid */}
                   <div className="grid grid-cols-2 gap-3">
                     <MetricCard
                       icon={TrendingUp}
@@ -244,16 +264,20 @@ export default function KeywordExplorer() {
                       label={t.keywordExplorer.avgViews}
                       value={formatCompactNumber(metrics.avgViews)}
                     />
-                    <MetricCard
-                      icon={ThumbsUp}
-                      label={t.keywordExplorer.avgLikes}
-                      value={formatCompactNumber(metrics.avgLikes)}
-                    />
-                    <MetricCard
-                      icon={MessageCircle}
-                      label={t.keywordExplorer.avgComments}
-                      value={formatCompactNumber(metrics.avgComments)}
-                    />
+                    {metrics.avgChannelSubs != null && (
+                      <MetricCard
+                        icon={Users}
+                        label={t.keywordExtra.avgChannelSubs}
+                        value={formatCompactNumber(metrics.avgChannelSubs)}
+                      />
+                    )}
+                    {metrics.viewsPerDayTop != null && (
+                      <MetricCard
+                        icon={Flame}
+                        label={t.keywordExtra.viewsPerDay}
+                        value={formatCompactNumber(metrics.viewsPerDayTop)}
+                      />
+                    )}
                   </div>
 
                   {/* Engagement rate highlight */}
@@ -264,31 +288,56 @@ export default function KeywordExplorer() {
                 </CardContent>
               </Card>
 
-              {/* Opportunity Score Gauge */}
+              {/* Difficulty Score + Niche Score */}
               {(() => {
-                const score = calcOpportunityScore(metrics)
-                const label = score >= 75 ? t.keywordExtra.scoreExcellent
-                  : score >= 50 ? t.keywordExtra.scoreGood
-                  : score >= 30 ? t.keywordExtra.scoreFair
-                  : t.keywordExtra.scorePoor
-                const gaugeColor = score >= 75 ? 'text-emerald-500'
-                  : score >= 50 ? 'text-blue-500'
-                  : score >= 30 ? 'text-amber-500'
-                  : 'text-red-500'
-                const barColor = score >= 75 ? 'bg-emerald-500'
-                  : score >= 50 ? 'bg-blue-500'
-                  : score >= 30 ? 'bg-amber-500'
+                const dScore = metrics.difficultyScore ?? 0
+                const dLabel = metrics.difficultyLevel
+                  ? t.keywordExtra.difficultyLevels[metrics.difficultyLevel]
+                  : ''
+                const dBarColor = dScore >= 67 ? 'bg-red-500'
+                  : dScore >= 34 ? 'bg-amber-500'
+                  : 'bg-green-500'
+                const dTextColor = dScore >= 67 ? 'text-red-500'
+                  : dScore >= 34 ? 'text-amber-500'
+                  : 'text-green-500'
+
+                const nScore = metrics.nicheScore ?? 0
+                const nLabel = nScore >= 75 ? t.keywordExtra.nicheExcellent
+                  : nScore >= 50 ? t.keywordExtra.nicheGood
+                  : nScore >= 30 ? t.keywordExtra.nicheFair
+                  : t.keywordExtra.nichePoor
+                const nBarColor = nScore >= 75 ? 'bg-emerald-500'
+                  : nScore >= 50 ? 'bg-blue-500'
+                  : nScore >= 30 ? 'bg-amber-500'
                   : 'bg-red-500'
+                const nTextColor = nScore >= 75 ? 'text-emerald-500'
+                  : nScore >= 50 ? 'text-blue-500'
+                  : nScore >= 30 ? 'text-amber-500'
+                  : 'text-red-500'
+
                 return (
-                  <div className="rounded-lg bg-gray-50 p-4 text-center">
-                    <div className="text-xs text-muted-foreground mb-1">{t.keywordExtra.opportunityScore}</div>
-                    <div className={`text-4xl font-bold ${gaugeColor}`}>{score}<span className="text-lg text-muted-foreground">/100</span></div>
-                    <div className={`text-xs font-medium mt-0.5 ${gaugeColor}`}>{label}</div>
-                    {/* Score bar */}
-                    <div className="mt-2 h-2 rounded-full bg-gray-200 overflow-hidden">
-                      <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${score}%` }} />
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Difficulty Score */}
+                    <div className="rounded-lg bg-gray-50 p-3 text-center">
+                      <div className="text-xs text-muted-foreground mb-1">{t.keywordExtra.difficultyScore}</div>
+                      <div className={`text-3xl font-bold ${dTextColor}`}>{dScore}<span className="text-sm text-muted-foreground">/100</span></div>
+                      <div className={`text-xs font-medium mt-0.5 ${dTextColor}`}>{dLabel}</div>
+                      <div className="mt-2 h-2 rounded-full bg-gray-200 overflow-hidden">
+                        <div className={`h-full rounded-full transition-all duration-500 ${dBarColor}`} style={{ width: `${dScore}%` }} />
+                      </div>
+                      <div className="text-[10px] text-muted-foreground mt-1.5">{t.keywordExtra.difficultyHint}</div>
                     </div>
-                    <div className="text-[10px] text-muted-foreground mt-1.5">{t.keywordExtra.opportunityHint}</div>
+
+                    {/* Niche Score */}
+                    <div className="rounded-lg bg-gray-50 p-3 text-center">
+                      <div className="text-xs text-muted-foreground mb-1">{t.keywordExtra.nicheScore}</div>
+                      <div className={`text-3xl font-bold ${nTextColor}`}>{nScore}<span className="text-sm text-muted-foreground">/100</span></div>
+                      <div className={`text-xs font-medium mt-0.5 ${nTextColor}`}>{nLabel}</div>
+                      <div className="mt-2 h-2 rounded-full bg-gray-200 overflow-hidden">
+                        <div className={`h-full rounded-full transition-all duration-500 ${nBarColor}`} style={{ width: `${nScore}%` }} />
+                      </div>
+                      <div className="text-[10px] text-muted-foreground mt-1.5">{t.keywordExtra.nicheHint}</div>
+                    </div>
                   </div>
                 )
               })()}
@@ -310,6 +359,28 @@ export default function KeywordExplorer() {
                         className="px-3 py-1.5 rounded-full bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium transition-colors border border-red-100"
                       >
                         {kw}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Question Keywords (Phase 1) */}
+              {questionKeywords.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-muted-foreground px-1 flex items-center gap-1.5">
+                    <HelpCircle className="h-3.5 w-3.5" />
+                    {t.keywordExtra.questionKeywords}
+                  </h3>
+                  <div className="space-y-1.5">
+                    {questionKeywords.map((kw) => (
+                      <button
+                        key={kw}
+                        onClick={() => handleRelatedClick(kw)}
+                        className="w-full text-left px-3 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-medium transition-colors border border-blue-100 flex items-center gap-2"
+                      >
+                        <HelpCircle className="h-3 w-3 shrink-0 opacity-60" />
+                        <span className="truncate">{kw}</span>
                       </button>
                     ))}
                   </div>

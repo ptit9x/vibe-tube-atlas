@@ -9,6 +9,7 @@ export type ISOString = string
 export type YouTubeSearchType = 'video' | 'channel'
 export type CompetitionLevel = 'low' | 'medium' | 'high'
 export type EngagementLevel = 'low' | 'medium' | 'high'
+export type DifficultyLevel = 'low' | 'medium' | 'high'
 
 /** Video search result from YouTube Data API v3 search.list */
 export interface YouTubeVideo {
@@ -59,6 +60,13 @@ export interface KeywordMetrics {
   engagementLevel: EngagementLevel
   topVideos: YouTubeVideo[]
   analyzedAt: ISOString
+  // Phase 1: Enhanced metrics
+  avgChannelSubs?: number       // Average subscribers of channels in results
+  avgVideoAgeDays?: number      // Average age of top videos in days
+  viewsPerDayTop?: number       // Avg views/day for top video (momentum indicator)
+  difficultyScore?: number      // 0-100 (higher = harder to rank)
+  difficultyLevel?: DifficultyLevel
+  nicheScore?: number           // 0-100 (higher = better niche opportunity)
 }
 
 export interface SearchSuggestion {

@@ -174,6 +174,24 @@ export interface TranslationKey {
     viewsDistribution: string
     relatedKeywords: string
     relatedEmpty: string
+    difficultyScore: string
+    difficultyHint: string
+    difficultyLevels: {
+      low: string
+      medium: string
+      high: string
+    }
+    nicheScore: string
+    nicheHint: string
+    nicheExcellent: string
+    nicheGood: string
+    nicheFair: string
+    nichePoor: string
+    avgChannelSubs: string
+    avgVideoAge: string
+    viewsPerDay: string
+    questionKeywords: string
+    questionEmpty: string
   }
   trending: {
     title: string
@@ -474,6 +492,20 @@ export const translations: Record<Language, TranslationKey> = {
       viewsDistribution: 'Phân bố views',
       relatedKeywords: 'Từ khóa tương tự',
       relatedEmpty: 'Không có từ khóa gợi ý',
+      difficultyScore: 'Độ khó',
+      difficultyHint: 'Càng thấp càng dễ rank',
+      difficultyLevels: { low: 'Dễ', medium: 'Trung bình', high: 'Khó' },
+      nicheScore: 'Điểm ngách',
+      nicheHint: 'Nhu cầu cao + ít cạnh tranh = ngách tốt',
+      nicheExcellent: 'Ngách tuyệt vời',
+      nicheGood: 'Ngách tốt',
+      nicheFair: 'Ngách khá',
+      nichePoor: 'Ngách khó',
+      avgChannelSubs: 'Sub trung bình',
+      avgVideoAge: 'Tuổi video TB',
+      viewsPerDay: 'Views/ngày (top 1)',
+      questionKeywords: 'Câu hỏi tìm kiếm',
+      questionEmpty: 'Không có câu hỏi gợi ý',
     },
     trending: {
       title: 'Xu hướng',
@@ -773,6 +805,20 @@ export const translations: Record<Language, TranslationKey> = {
       viewsDistribution: 'Views distribution',
       relatedKeywords: 'Related keywords',
       relatedEmpty: 'No related keywords found',
+      difficultyScore: 'Difficulty',
+      difficultyHint: 'Lower = easier to rank',
+      difficultyLevels: { low: 'Easy', medium: 'Medium', high: 'Hard' },
+      nicheScore: 'Niche Score',
+      nicheHint: 'High demand + low competition = good niche',
+      nicheExcellent: 'Excellent niche',
+      nicheGood: 'Good niche',
+      nicheFair: 'Fair niche',
+      nichePoor: 'Tough niche',
+      avgChannelSubs: 'Avg channel subs',
+      avgVideoAge: 'Avg video age',
+      viewsPerDay: 'Views/day (top 1)',
+      questionKeywords: 'Search questions',
+      questionEmpty: 'No question keywords found',
     },
     trending: {
       title: 'Trending',
