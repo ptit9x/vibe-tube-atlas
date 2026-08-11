@@ -107,18 +107,22 @@ export default function Dashboard() {
 
           {/* Saved Items Count */}
           <div className="space-y-2">
-            <h2 className="text-sm font-semibold text-muted-foreground px-1 flex items-center gap-1.5">
-              <Bookmark className="h-4 w-4" />
-              {t.common.save}
-            </h2>
+            <Link to="/saved" className="inline-flex items-center gap-1.5 px-1 hover:underline">
+              <h2 className="text-sm font-semibold text-muted-foreground flex items-center gap-1.5">
+                <Bookmark className="h-4 w-4" />
+                {t.common.save}
+              </h2>
+            </Link>
             <div className="grid grid-cols-3 gap-3">
               {savedCounts.map(({ label, count }) => (
-                <Card key={label} className="bg-white rounded-xl shadow-sm">
-                  <CardContent className="p-3 text-center">
-                    <div className="text-2xl font-bold">{formatCompactNumber(count)}</div>
-                    <div className="text-[10px] text-muted-foreground leading-tight mt-1">{label}</div>
-                  </CardContent>
-                </Card>
+                <Link key={label} to="/saved">
+                  <Card key={label} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <CardContent className="p-3 text-center">
+                      <div className="text-2xl font-bold">{formatCompactNumber(count)}</div>
+                      <div className="text-[10px] text-muted-foreground leading-tight mt-1">{label}</div>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           </div>

@@ -184,22 +184,23 @@ export interface TranslationKey {
     noResults: string
   }
   videoAnalyzer: {
-    title: string
-    subtitle: string
-    searchPlaceholder: string
-    sortBy: string
-    sortDate: string
-    sortViews: string
-    sortRating: string
-    results: string
-    noResults: string
-    views: string
-    likes: string
-    comments: string
-    duration: string
-    publishedAt: string
-    videoSaved: string
-    videoUnsaved: string
+  title: string
+  subtitle: string
+  searchPlaceholder: string
+  sortBy: string
+  sortDate: string
+  sortViews: string
+  sortRating: string
+  results: string
+  noResults: string
+  views: string
+  likes: string
+  comments: string
+  duration: string
+  publishedAt: string
+  videoSaved: string
+  videoUnsaved: string
+  tags: string
   }
   channelAnalyzer: {
     title: string
@@ -295,6 +296,14 @@ export interface TranslationKey {
     returnToDashboard: string
     internalServerError: string
     goToHome: string
+  }
+  savedItems: {
+    title: string
+    keywords: string
+    videos: string
+    channels: string
+    empty: string
+    score: string
   }
 }
 
@@ -491,6 +500,7 @@ export const translations: Record<Language, TranslationKey> = {
       publishedAt: 'Đăng lúc',
       videoSaved: 'Đã lưu video',
       videoUnsaved: 'Đã bỏ lưu video',
+      tags: 'Thẻ',
     },
     channelAnalyzer: {
       title: 'Phân tích kênh',
@@ -586,6 +596,14 @@ export const translations: Record<Language, TranslationKey> = {
       returnToDashboard: 'Về trang chính',
       internalServerError: 'Lỗi máy chủ nội bộ',
       goToHome: 'Về trang chủ',
+    },
+    savedItems: {
+      title: 'Đã lưu',
+      keywords: 'Từ khóa',
+      videos: 'Video',
+      channels: 'Kênh',
+      empty: 'Chưa có mục nào được lưu',
+      score: 'Điểm',
     },
   },
 
@@ -781,6 +799,7 @@ export const translations: Record<Language, TranslationKey> = {
       publishedAt: 'Published',
       videoSaved: 'Video saved',
       videoUnsaved: 'Video unsaved',
+      tags: 'Tags',
     },
     channelAnalyzer: {
       title: 'Channel Search',
@@ -876,6 +895,14 @@ export const translations: Record<Language, TranslationKey> = {
       returnToDashboard: 'Return to dashboard',
       internalServerError: 'Internal server error',
       goToHome: 'Go home',
+    },
+    savedItems: {
+      title: 'Saved Items',
+      keywords: 'Keywords',
+      videos: 'Videos',
+      channels: 'Channels',
+      empty: 'No saved items yet',
+      score: 'Score',
     },
   },
 }

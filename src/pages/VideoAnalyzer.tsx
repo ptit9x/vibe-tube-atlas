@@ -14,9 +14,10 @@ import {
 import { useI18n } from '@/lib/i18n'
 import { useVideoSearch, useSavedVideos, useSaveVideo, useDeleteVideo, isVideoSaved } from '@/hooks/useVideos'
 import { getSuggestions, formatCompactNumber, parseISODuration } from '@/lib/youtube'
+import { exportVideosCSV } from '@/lib/csv'
 import type { SearchVideosParams, YouTubeVideo } from '@/types'
 import { toast } from 'sonner'
-import { Search, Eye, ThumbsUp, Bookmark, Loader2, Calendar } from 'lucide-react'
+import { Search, Eye, ThumbsUp, Bookmark, Loader2, Calendar, Download } from 'lucide-react'
 
 type SortOrder = 'date' | 'viewCount' | 'rating' | 'relevance'
 
@@ -182,49 +183,88 @@ export default function VideoAnalyzer() {
           {/* Results */}
           {videos && videos.length > 0 && (
             <div className="space-y-3">
-              <div className="text-sm text-muted-foreground px-1">
-                {videos.length} {t.videoAnalyzer.results}
+              <div className="flex items-center justify-between px-1">
+                <div className="text-sm text-muted-foreground">
+                  {videos.length} {t.videoAnalyzer.results}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    exportVideosCSV(
+                      videos.map((v) => ({
+                        id: v.id,
+                        title: v.title,
+                        channelTitle: v.channelTitle,
+                        viewCount: v.viewCount ?? 0,
+                        likeCount: v.likeCount ?? 0,
+                      })),
+                    )
+                  }
+                >
+                  <Download className="h-4 w-4" />
+                  {t.common.export}
+                </Button>
               </div>
               {videos.map((video) => {
                 const saved = isVideoSaved(savedVideos, video.id)
                 return (
                   <Card key={video.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
                     <div className="flex gap-3 p-3">
-                      <div className="relative w-32 shrink-0">
-                        <img
-                          src={video.thumbnails?.medium?.url ?? video.thumbnails?.default?.url}
-                          alt={video.title}
-                          className="w-32 h-20 rounded-lg object-cover"
-                          loading="lazy"
-                        />
-                        {video.duration && (
-                          <span className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 rounded">
-                            {parseISODuration(video.duration)}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-medium line-clamp-2">{video.title}</h3>
-                        <p className="text-xs text-muted-foreground mt-0.5">{video.channelTitle}</p>
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-muted-foreground">
-                          {video.viewCount != null && (
-                            <span className="flex items-center gap-1">
-                              <Eye className="h-3 w-3" />
-                              {formatCompactNumber(video.viewCount)}
+                      <a
+                        href={`https://www.youtube.com/watch?v=${video.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex gap-3 flex-1 min-w-0 cursor-pointer"
+                      >
+                        <div className="relative w-32 shrink-0">
+                          <img
+                            src={video.thumbnails?.medium?.url ?? video.thumbnails?.default?.url}
+                            alt={video.title}
+                            className="w-32 h-20 rounded-lg object-cover transition-opacity hover:opacity-80"
+                            loading="lazy"
+                          />
+                          {video.duration && (
+                            <span className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] px-1 rounded">
+                              {parseISODuration(video.duration)}
                             </span>
                           )}
-                          {video.likeCount != null && (
-                            <span className="flex items-center gap-1">
-                              <ThumbsUp className="h-3 w-3" />
-                              {formatCompactNumber(video.likeCount)}
-                            </span>
-                          )}
-                          <span className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            {new Date(video.publishedAt).toLocaleDateString()}
-                          </span>
                         </div>
-                      </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-medium line-clamp-2">{video.title}</h3>
+                          <p className="text-xs text-muted-foreground mt-0.5">{video.channelTitle}</p>
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-muted-foreground">
+                            {video.viewCount != null && (
+                              <span className="flex items-center gap-1">
+                                <Eye className="h-3 w-3" />
+                                {formatCompactNumber(video.viewCount)}
+                              </span>
+                            )}
+                            {video.likeCount != null && (
+                              <span className="flex items-center gap-1">
+                                <ThumbsUp className="h-3 w-3" />
+                                {formatCompactNumber(video.likeCount)}
+                              </span>
+                            )}
+                            <span className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {new Date(video.publishedAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                          {video.tags && video.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1.5 line-clamp-1">
+                              {video.tags.slice(0, 5).map((tag) => (
+                                <span
+                                  key={tag}
+                                  className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </a>
                       <Button
                         variant="ghost"
                         size="icon"

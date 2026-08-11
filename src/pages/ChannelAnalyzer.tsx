@@ -8,9 +8,10 @@ import { Avatar } from '@/components/shared'
 import { useI18n } from '@/lib/i18n'
 import { useChannelSearch, useSavedChannels, useSaveChannel, useDeleteChannel } from '@/hooks/useChannels'
 import { getSuggestions, formatCompactNumber } from '@/lib/youtube'
+import { exportChannelsCSV } from '@/lib/csv'
 import type { YouTubeChannel } from '@/types'
 import { toast } from 'sonner'
-import { Search, Bookmark, Users, Video, Eye, Loader2 } from 'lucide-react'
+import { Search, Bookmark, Users, Video, Eye, Loader2, Download } from 'lucide-react'
 
 export default function ChannelAnalyzer() {
   const { t } = useI18n()
@@ -153,6 +154,29 @@ export default function ChannelAnalyzer() {
           {/* Results */}
           {channels && channels.length > 0 && (
             <div className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div className="text-sm text-muted-foreground">
+                  {channels.length} {t.videoAnalyzer.results}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    exportChannelsCSV(
+                      channels.map((c) => ({
+                        id: c.id,
+                        title: c.title,
+                        subscriberCount: c.subscriberCount ?? 0,
+                        videoCount: c.videoCount ?? 0,
+                        viewCount: c.viewCount ?? 0,
+                      })),
+                    )
+                  }
+                >
+                  <Download className="h-4 w-4" />
+                  {t.common.export}
+                </Button>
+              </div>
               {channels.map((channel) => {
                 const saved = isChannelSaved(channel.id)
                 return (

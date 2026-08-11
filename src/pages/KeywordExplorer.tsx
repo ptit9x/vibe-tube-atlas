@@ -9,9 +9,10 @@ import { Badge } from '@/components/ui/badge'
 import { useI18n } from '@/lib/i18n'
 import { useAnalyzeKeyword, useSaveKeyword, useSavedKeywords } from '@/hooks/useKeywords'
 import { getSuggestions, getRelatedKeywords, formatCompactNumber, parseISODuration, calcOpportunityScore } from '@/lib/youtube'
+import { exportKeywordsCSV } from '@/lib/csv'
 import type { AnalyzeKeywordParams, CompetitionLevel } from '@/types'
 import { toast } from 'sonner'
-import { Search, Bookmark, TrendingUp, Eye, ThumbsUp, MessageCircle, Sparkles, Loader2 } from 'lucide-react'
+import { Search, Bookmark, TrendingUp, Eye, ThumbsUp, MessageCircle, Sparkles, Loader2, Download } from 'lucide-react'
 
 export default function KeywordExplorer() {
   const { t } = useI18n()
@@ -190,16 +191,35 @@ export default function KeywordExplorer() {
                 <CardContent className="p-4 space-y-4">
                   <div className="flex items-center justify-between gap-2">
                     <h2 className="font-bold text-lg min-w-0 flex-1 truncate">{metrics.keyword}</h2>
-                    <Button
-                      variant={isSaved ? 'secondary' : 'outline'}
-                      size="sm"
-                      onClick={handleSave}
-                      disabled={saveMutation.isPending}
-                      className="shrink-0"
-                    >
-                      <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current' : ''}`} />
-                      {isSaved ? t.keywordExplorer.saved : t.common.saveKeyword}
-                    </Button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          exportKeywordsCSV([
+                            {
+                              keyword: metrics.keyword,
+                              avgViews: metrics.avgViews,
+                              avgLikes: metrics.avgLikes,
+                              competition: metrics.competition,
+                              engagementRate: metrics.engagementRate,
+                            },
+                          ])
+                        }
+                      >
+                        <Download className="h-4 w-4" />
+                        {t.common.export}
+                      </Button>
+                      <Button
+                        variant={isSaved ? 'secondary' : 'outline'}
+                        size="sm"
+                        onClick={handleSave}
+                        disabled={saveMutation.isPending}
+                      >
+                        <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current' : ''}`} />
+                        {isSaved ? t.keywordExplorer.saved : t.common.saveKeyword}
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Competition + Engagement badges */}
@@ -306,11 +326,16 @@ export default function KeywordExplorer() {
                     {metrics.topVideos.slice(0, 10).map((video) => (
                       <Card key={video.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
                         <div className="flex gap-3 p-3">
-                          <div className="relative w-28 shrink-0">
+                          <a
+                            href={`https://www.youtube.com/watch?v=${video.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative w-28 shrink-0 cursor-pointer"
+                          >
                             <img
                               src={video.thumbnails?.medium?.url ?? video.thumbnails?.default?.url}
                               alt={video.title}
-                              className="w-28 h-16 rounded-lg object-cover"
+                              className="w-28 h-16 rounded-lg object-cover transition-opacity hover:opacity-80"
                               loading="lazy"
                             />
                             {video.duration && (
@@ -318,7 +343,7 @@ export default function KeywordExplorer() {
                                 {parseISODuration(video.duration)}
                               </span>
                             )}
-                          </div>
+                          </a>
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm font-medium line-clamp-2">{video.title}</h3>
                             <p className="text-xs text-muted-foreground mt-1">{video.channelTitle}</p>
@@ -336,6 +361,18 @@ export default function KeywordExplorer() {
                                 </span>
                               )}
                             </div>
+                            {video.tags && video.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1.5 line-clamp-1">
+                                {video.tags.slice(0, 5).map((tag) => (
+                                  <span
+                                    key={tag}
+                                    className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500"
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </Card>
