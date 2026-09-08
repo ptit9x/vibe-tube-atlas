@@ -130,8 +130,11 @@ async function getSuggestions(
     `https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(query)}&hl=${hl}&gl=${gl}`;
   try {
     const resp = await fetch(url);
-    // 🔴 charset pitfall: declared ISO-8859-1, actually UTF-8
-    const text = new TextDecoder("utf-8").decode(await resp.arrayBuffer());
+    // 🔴 ENCODING PITFALL (verified empirically): Google Suggest declares
+    // charset=ISO-8859-1 and the body REALLY IS Latin-1 for chars ≤ U+00FF,
+    // while higher codepoints are \uXXXX escapes resolved by JSON.parse.
+    // Decoding as UTF-8 corrupts Vietnamese letters like "á" (→ U+FFFD).
+    const text = new TextDecoder("latin1").decode(await resp.arrayBuffer());
     const parsed = JSON.parse(text.match(/\[.*\]/s)?.[0] ?? "[]") as unknown[];
     const entries = (parsed[1] ?? []) as unknown[];
     return entries

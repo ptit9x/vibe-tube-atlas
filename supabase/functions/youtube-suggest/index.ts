@@ -26,10 +26,12 @@ Deno.serve(async (req: Request) => {
     }`;
 
     const response = await fetch(url);
-    // Google returns charset=ISO-8859-1, but the body is actually UTF-8.
-    // response.text() would misdecode Vietnamese chars — decode as UTF-8 manually.
+    // 🔴 ENCODING PITFALL (verified empirically): Google Suggest declares
+    // charset=ISO-8859-1 and the body REALLY IS Latin-1 for chars ≤ U+00FF,
+    // while higher codepoints are \uXXXX escapes resolved by JSON.parse.
+    // Decoding as UTF-8 corrupts Vietnamese letters like "á" (→ U+FFFD).
     const buffer = await response.arrayBuffer();
-    const text = new TextDecoder("utf-8").decode(buffer);
+    const text = new TextDecoder("latin1").decode(buffer);
 
     // Response is JSONP: window.google.ac.h(["query",[["suggestion1",0],["suggestion2",0],...]])
     // Extract the JSON array from the JSONP wrapper

@@ -122,6 +122,35 @@ npm run lint     # ESLint
 
 Free tier: **10,000 units/day** per API key (~100 searches/day).
 
+## 📡 Daily Niche Scan (Niche Radar)
+
+Automated multi-market niche keyword discovery that runs **at zero API quota cost**
+(Google Suggest + YouTube page scraping only — no `search.list` calls).
+
+**How it works:**
+1. `pg_cron` fires daily at 01:30 UTC (08:30 Vietnam) and posts one
+   `daily-scan` Edge Function invocation per enabled user (via `pg_net`).
+2. The function expands industry seed keywords (28 industries across 8
+   RPM-weighted categories) through the free Google Suggest endpoint in the
+   language of each selected market (vi/en/ja/ko).
+3. Candidates are validated by scraping YouTube search results
+   (`ytInitialData`), scored with the shared Difficulty/Niche formulas, and
+   enriched with an estimated RPM (`market baseRpm × category multiplier`).
+4. Results land in `discovered_keywords` and surface in the **Niche Radar**
+   page with a "Recommended markets" analysis ranked by `est. RPM × niche score`.
+
+**Setup (one-time, after deploying):**
+1. Generate a random secret, then in Supabase Dashboard → SQL Editor run:
+   `ALTER DATABASE postgres SET app.cron_secret TO '<your-secret>';`
+2. Add the same value as an Edge Function secret `CRON_SECRET` (Dashboard →
+   Edge Functions → Secrets). To rotate, change both places.
+3. Trigger a manual run to verify:
+   `curl -X POST https://<ref>.supabase.co/functions/v1/daily-scan -H "Authorization: Bearer <secret>" -H "Content-Type: application/json" -d '{"user_id":"<auth-uid>"}'`
+
+**RPM disclaimer:** market/category RPM values are heuristic estimates from
+public creator reports, not YouTube-published data. They are constants in
+`supabase/functions/_shared/markets.ts` — tune them in one place.
+
 ## 📝 License
 
 MIT
