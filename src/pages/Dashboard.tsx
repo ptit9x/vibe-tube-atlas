@@ -20,6 +20,7 @@ import {
   History,
   ChevronRight,
   BarChart3,
+  Radar,
 } from 'lucide-react'
 
 export default function Dashboard() {
@@ -126,6 +127,24 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
+
+          {/* Niche Radar entry */}
+          <Link to="/niche-radar">
+            <Card className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-red-50">
+                  <Radar className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold">{t.nicheRadar.title}</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {t.nicheRadar.subtitle}
+                  </p>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+              </CardContent>
+            </Card>
+          </Link>
 
           {/* Recent Searches */}
           <div className="space-y-2">

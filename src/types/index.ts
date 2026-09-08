@@ -113,6 +113,46 @@ export interface SavedChannel {
   created_at: ISOString
 }
 
+// ===== Daily niche scan =====
+
+export interface ScanSettings {
+  user_id: UUID
+  enabled: boolean
+  industries: string[]
+  markets: string[]
+  min_niche_score: number
+  max_keywords_per_run: number
+  created_at: ISOString
+  updated_at: ISOString
+}
+
+export interface DiscoveredSampleVideo {
+  id: string
+  title: string
+  views: number
+  published: string
+}
+
+export interface DiscoveredKeyword {
+  id: UUID
+  user_id: UUID
+  industry: string
+  category: string
+  keyword: string
+  market: string
+  niche_score: number
+  difficulty_score: number
+  estimated_results?: number
+  avg_views?: number
+  views_per_day_top?: number
+  avg_video_age_days?: number
+  est_rpm?: number
+  sample_videos: DiscoveredSampleVideo[]
+  status: string
+  discovered_at: ISOString
+  last_seen_at: ISOString
+}
+
 // ===== Search History & API Usage =====
 
 export interface SearchHistoryEntry {

@@ -323,6 +323,45 @@ export interface TranslationKey {
     empty: string
     score: string
   }
+  nicheRadar: {
+    title: string
+    subtitle: string
+    settings: string
+    enableScan: string
+    industries: string
+    allIndustries: string
+    markets: string
+    marketMaxHint: string
+    marketUnit: string
+    allMarkets: string
+    allCategories: string
+    minScore: string
+    dailyBudget: string
+    saveSettings: string
+    recommendedMarkets: string
+    recommendedHint: string
+    best: string
+    estRpm: string
+    revenuePerVideo: string
+    rpmDisclaimer: string
+    results: string
+    today: string
+    last7: string
+    last30: string
+    nicheScore: string
+    difficulty: string
+    avgViews: string
+    analyze: string
+    save: string
+    saved: string
+    empty: string
+    emptyHint: string
+    sampleVideos: string
+    zeroQuota: string
+    sortNiche: string
+    sortRpm: string
+    sortRevenue: string
+  }
 }
 
 // ===== Vietnamese =====
@@ -637,6 +676,45 @@ export const translations: Record<Language, TranslationKey> = {
       empty: 'Chưa có mục nào được lưu',
       score: 'Điểm',
     },
+    nicheRadar: {
+      title: 'Niche Radar',
+      subtitle: 'Từ khoá ngách được quét tự động hằng ngày, đa thị trường',
+      settings: 'Cài đặt quét',
+      enableScan: 'Bật quét hằng ngày',
+      industries: 'Ngành',
+      allIndustries: 'Tất cả ngành',
+      markets: 'Thị trường',
+      marketMaxHint: 'Tối đa 4 thị trường',
+      marketUnit: 'thị trường',
+      allMarkets: 'Tất cả thị trường',
+      allCategories: 'Tất cả nhóm',
+      minScore: 'Điểm ngách tối thiểu',
+      dailyBudget: 'Tổng số từ khoá mỗi ngày',
+      saveSettings: 'Lưu cài đặt',
+      recommendedMarkets: 'Thị trường đề xuất',
+      recommendedHint: 'Xếp theo RPM ước tính × điểm ngách',
+      best: 'Tốt nhất',
+      estRpm: 'RPM ước tính',
+      revenuePerVideo: 'Tiềm năng/video',
+      rpmDisclaimer: 'RPM là con số ước tính, chỉ mang tính tham khảo',
+      results: 'Kết quả',
+      today: 'Hôm nay',
+      last7: '7 ngày',
+      last30: '30 ngày',
+      nicheScore: 'Điểm ngách',
+      difficulty: 'Độ khó',
+      avgViews: 'Lượt xem TB',
+      analyze: 'Phân tích',
+      save: 'Lưu',
+      saved: 'Đã lưu vào từ khoá',
+      empty: 'Chưa có từ khoá nào',
+      emptyHint: 'Bật quét hằng ngày, dữ liệu sẽ xuất hiện sau lần quét đầu tiên (08:30 sáng).',
+      sampleVideos: 'Video mẫu',
+      zeroQuota: '0 quota — quét qua Google Suggest + scraping',
+      sortNiche: 'Điểm ngách',
+      sortRpm: 'RPM ước tính',
+      sortRevenue: 'Tiềm năng doanh thu',
+    },
   },
 
   // ===== English =====
@@ -949,6 +1027,45 @@ export const translations: Record<Language, TranslationKey> = {
       channels: 'Channels',
       empty: 'No saved items yet',
       score: 'Score',
+    },
+    nicheRadar: {
+      title: 'Niche Radar',
+      subtitle: 'Niche keywords discovered by the daily multi-market scan',
+      settings: 'Scan settings',
+      enableScan: 'Enable daily scan',
+      industries: 'Industries',
+      allIndustries: 'All industries',
+      markets: 'Markets',
+      marketMaxHint: 'Up to 4 markets',
+      marketUnit: 'market',
+      allMarkets: 'All markets',
+      allCategories: 'All categories',
+      minScore: 'Minimum niche score',
+      dailyBudget: 'Total keywords per day',
+      saveSettings: 'Save settings',
+      recommendedMarkets: 'Recommended markets',
+      recommendedHint: 'Ranked by estimated RPM × niche score',
+      best: 'Best',
+      estRpm: 'Est. RPM',
+      revenuePerVideo: 'Potential/video',
+      rpmDisclaimer: 'RPM values are rough estimates for reference only',
+      results: 'Results',
+      today: 'Today',
+      last7: '7 days',
+      last30: '30 days',
+      nicheScore: 'Niche score',
+      difficulty: 'Difficulty',
+      avgViews: 'Avg views',
+      analyze: 'Analyze',
+      save: 'Save',
+      saved: 'Saved to keywords',
+      empty: 'No keywords yet',
+      emptyHint: 'Enable the daily scan; data appears after the first run (08:30 AM).',
+      sampleVideos: 'Sample videos',
+      zeroQuota: '0 quota — scanned via Google Suggest + scraping',
+      sortNiche: 'Niche score',
+      sortRpm: 'Est. RPM',
+      sortRevenue: 'Revenue potential',
     },
   },
 }

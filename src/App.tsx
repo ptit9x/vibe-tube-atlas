@@ -18,6 +18,7 @@ const TrendingPage = lazy(() => import('./pages/Trending'))
 const VideoAnalyzer = lazy(() => import('./pages/VideoAnalyzer'))
 const ChannelAnalyzer = lazy(() => import('./pages/ChannelAnalyzer'))
 const SavedItems = lazy(() => import('./pages/SavedItems'))
+const NicheRadar = lazy(() => import('./pages/NicheRadar'))
 const SearchHistoryPage = lazy(() => import('./pages/SearchHistory'))
 const ApiKeySettings = lazy(() => import('./pages/ApiKeySettings'))
 const ProfilePage = lazy(() => import('./pages/Profile'))
@@ -84,6 +85,7 @@ function AppContent() {
             <Route path="/videos" element={<VideoAnalyzer />} />
             <Route path="/channels" element={<ChannelAnalyzer />} />
             <Route path="/saved" element={<SavedItems />} />
+            <Route path="/niche-radar" element={<NicheRadar />} />
             <Route path="/history" element={<SearchHistoryPage />} />
             <Route path="/settings/api-key" element={<ApiKeySettings />} />
             <Route path="/settings/language" element={<LanguageSettingsPage />} />
