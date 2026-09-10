@@ -66,7 +66,7 @@ EXCEPTION WHEN OTHERS THEN NULL; END $$;
 --   ALTER DATABASE postgres SET app.cron_secret TO '<random-secret>';
 SELECT cron.schedule('tube-atlas-daily-scan', '30 1 * * *', $$
   SELECT net.http_post(
-    url    := 'https://kusdcyhlyuuzjqdkwyqf.supabase.co/functions/v1/daily-scan',
+    url    := 'https://xidrdtzlkcerbbgzonjc.supabase.co/functions/v1/daily-scan',
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
       'Authorization', 'Bearer ' || current_setting('app.cron_secret', true)
