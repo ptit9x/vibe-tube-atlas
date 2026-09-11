@@ -64,7 +64,7 @@ export const INDUSTRIES: IndustrySeeds[] = [
     labelVi: 'Đầu tư & Giao dịch', labelEn: 'Investing & Trading',
     seeds: {
       vi: ['đầu tư chứng khoán', 'phân tích kỹ thuật', 'đầu tư vàng', 'chứng chỉ quỹ', 'đầu tư dài hạn',
-           'sàn vape', 'coin cho người mới', 'định giá cổ phiếu', 'cảnh báo Margin', 'danh mục đầu tư'],
+           'sàn chứng khoán', 'coin cho người mới', 'định giá cổ phiếu', 'cảnh báo Margin', 'danh mục đầu tư'],
       en: ['stock market for beginners', 'dividend investing', 'value investing', 'technical analysis', 'etf investing',
            'options trading basics', 'real estate investing', 'portfolio diversification', 'dollar cost averaging', 'stock valuation'],
       ja: ['株 入門', '積立投資', '分配金 投資', 'テクニカル分析'],
@@ -87,7 +87,7 @@ export const INDUSTRIES: IndustrySeeds[] = [
     key: 'make-money-online', category: 'finance-business',
     labelVi: 'Kiếm tiền online', labelEn: 'Make Money Online',
     seeds: {
-      vi: ['kiếm tiền online', 'kiếm tiền youtube', 'freelance cho người mới', 'bán hàng online', 'tiền tuition',
+      vi: ['kiếm tiền online', 'kiếm tiền youtube', 'freelance cho người mới', 'bán hàng online', 'dạy học online',
            'affiliate marketing', 'dropshipping việt nam', 'kiếm tiền với ai', 'print on demand', 'thu nhập thụ động'],
       en: ['make money online', 'youtube monetization', 'freelancing tips', 'affiliate marketing', 'dropshipping',
            'print on demand', 'passive income ideas', 'side hustles', 'digital products', 'etsy shop'],
