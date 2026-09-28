@@ -28,6 +28,7 @@ export interface UpdateScanSettingsInput {
   markets: string[]
   minNicheScore: number
   maxKeywordsPerRun: number
+  customKeywords?: string[]
 }
 
 export function useUpdateScanSettings() {
@@ -45,6 +46,7 @@ export function useUpdateScanSettings() {
             markets: input.markets,
             min_niche_score: input.minNicheScore,
             max_keywords_per_run: input.maxKeywordsPerRun,
+            custom_keywords: input.customKeywords ?? [],
             updated_at: new Date().toISOString(),
           },
           { onConflict: 'user_id' },
@@ -56,6 +58,33 @@ export function useUpdateScanSettings() {
       return data as ScanSettings
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['scan-settings'] }),
+  })
+}
+
+// ===== Trigger an immediate scan (runs the same daily-scan logic on demand) =====
+
+export function useTriggerScan() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async () => {
+      // supabase.functions.invoke sends both Authorization (user JWT) and
+      // apikey headers — the function verifies the JWT and derives user_id.
+      const { data, error } = await supabase.functions.invoke('daily-scan', {
+        body: {},
+      })
+      if (error) throw error
+      return data as {
+        user_id: string
+        markets: string[]
+        customKeywords: number
+        scanned: Record<string, number>
+        errors: number
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['discovered-keywords'] })
+      queryClient.invalidateQueries({ queryKey: ['scan-settings'] })
+    },
   })
 }
 

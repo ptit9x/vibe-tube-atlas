@@ -21,6 +21,8 @@ const CRON_SECRET = Deno.env.get("CRON_SECRET") ?? "";
 const HARD_MAX_KEYWORDS = 80; // wall-clock safety (free tier ≈150s)
 const MIN_VIDEOS_TO_SCORE = 5;
 const UPSERT_BATCH = 10;
+const MAX_CUSTOM_KEYWORDS = 20; // per user, enforced in UI + scanner
+const CUSTOM_INDUSTRY = "custom"; // pseudo-industry key for user keywords
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -154,12 +156,6 @@ function prefixesFor(lang: string): string[] {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-  if (!CRON_SECRET || req.headers.get("Authorization") !== `Bearer ${CRON_SECRET}`) {
-    return json({ error: "Unauthorized" }, 401);
-  }
-
-  const { user_id } = await req.json().catch(() => ({} as { user_id?: string }));
-  if (!user_id) return json({ error: "user_id required" }, 400);
 
   const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -167,12 +163,38 @@ Deno.serve(async (req) => {
     { auth: { persistSession: false } },
   );
 
+  // Two auth paths:
+  //  a) Bearer CRON_SECRET — pg_cron fan-out (scans any requested user).
+  //  b) Bearer <user JWT> — the "Scan now" button in Niche Radar. The JWT is
+  //     verified server-side with admin.auth.getUser(); user_id is forced to
+  //     the caller, so a user can only ever scan their own settings.
+  const authHeader = req.headers.get("Authorization") ?? "";
+  let user_id: string | undefined;
+  let isCron = false;
+  if (CRON_SECRET && authHeader === `Bearer ${CRON_SECRET}`) {
+    const body = await req.json().catch(() => ({} as { user_id?: string }));
+    user_id = body.user_id;
+    isCron = true;
+  } else if (authHeader.startsWith("Bearer ")) {
+    const token = authHeader.slice(7);
+    if (token.split(".").length === 3) { // looks like a JWT
+      const { data: userData } = await admin.auth.getUser(token);
+      if (userData?.user) user_id = userData.user.id;
+    }
+  }
+  if (!user_id) return json({ error: "Unauthorized" }, 401);
+
   const { data: settings } = await admin
     .from("scan_settings")
     .select("*")
     .eq("user_id", user_id)
     .maybeSingle();
-  if (!settings?.enabled) return json({ skipped: "scan disabled for user" });
+  if (!settings) return json({ skipped: "scan disabled for user" });
+  // "enabled" gates the daily cron only — an explicit "Scan now" tap runs
+  // regardless, since the user just asked for it.
+  if (!settings.enabled && isCron) {
+    return json({ skipped: "scan disabled for user" });
+  }
 
   // Markets: validate, cap at MAX_MARKETS, fallback to defaults
   const markets = (settings.markets?.length ? settings.markets : ["VN", "US"])
@@ -183,6 +205,13 @@ Deno.serve(async (req) => {
   const wanted = settings.industries?.length
     ? INDUSTRIES.filter((i) => settings.industries.includes(i.key))
     : INDUSTRIES;
+  // Custom keywords: user-defined seeds, expanded via Suggest like any other
+  // seed. They become a pseudo-industry bucket ("custom") so round-robin
+  // treats them fairly against taxonomy industries.
+  const customSeeds = (settings.custom_keywords ?? [])
+    .map((k: string) => k.trim())
+    .filter(Boolean)
+    .slice(0, MAX_CUSTOM_KEYWORDS);
   const totalBudget = Math.min(
     settings.max_keywords_per_run ?? 50,
     HARD_MAX_KEYWORDS,
@@ -222,6 +251,24 @@ Deno.serve(async (req) => {
       perIndustry.push({
         industry: ind.key,
         category: ind.category,
+        candidates: [...candidates],
+      });
+    }
+    // Custom keywords join the round-robin as their own bucket. Category
+    // unknown → multiplier 1 (neutral RPM estimate).
+    if (customSeeds.length) {
+      const candidates = new Set<string>();
+      for (const seed of customSeeds) {
+        candidates.add(seed);
+        for (const p of prefixes) {
+          for (const s of await getSuggestions(`${p} ${seed}`, market.hl, market.gl)) {
+            if (s.toLowerCase() !== seed.toLowerCase()) candidates.add(s);
+          }
+        }
+      }
+      perIndustry.push({
+        industry: CUSTOM_INDUSTRY,
+        category: "lifestyle", // neutral ×1.1 multiplier
         candidates: [...candidates],
       });
     }
@@ -316,11 +363,23 @@ Deno.serve(async (req) => {
     }
   }
 
-  // 4) Zero-quota usage log (dashboard consistency)
+  // 4) Zero-quota usage log (dashboard consistency) + stamp last_scan_at so
+  //    the UI can prove the run happened (never wonder "did it run?" again).
   await admin
     .from("api_usage")
     .insert({ user_id, endpoint: "daily-scan", quota_cost: 0 })
     .then(() => {}, () => {});
+  await admin
+    .from("scan_settings")
+    .update({ last_scan_at: new Date().toISOString() })
+    .eq("user_id", user_id)
+    .then(() => {}, () => {});
 
-  return json({ user_id, markets, scanned: savedCounters, errors: errorCount });
+  return json({
+    user_id,
+    markets,
+    customKeywords: customSeeds.length,
+    scanned: savedCounters,
+    errors: errorCount,
+  });
 });

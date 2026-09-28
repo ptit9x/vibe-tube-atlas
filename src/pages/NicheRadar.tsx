@@ -9,6 +9,7 @@ import { useI18n } from '@/lib/i18n'
 import {
   useScanSettings,
   useUpdateScanSettings,
+  useTriggerScan,
   useDiscoveredKeywords,
   useSaveDiscovered,
   useDeleteDiscovered,
@@ -29,7 +30,12 @@ import {
   Globe,
   Trash2,
   ChevronDown,
+  Plus,
+  X,
+  RefreshCw,
 } from 'lucide-react'
+
+const MAX_CUSTOM_KEYWORDS = 20
 
 type SortMode = 'niche' | 'rpm' | 'revenue'
 type PeriodKey = 'today' | 'last7' | 'last30'
@@ -58,6 +64,7 @@ function formatUsd(n: number): string {
 function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
   const { t, language } = useI18n()
   const updateSettings = useUpdateScanSettings()
+  const triggerScan = useTriggerScan()
 
   const [enabled, setEnabled] = useState(settings?.enabled ?? true)
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>(
@@ -68,6 +75,31 @@ function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
   )
   const [minScore, setMinScore] = useState(settings?.min_niche_score ?? 30)
   const [budget, setBudget] = useState(settings?.max_keywords_per_run ?? 50)
+  const [customKeywords, setCustomKeywords] = useState<string[]>(
+    settings?.custom_keywords ?? [],
+  )
+  const [customInput, setCustomInput] = useState('')
+  const [customError, setCustomError] = useState<string | null>(null)
+
+  const addCustomKeyword = () => {
+    const kw = customInput.trim()
+    if (!kw) return
+    setCustomError(null)
+    if (customKeywords.length >= MAX_CUSTOM_KEYWORDS) {
+      setCustomError(t.nicheRadar.customMaxHint)
+      return
+    }
+    if (customKeywords.some((k) => k.toLowerCase() === kw.toLowerCase())) {
+      setCustomError(t.nicheRadar.customDuplicate)
+      return
+    }
+    setCustomKeywords((prev) => [...prev, kw])
+    setCustomInput('')
+  }
+
+  const removeCustomKeyword = (kw: string) => {
+    setCustomKeywords((prev) => prev.filter((k) => k !== kw))
+  }
 
   const toggleIndustry = (key: string) => {
     setSelectedIndustries((prev) =>
@@ -94,9 +126,38 @@ function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
         markets: selectedMarkets,
         minNicheScore: minScore,
         maxKeywordsPerRun: budget,
+        customKeywords,
       },
       {
         onSuccess: () => toast.success(t.common.success),
+        onError: () => toast.error(t.common.error),
+      },
+    )
+  }
+
+  const handleScanNow = () => {
+    // Persist current form first so the scan uses what the user sees.
+    updateSettings.mutate(
+      {
+        enabled,
+        industries: selectedIndustries,
+        markets: selectedMarkets,
+        minNicheScore: minScore,
+        maxKeywordsPerRun: budget,
+        customKeywords,
+      },
+      {
+        onSuccess: () => {
+          triggerScan.mutate(undefined, {
+            onSuccess: (result) => {
+              const total = Object.values(result?.scanned ?? {}).reduce((s, n) => s + n, 0)
+              toast.success(
+                t.nicheRadar.scanDone.replace('{n}', String(total)),
+              )
+            },
+            onError: () => toast.error(t.nicheRadar.scanFailed),
+          })
+        },
         onError: () => toast.error(t.common.error),
       },
     )
@@ -198,6 +259,68 @@ function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
           </div>
         </div>
 
+        {/* Custom keywords (user-defined seeds) */}
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-medium text-muted-foreground">
+              {t.nicheRadar.customKeywords}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {customKeywords.length}/{MAX_CUSTOM_KEYWORDS}
+            </span>
+          </div>
+          <p className="text-[11px] text-muted-foreground mb-2">
+            {t.nicheRadar.customHint}
+          </p>
+          <div className="flex gap-2">
+            <input
+              value={customInput}
+              onChange={(e) => setCustomInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  addCustomKeyword()
+                }
+              }}
+              placeholder={t.nicheRadar.customPlaceholder}
+              className="flex-1 min-w-0 h-9 px-3 rounded-lg border border-gray-200 text-sm"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-9 shrink-0"
+              onClick={addCustomKeyword}
+              disabled={!customInput.trim() || customKeywords.length >= MAX_CUSTOM_KEYWORDS}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+          {customError && (
+            <p className="text-[11px] text-red-600 mt-1">{customError}</p>
+          )}
+          {customKeywords.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {customKeywords.map((kw) => (
+                <span
+                  key={kw}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200"
+                >
+                  {kw}
+                  <button
+                    type="button"
+                    onClick={() => removeCustomKeyword(kw)}
+                    className="hover:text-red-900"
+                    aria-label={`Remove ${kw}`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Score + budget */}
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -231,14 +354,35 @@ function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
           </div>
         </div>
 
-        <Button
-          onClick={handleSave}
-          disabled={updateSettings.isPending}
-          className="w-full"
-          size="sm"
-        >
-          {updateSettings.isPending ? t.common.loading : t.nicheRadar.saveSettings}
-        </Button>
+        {/* Last scan + actions */}
+        {settings?.last_scan_at && (
+          <p className="text-[11px] text-muted-foreground">
+            {t.nicheRadar.lastScan}:{' '}
+            {formatDistanceToNow(new Date(settings.last_scan_at), t.common)}
+          </p>
+        )}
+        <div className="flex gap-2">
+          <Button
+            onClick={handleSave}
+            disabled={updateSettings.isPending}
+            className="flex-1"
+            size="sm"
+          >
+            {updateSettings.isPending ? t.common.loading : t.nicheRadar.saveSettings}
+          </Button>
+          <Button
+            onClick={handleScanNow}
+            disabled={updateSettings.isPending || triggerScan.isPending}
+            variant="outline"
+            className="flex-1"
+            size="sm"
+          >
+            <RefreshCw
+              className={`h-4 w-4 mr-1 ${triggerScan.isPending ? 'animate-spin' : ''}`}
+            />
+            {triggerScan.isPending ? t.common.loading : t.nicheRadar.scanNow}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )
@@ -328,6 +472,7 @@ export default function NicheRadar() {
   }
 
   const industryLabel = (key: string) => {
+    if (key === 'custom') return t.nicheRadar.customIndustryLabel
     const ind = INDUSTRIES.find((i) => i.key === key)
     return ind ? (language === 'vi' ? ind.labelVi : ind.labelEn) : key
   }

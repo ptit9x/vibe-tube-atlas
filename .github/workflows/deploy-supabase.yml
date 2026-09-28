@@ -42,3 +42,25 @@ jobs:
         run: supabase functions deploy daily-scan --no-verify-jwt
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Sync CRON_SECRET to function env + app_config table
+        # The daily-scan auth secret must exist in TWO places: the Edge
+        # Function env (Bearer check) and the app_config table (read by the
+        # pg_cron command). Both are per-project and were lost when the
+        # project ref moved — this step keeps them in sync on every deploy,
+        # after migrations have created the table.
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: ${{ secrets.PROJECT_REF }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DAILY_SCAN_SECRET: ${{ secrets.DAILY_SCAN_SECRET }}
+        run: |
+          if [ -z "$DAILY_SCAN_SECRET" ]; then
+            echo "DAILY_SCAN_SECRET not set — skipping secret sync"
+            exit 0
+          fi
+          # 1) Function env var
+          echo "CRON_SECRET=$DAILY_SCAN_SECRET" | supabase secrets set --project-ref "$PROJECT_REF"
+          # 2) app_config row (cron command reads it as the postgres role)
+          PGPASSWORD="$POSTGRES_PASSWORD" psql "postgresql://postgres:${POSTGRES_PASSWORD}@db.${PROJECT_REF}.supabase.co:5432/postgres" \
+            -c "INSERT INTO public.app_config (key, value) VALUES ('cron_secret', '${DAILY_SCAN_SECRET}') ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now();"

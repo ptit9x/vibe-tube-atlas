@@ -361,6 +361,16 @@ export interface TranslationKey {
     sortNiche: string
     sortRpm: string
     sortRevenue: string
+    customKeywords: string
+    customHint: string
+    customPlaceholder: string
+    customMaxHint: string
+    customDuplicate: string
+    customIndustryLabel: string
+    scanNow: string
+    scanDone: string
+    scanFailed: string
+    lastScan: string
   }
 }
 
@@ -714,6 +724,16 @@ export const translations: Record<Language, TranslationKey> = {
       sortNiche: 'Điểm ngách',
       sortRpm: 'RPM ước tính',
       sortRevenue: 'Tiềm năng doanh thu',
+      customKeywords: 'Từ khoá của riêng bạn',
+      customHint: 'Mỗi từ khoá sẽ được quét trong mọi thị trường đã chọn, mở rộng bằng gợi ý Google tự động',
+      customPlaceholder: 'VD: review đồ uống healthy...',
+      customMaxHint: 'Tối đa 20 từ khoá',
+      customDuplicate: 'Từ khoá đã có trong danh sách',
+      customIndustryLabel: 'Riêng của bạn',
+      scanNow: 'Quét ngay',
+      scanDone: 'Quét xong: {n} từ khoá mới',
+      scanFailed: 'Quét thất bại, thử lại sau',
+      lastScan: 'Lần quét gần nhất',
     },
   },
 
@@ -1066,6 +1086,16 @@ export const translations: Record<Language, TranslationKey> = {
       sortNiche: 'Niche score',
       sortRpm: 'Est. RPM',
       sortRevenue: 'Revenue potential',
+      customKeywords: 'Your own keywords',
+      customHint: 'Each keyword is scanned across all selected markets and expanded with Google suggestions',
+      customPlaceholder: 'e.g. healthy drinks review...',
+      customMaxHint: 'Up to 20 keywords',
+      customDuplicate: 'Keyword already in the list',
+      customIndustryLabel: 'Your own',
+      scanNow: 'Scan now',
+      scanDone: 'Scan done: {n} keywords found',
+      scanFailed: 'Scan failed, try again later',
+      lastScan: 'Last scan',
     },
   },
 }

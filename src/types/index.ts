@@ -122,6 +122,8 @@ export interface ScanSettings {
   markets: string[]
   min_niche_score: number
   max_keywords_per_run: number
+  custom_keywords: string[]
+  last_scan_at: ISOString | null
   created_at: ISOString
   updated_at: ISOString
 }
