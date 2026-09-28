@@ -65,6 +65,10 @@ jobs:
           echo "CRON_SECRET=$DAILY_SCAN_SECRET" > /tmp/scan.env
           supabase secrets set --project-ref "$PROJECT_REF" --env-file /tmp/scan.env
           rm -f /tmp/scan.env
-          # 2) app_config row (cron command reads it as the postgres role)
-          PGPASSWORD="$POSTGRES_PASSWORD" psql "postgresql://postgres:${POSTGRES_PASSWORD}@db.${PROJECT_REF}.supabase.co:5432/postgres" \
-            -c "INSERT INTO public.app_config (key, value) VALUES ('cron_secret', '${DAILY_SCAN_SECRET}') ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now();"
+          # 2) app_config row (cron command reads it as the postgres role).
+          #    Direct psql from hosted runners is network-blocked; the
+          #    Management API query endpoint runs SQL as postgres over HTTPS.
+          curl -sf -X POST "https://api.supabase.com/v1/projects/$PROJECT_REF/database/query" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"query\": \"INSERT INTO public.app_config (key, value) VALUES ('cron_secret', '$DAILY_SCAN_SECRET') ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now();\"}"
