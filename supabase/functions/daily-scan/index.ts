@@ -1,6 +1,19 @@
 // Daily niche keyword scanner. Invoked by pg_cron (one HTTP call per user).
 // Zero YouTube API quota: Google Suggest + ytInitialData scraping only.
 // Multi-market: the keyword budget is split evenly across selected markets.
+//
+// 2026-10-05 rework: the previous fully-sequential flow issued ~1,100 Google
+// Suggest calls per market (28 industries x ~10 seeds x 4 prefixes) BEFORE
+// the first scrape — a default 2-market run needed 7-15 minutes and the
+// gateway killed it at the ~150s free-tier wall clock (clients saw 504)
+// during market-1 expansion: zero keywords scraped, last_scan_at never
+// stamped. This version:
+//   - runs suggest expansion + scraping through small concurrency pools
+//   - caps expansion tasks/candidates per industry (round-robin only needs
+//     perMarketBudget candidates anyway)
+//   - enforces a 130s soft deadline: stop launching work, return partial
+//   - stamps api_usage + last_scan_at BEFORE scanning (proof the run fired)
+//   - interactive "Scan now" runs use a smaller budget for fast response
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
   calcDifficultyScore,
@@ -24,6 +37,16 @@ const UPSERT_BATCH = 10;
 const MAX_CUSTOM_KEYWORDS = 20; // per user, enforced in UI + scanner
 const CUSTOM_INDUSTRY = "custom"; // pseudo-industry key for user keywords
 
+// Soft deadline: gateway kills at ~150s; stop launching new work at 130s so
+// the final upserts + response always make it out with partial results.
+const DEADLINE_MS = 130_000;
+const SUGGEST_CONCURRENCY = 8;
+const SCRAPE_CONCURRENCY = 3;
+const MAX_EXPAND_TASKS_PER_BUCKET = 16; // seed×prefix suggest queries / industry
+const INTERACTIVE_MAX_KEYWORDS = 30; // "Scan now": responsiveness > depth
+const INTERACTIVE_MAX_MARKETS = 2;
+const INTERACTIVE_PREFIXES = 2;
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -44,6 +67,25 @@ interface ScrapedVideo {
   views: number;
   published: string;
   ageDays: number;
+}
+
+// Run fn over items with at most `limit` in flight (order-preserving).
+async function mapPool<T, R>(
+  items: T[],
+  limit: number,
+  fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const results: R[] = new Array(items.length);
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, async () => {
+      while (next < items.length) {
+        const idx = next++;
+        results[idx] = await fn(items[idx]);
+      }
+    }),
+  );
+  return results;
 }
 
 function extractText(node: Record<string, unknown>): string {
@@ -157,6 +199,9 @@ function prefixesFor(lang: string): string[] {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
+  const startedAt = Date.now();
+  const timedOut = () => Date.now() - startedAt > DEADLINE_MS;
+
   const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -212,73 +257,107 @@ Deno.serve(async (req) => {
     .map((k: string) => k.trim())
     .filter(Boolean)
     .slice(0, MAX_CUSTOM_KEYWORDS);
+  // Interactive "Scan now" runs trim budget/markets/prefixes so the UI
+  // answers in well under a minute; cron runs keep the full configuration.
   const totalBudget = Math.min(
-    settings.max_keywords_per_run ?? 50,
+    isCron
+      ? (settings.max_keywords_per_run ?? 50)
+      : Math.min(settings.max_keywords_per_run ?? 50, INTERACTIVE_MAX_KEYWORDS),
     HARD_MAX_KEYWORDS,
   );
-  const perMarketBudget = Math.max(5, Math.floor(totalBudget / markets.length));
+  const effMarkets = isCron
+    ? markets
+    : markets.slice(0, INTERACTIVE_MAX_MARKETS);
+  const perMarketBudget = Math.max(5, Math.floor(totalBudget / effMarkets.length));
+  const prefixCount = isCron ? 4 : INTERACTIVE_PREFIXES;
   const categoryMap = Object.fromEntries(
     CATEGORIES.map((c) => [c.key, c.rpmMultiplier]),
   );
 
+  // Stamp the run BEFORE scanning. Even if the gateway still kills us (cold
+  // start + slow upstreams), the UI can prove the scan fired and when —
+  // this was the 504 blind spot: runs happened but nothing was ever stamped.
+  await admin
+    .from("api_usage")
+    .insert({ user_id, endpoint: "daily-scan", quota_cost: 0 })
+    .then(() => {}, () => {});
+  await admin
+    .from("scan_settings")
+    .update({ last_scan_at: new Date().toISOString() })
+    .eq("user_id", user_id)
+    .then(() => {}, () => {});
+
   const savedCounters: Record<string, number> = {};
   let errorCount = 0;
 
-  for (const marketKey of markets) {
+  for (const marketKey of effMarkets) {
+    if (timedOut()) break; // finish with what we have
     const market = MARKET_MAP[marketKey];
-    const seedLang = market.seedLang;
 
-    // 1) Expand seeds via Google Suggest → candidates per industry
-    const prefixes = prefixesFor(market.hl).slice(0, 4);
-    const perIndustry: {
+    // 1) Expand seeds via Google Suggest → candidates per industry.
+    //    Buckets expand concurrently; each bucket is capped (round-robin
+    //    only needs perMarketBudget candidates total, so ~1.2x is plenty).
+    const prefixes = prefixesFor(market.hl).slice(0, prefixCount);
+    const candidateCap = Math.max(8, Math.ceil(perMarketBudget * 1.2));
+    type Bucket = {
       industry: string;
       category: string;
+      seeds: string[];
       candidates: string[];
-    }[] = [];
-    for (const ind of wanted) {
-      const baseSeeds = ind.seeds[seedLang]?.length
-        ? ind.seeds[seedLang]!
-        : ind.seeds.en; // ja/ko fallback → en
-      const candidates = new Set<string>();
-      for (const seed of baseSeeds) {
-        candidates.add(seed);
-        for (const p of prefixes) {
-          for (const s of await getSuggestions(`${p} ${seed}`, market.hl, market.gl)) {
-            if (s.toLowerCase() !== seed.toLowerCase()) candidates.add(s);
-          }
-        }
-      }
-      perIndustry.push({
-        industry: ind.key,
-        category: ind.category,
-        candidates: [...candidates],
-      });
-    }
+    };
+    const buckets: Bucket[] = wanted.map((ind) => ({
+      industry: ind.key,
+      category: ind.category,
+      seeds:
+        ind.seeds[market.seedLang]?.length
+          ? ind.seeds[market.seedLang]!
+          : ind.seeds.en, // ja/ko fallback → en
+      candidates: [],
+    }));
     // Custom keywords join the round-robin as their own bucket. Category
     // unknown → multiplier 1 (neutral RPM estimate).
     if (customSeeds.length) {
-      const candidates = new Set<string>();
-      for (const seed of customSeeds) {
-        candidates.add(seed);
-        for (const p of prefixes) {
-          for (const s of await getSuggestions(`${p} ${seed}`, market.hl, market.gl)) {
-            if (s.toLowerCase() !== seed.toLowerCase()) candidates.add(s);
-          }
-        }
-      }
-      perIndustry.push({
+      buckets.push({
         industry: CUSTOM_INDUSTRY,
         category: "lifestyle", // neutral ×1.1 multiplier
-        candidates: [...candidates],
+        seeds: customSeeds,
+        candidates: [],
       });
     }
+
+    // ONE global task list across all buckets so SUGGEST_CONCURRENCY is the
+    // true upper bound of in-flight suggest requests (per-bucket pools would
+    // multiply it by the bucket count and get rate-limited).
+    const candSets: Set<string>[] = buckets.map((b) => new Set<string>(b.seeds));
+    const expandTasks: { bucketIdx: number; q: string; seed: string }[] = [];
+    buckets.forEach((b, i) => {
+      let n = 0;
+      for (const seed of b.seeds) {
+        for (const p of prefixes) {
+          if (n >= MAX_EXPAND_TASKS_PER_BUCKET) return;
+          expandTasks.push({ bucketIdx: i, q: `${p} ${seed}`, seed });
+          n++;
+        }
+      }
+    });
+    await mapPool(expandTasks, SUGGEST_CONCURRENCY, async ({ bucketIdx, q, seed }) => {
+      const candidates = candSets[bucketIdx];
+      if (timedOut() || candidates.size >= candidateCap) return;
+      for (const s of await getSuggestions(q, market.hl, market.gl)) {
+        if (candidates.size >= candidateCap) break;
+        if (s.toLowerCase() !== seed.toLowerCase()) candidates.add(s);
+      }
+    });
+    buckets.forEach((b, i) => {
+      b.candidates = [...candSets[i]];
+    });
 
     // 2) Round-robin across industries up to per-market budget
     const queue: { industry: string; category: string; keyword: string }[] = [];
     let added = true;
     while (queue.length < perMarketBudget && added) {
       added = false;
-      for (const bucket of perIndustry) {
+      for (const bucket of buckets) {
         if (queue.length >= perMarketBudget) break;
         const next = bucket.candidates.shift();
         if (next) {
@@ -292,13 +371,15 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 3) Scrape + score + upsert in batches
-    let rows: Record<string, unknown>[] = [];
+    // 3) Scrape + score concurrently, then upsert in batches
     savedCounters[marketKey] = 0;
-    for (const { industry, category, keyword } of queue) {
+    const scored = await mapPool(queue, SCRAPE_CONCURRENCY, async (item) => {
+      if (timedOut()) return null;
+      // politeness: ~1 req/1.2-1.6s per worker ⇒ ~2-2.5 rps total
+      await sleep(400 + Math.random() * 400);
       try {
         const { videos, estimatedResults } = await scrapeKeyword(
-          keyword,
+          item.keyword,
           market.hl,
           market.gl,
         );
@@ -317,12 +398,13 @@ Deno.serve(async (req) => {
             viewsPerDayTop,
           );
           const niche = calcNicheScore(difficulty, viewsPerDayTop, 0);
-          const estRpm = estimateRpm(marketKey, categoryMap[category] ?? 1);
-          rows.push({
+          const estRpm = estimateRpm(marketKey, categoryMap[item.category] ?? 1);
+          savedCounters[marketKey]++;
+          return {
             user_id,
-            industry,
-            category,
-            keyword,
+            industry: item.industry,
+            category: item.category,
+            keyword: item.keyword,
             market: marketKey,
             niche_score: niche,
             difficulty_score: difficulty,
@@ -339,47 +421,34 @@ Deno.serve(async (req) => {
             })),
             status: "ok",
             last_seen_at: new Date().toISOString(),
-          });
-          savedCounters[marketKey]++;
+          } as Record<string, unknown>;
         }
       } catch {
         errorCount++; // per-keyword failure must not kill the run
       }
-      if (rows.length >= UPSERT_BATCH) {
-        // Incremental persistence — survives the 150s wall-clock limit
-        await admin
-          .from("discovered_keywords")
-          .upsert(rows, { onConflict: "user_id,keyword,market" })
-          .then(() => {}, () => {});
-        rows = [];
-      }
-      await sleep(700 + Math.random() * 400); // ~1 rps + jitter
-    }
-    if (rows.length) {
+      return null;
+    });
+    // Incremental persistence — partial progress survives unexpected kills
+    const rows = scored.filter(
+      (r): r is Record<string, unknown> => r !== null,
+    );
+    for (let i = 0; i < rows.length; i += UPSERT_BATCH) {
       await admin
         .from("discovered_keywords")
-        .upsert(rows, { onConflict: "user_id,keyword,market" })
+        .upsert(rows.slice(i, i + UPSERT_BATCH), {
+          onConflict: "user_id,keyword,market",
+        })
         .then(() => {}, () => {});
     }
   }
 
-  // 4) Zero-quota usage log (dashboard consistency) + stamp last_scan_at so
-  //    the UI can prove the run happened (never wonder "did it run?" again).
-  await admin
-    .from("api_usage")
-    .insert({ user_id, endpoint: "daily-scan", quota_cost: 0 })
-    .then(() => {}, () => {});
-  await admin
-    .from("scan_settings")
-    .update({ last_scan_at: new Date().toISOString() })
-    .eq("user_id", user_id)
-    .then(() => {}, () => {});
-
   return json({
     user_id,
-    markets,
+    markets: effMarkets,
     customKeywords: customSeeds.length,
     scanned: savedCounters,
     errors: errorCount,
+    partial: timedOut(),
+    elapsed_ms: Date.now() - startedAt,
   });
 });
