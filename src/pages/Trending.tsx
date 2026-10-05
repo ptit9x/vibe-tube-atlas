@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PageTransition } from '@/components/shared'
+import { PageTransition, PullToRefreshWrapper } from '@/components/shared'
 import PageHeader from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -46,7 +46,8 @@ export default function Trending() {
   }
 
   return (
-    <PageTransition>
+    <PullToRefreshWrapper onRefresh={handleLoadTrending}>
+      <PageTransition>
       <div className="min-h-screen bg-gray-50 pb-20">
         <PageHeader>
           <h1 className="text-xl font-bold text-white">{t.trending.title}</h1>
@@ -176,6 +177,7 @@ export default function Trending() {
           )}
         </div>
       </div>
-    </PageTransition>
+      </PageTransition>
+    </PullToRefreshWrapper>
   )
 }

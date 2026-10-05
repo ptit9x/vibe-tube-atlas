@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PageTransition } from '@/components/shared'
+import { PageTransition, PullToRefreshWrapper } from '@/components/shared'
+import { useQueryClient } from '@tanstack/react-query'
 import PageHeader from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -329,7 +330,7 @@ function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
                   <button
                     type="button"
                     onClick={() => removeCustomKeyword(kw)}
-                    className="hover:text-red-900"
+                    className="relative after:absolute after:-inset-3 hover:text-red-900"
                     aria-label={`Remove ${kw}`}
                   >
                     <X className="h-3 w-3" />
@@ -430,6 +431,11 @@ function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
 // ===== Main page =====
 
 export default function NicheRadar() {
+  const queryClient = useQueryClient()
+  const handlePtrRefresh = async () => {
+    await queryClient.invalidateQueries()
+  }
+
   const { t, language } = useI18n()
   const navigate = useNavigate()
 
@@ -517,7 +523,8 @@ export default function NicheRadar() {
   }
 
   return (
-    <PageTransition>
+    <PullToRefreshWrapper onRefresh={handlePtrRefresh}>
+      <PageTransition>
       <div className="min-h-screen bg-gray-50 pb-20">
         <PageHeader>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
@@ -825,6 +832,7 @@ export default function NicheRadar() {
           </p>
         </div>
       </div>
-    </PageTransition>
+      </PageTransition>
+    </PullToRefreshWrapper>
   )
 }

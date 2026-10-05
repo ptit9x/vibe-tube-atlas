@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { PageTransition } from '@/components/shared'
+import { PageTransition, PullToRefreshWrapper } from '@/components/shared'
+import { useQueryClient } from '@tanstack/react-query'
 import PageHeader from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -21,6 +22,11 @@ import { toast } from 'sonner'
 import { Search, Bookmark, TrendingUp, Eye, ThumbsUp, Users, Flame, HelpCircle, Sparkles, Loader2, Download } from 'lucide-react'
 
 export default function KeywordExplorer() {
+  const queryClient = useQueryClient()
+  const handlePtrRefresh = async () => {
+    await queryClient.invalidateQueries()
+  }
+
   const { t, language: lang } = useI18n()
   const [searchParams, setSearchParams] = useSearchParams()
   const [input, setInput] = useState('')
@@ -123,7 +129,8 @@ export default function KeywordExplorer() {
   }
 
   return (
-    <PageTransition>
+    <PullToRefreshWrapper onRefresh={handlePtrRefresh}>
+      <PageTransition>
       <div className="min-h-screen bg-gray-50 pb-20">
         <PageHeader>
           <h1 className="text-xl font-bold text-white">{t.keywordExplorer.title}</h1>
@@ -465,7 +472,8 @@ export default function KeywordExplorer() {
           )}
         </div>
       </div>
-    </PageTransition>
+      </PageTransition>
+    </PullToRefreshWrapper>
   )
 }
 
@@ -514,7 +522,7 @@ function ViewsDistribution({ videos }: { videos: import('@/types').YouTubeVideo[
                       backgroundColor: `rgb(239, 68, 68, ${opacity})`,
                     }}
                   >
-                    <span className="text-[9px] font-medium text-white whitespace-nowrap">{formatCompactNumber(views)}</span>
+                    <span className="text-[10px] font-medium text-white whitespace-nowrap">{formatCompactNumber(views)}</span>
                   </div>
                 </div>
               </div>

@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { usePullToRefresh } from '@/hooks/usePullToRefresh'
 
 interface PullToRefreshWrapperProps {
@@ -7,10 +8,11 @@ interface PullToRefreshWrapperProps {
 }
 
 export function PullToRefreshWrapper({ onRefresh, children, className }: PullToRefreshWrapperProps) {
-  const { isRefreshing, pullDistance, handlers } = usePullToRefresh({ onRefresh })
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const { isRefreshing, pullDistance, handlers } = usePullToRefresh({ onRefresh, wrapperRef })
 
   return (
-    <div className={className} {...handlers}>
+    <div ref={wrapperRef} className={className} {...handlers}>
       {/* Pull indicator - icon only */}
       <div
         className="flex items-center justify-center overflow-hidden transition-all duration-200"

@@ -1,8 +1,28 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState, type RefObject } from 'react'
 
 interface UsePullToRefreshOptions {
   onRefresh: () => Promise<void>
   threshold?: number
+  /**
+   * Pages live inside <main> in MainLayout, which is the real scroll
+   * container — window.scrollY stays 0 there. We resolve the nearest
+   * scrollable ancestor of this wrapper to know whether the user is
+   * actually at the top before activating pull-to-refresh.
+   */
+  wrapperRef?: RefObject<HTMLDivElement | null>
+}
+
+function getScrollTop(wrapper: HTMLDivElement | null): number {
+  let node: HTMLElement | null = wrapper?.parentElement ?? null
+  while (node) {
+    const style = window.getComputedStyle(node)
+    const isScrollable =
+      (style.overflowY === 'auto' || style.overflowY === 'scroll') &&
+      node.scrollHeight > node.clientHeight
+    if (isScrollable) return node.scrollTop
+    node = node.parentElement
+  }
+  return window.scrollY
 }
 
 interface UsePullToRefreshReturn {
@@ -19,6 +39,7 @@ interface UsePullToRefreshReturn {
 export function usePullToRefresh({
   onRefresh,
   threshold = 80,
+  wrapperRef,
 }: UsePullToRefreshOptions): UsePullToRefreshReturn {
   const [isPulling, setIsPulling] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -28,16 +49,16 @@ export function usePullToRefresh({
   const currentY = useRef(0)
 
   const onTouchStart = useCallback((e: React.TouchEvent) => {
-    // Only activate when scrolled to top
-    if (window.scrollY > 0) return
+    // Only activate when the scroll container is at the top
+    if (getScrollTop(wrapperRef?.current ?? null) > 0) return
     startY.current = e.touches[0].clientY
     currentY.current = startY.current
-  }, [])
+  }, [wrapperRef])
 
   const onTouchMove = useCallback(
     (e: React.TouchEvent) => {
       if (isRefreshing) return
-      if (window.scrollY > 0) {
+      if (getScrollTop(wrapperRef?.current ?? null) > 0) {
         setIsPulling(false)
         setPullDistance(0)
         return
@@ -54,7 +75,7 @@ export function usePullToRefresh({
         setPullDistance(pulled)
       }
     },
-    [isRefreshing, threshold]
+    [isRefreshing, threshold, wrapperRef]
   )
 
   const onTouchEnd = useCallback(async () => {
