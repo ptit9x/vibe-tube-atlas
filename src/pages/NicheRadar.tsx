@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PageTransition } from '@/components/shared'
 import PageHeader from '@/components/PageHeader'
@@ -65,6 +65,23 @@ function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
   const { t, language } = useI18n()
   const updateSettings = useUpdateScanSettings()
   const triggerScan = useTriggerScan()
+
+  // Elapsed-seconds counter while a scan is in flight — proves the scan is
+  // alive during the ~45-60s run (the #1 "is it stuck?" confusion).
+  const [scanSeconds, setScanSeconds] = useState(0)
+  const [scanBarWide, setScanBarWide] = useState(false)
+  const scanning = triggerScan.isPending
+  useEffect(() => {
+    if (!scanning) return
+    setScanSeconds(0)
+    setScanBarWide(false)
+    const tick = setInterval(() => setScanSeconds((s) => s + 1), 1000)
+    const widen = setTimeout(() => setScanBarWide(true), 150)
+    return () => {
+      clearInterval(tick)
+      clearTimeout(widen)
+    }
+  }, [scanning])
 
   const [enabled, setEnabled] = useState(settings?.enabled ?? true)
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>(
@@ -148,9 +165,11 @@ function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
       },
       {
         onSuccess: () => {
+          toast.info(t.nicheRadar.scanStarted)
           triggerScan.mutate(undefined, {
             onSuccess: (result) => {
               const total = Object.values(result?.scanned ?? {}).reduce((s, n) => s + n, 0)
+              if (result?.partial) toast.warning(t.nicheRadar.scanPartial)
               toast.success(
                 t.nicheRadar.scanDone.replace('{n}', String(total)),
               )
@@ -380,9 +399,29 @@ function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
             <RefreshCw
               className={`h-4 w-4 mr-1 ${triggerScan.isPending ? 'animate-spin' : ''}`}
             />
-            {triggerScan.isPending ? t.common.loading : t.nicheRadar.scanNow}
+            {scanning
+              ? t.nicheRadar.scanning.replace('{s}', String(scanSeconds))
+              : t.nicheRadar.scanNow}
           </Button>
         </div>
+
+        {scanning && (
+          <div className="space-y-1.5">
+            <div
+              className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
+              role="progressbar"
+              aria-label={t.nicheRadar.scanNow}
+            >
+              <div
+                className="h-full rounded-full bg-indigo-500 transition-[width] duration-[60000ms] ease-out"
+                style={{ width: scanBarWide ? '92%' : '6%' }}
+              />
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              {t.nicheRadar.scanningHint}
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

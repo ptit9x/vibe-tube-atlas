@@ -371,6 +371,10 @@ export interface TranslationKey {
     scanDone: string
     scanFailed: string
     lastScan: string
+    scanning: string
+    scanningHint: string
+    scanStarted: string
+    scanPartial: string
   }
 }
 
@@ -734,6 +738,10 @@ export const translations: Record<Language, TranslationKey> = {
       scanDone: 'Quét xong: {n} từ khoá mới',
       scanFailed: 'Quét thất bại, thử lại sau',
       lastScan: 'Lần quét gần nhất',
+      scanning: 'Đang quét… {s}s',
+      scanningHint: 'Lần quét mất khoảng 45–60 giây. Danh sách sẽ tự cập nhật khi xong — đừng đóng trang nhé.',
+      scanStarted: 'Bắt đầu quét…',
+      scanPartial: 'Quét xong một phần do chạm giới hạn thời gian — kết quả vẫn được lưu.',
     },
   },
 
@@ -1096,6 +1104,10 @@ export const translations: Record<Language, TranslationKey> = {
       scanDone: 'Scan done: {n} keywords found',
       scanFailed: 'Scan failed, try again later',
       lastScan: 'Last scan',
+      scanning: 'Scanning… {s}s',
+      scanningHint: 'Takes about 45–60 seconds. The list refreshes automatically — keep this page open.',
+      scanStarted: 'Scan started…',
+      scanPartial: 'Partial scan (time limit reached) — results were still saved.',
     },
   },
 }

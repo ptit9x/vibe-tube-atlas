@@ -79,6 +79,8 @@ export function useTriggerScan() {
         customKeywords: number
         scanned: Record<string, number>
         errors: number
+        partial?: boolean
+        elapsed_ms?: number
       }
     },
     onSuccess: () => {
