@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PageTransition, PullToRefreshWrapper } from '@/components/shared'
-import { useQueryClient } from '@tanstack/react-query'
+import { PageTransition } from '@/components/shared'
 import PageHeader from '@/components/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -431,11 +430,6 @@ function ScanSettingsCard({ settings }: { settings: ScanSettings | null }) {
 // ===== Main page =====
 
 export default function NicheRadar() {
-  const queryClient = useQueryClient()
-  const handlePtrRefresh = async () => {
-    await queryClient.invalidateQueries()
-  }
-
   const { t, language } = useI18n()
   const navigate = useNavigate()
 
@@ -523,8 +517,7 @@ export default function NicheRadar() {
   }
 
   return (
-    <PullToRefreshWrapper onRefresh={handlePtrRefresh}>
-      <PageTransition>
+    <PageTransition>
       <div className="min-h-screen bg-gray-50 pb-20">
         <PageHeader>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
@@ -832,7 +825,6 @@ export default function NicheRadar() {
           </p>
         </div>
       </div>
-      </PageTransition>
-    </PullToRefreshWrapper>
+    </PageTransition>
   )
 }

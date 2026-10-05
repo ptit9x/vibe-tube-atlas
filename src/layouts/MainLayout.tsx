@@ -44,7 +44,7 @@ export default function MainLayout() {
     <div className="flex h-screen flex-col">
       <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
         <OfflineBanner />
-        <main className="flex-1 overflow-y-auto overscroll-y-contain pb-[calc(72px+env(safe-area-inset-bottom))] max-w-3xl">
+        <main className="flex-1 overflow-y-auto pb-[calc(72px+env(safe-area-inset-bottom))] max-w-3xl">
           <AnimatePresence mode="wait">
             <div key={location.pathname}>
               <Outlet />
