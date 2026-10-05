@@ -45,7 +45,7 @@ export default function SavedItems() {
           <h1 className="text-xl font-bold text-white">{t.savedItems.title}</h1>
         </PageHeader>
 
-        <div className="px-4 mt-4 space-y-4">
+        <div className="px-4 mt-6 space-y-6">
           {/* Tabs */}
           <div className="flex gap-2 bg-white rounded-xl p-1 shadow-sm">
             {tabs.map((tab) => (
