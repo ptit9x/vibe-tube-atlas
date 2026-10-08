@@ -30,7 +30,7 @@ React (src/lib/youtube.ts)
   → supabase.functions.invoke('youtube-search', { action, params })
     → Edge Function (supabase/functions/youtube-search/index.ts)
       - verifies user JWT
-      - reads user's YouTube API key from user_api_keys table (api_key_encrypted)
+      - reads user's YouTube API key via the get_user_youtube_key() RPC (encrypted at rest, never client-readable)
       - proxies to YouTube Data API v3
       - logs quota to api_usage, search queries to search_history (fire-and-forget)
   ← { data, totalResults } envelope
@@ -63,6 +63,6 @@ Single schema file: `20260728000000_tube_atlas_schema.sql`. Tables: `profiles`, 
 
 ### Conventions
 
-- `api_key_encrypted` is stored as plaintext despite the name (no encryption layer) — don't assume decryption exists.
+- `user_api_keys.api_key_encrypted` is `pgp_sym_encrypt`'d BYTEA (passphrase in locked-down `app_config`, postgres-role only). The key column is revoked from anon/authenticated — the client reads only metadata columns; key writes go through the `save_user_youtube_key(TEXT)` RPC and `youtube-search` reads via `get_user_youtube_key()` (both SECURITY DEFINER). Never select the raw column from the client.
 - `drop policy if exists` + recreate pattern in migrations keeps the schema file idempotent; follow it.
 - Tailwind v4 (CSS-based config in `src/index.css`, no tailwind.config.js).

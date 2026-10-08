@@ -140,23 +140,18 @@ Deno.serve(async (req: Request) => {
       return jsonResponse({ error: "Unauthorized" }, 401);
     }
 
-    // Get user's API key from user_api_keys table
-    const { data: keyData, error: keyError } = await supabase
-      .from("user_api_keys")
-      .select("api_key_encrypted")
-      .eq("user_id", user.id)
-      .eq("provider", "youtube")
-      .eq("is_active", true)
-      .maybeSingle();
+    // Get user's API key via SECURITY DEFINER RPC (encrypted at rest)
+    const { data: apiKey, error: keyError } = await supabase.rpc(
+      "get_user_youtube_key",
+    );
 
-    if (keyError || !keyData?.api_key_encrypted) {
+    if (keyError || !apiKey) {
       return jsonResponse(
         { error: "No YouTube API key found. Please add your API key in Settings." },
         400,
       );
     }
 
-    const apiKey = keyData.api_key_encrypted;
     const { action, params }: RequestBody = await req.json();
 
     let youtubeUrl = "";

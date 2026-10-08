@@ -26,16 +26,11 @@ export function useSaveApiKey() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (apiKey: string) => {
-      const user = await requireAuth()
-      const { error } = await supabase
-        .from('user_api_keys')
-        .upsert({
-          user_id: user.id,
-          provider: 'youtube',
-          api_key_encrypted: apiKey,
-          is_active: true,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'user_id,provider' })
+      // The key is encrypted server-side (pgp_sym_encrypt) via a SECURITY
+      // DEFINER RPC — the client never writes the raw column directly and
+      // can never read it back.
+      await requireAuth()
+      const { error } = await supabase.rpc('save_user_youtube_key', { p_key: apiKey })
 
       if (error) throw error
       return { success: true }
