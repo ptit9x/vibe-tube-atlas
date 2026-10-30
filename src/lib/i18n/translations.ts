@@ -8,6 +8,12 @@ export interface TranslationKey {
     trending: string
     videos: string
     profile: string
+    explore: string
+    channels: string
+    saved: string
+    nicheRadar: string
+    history: string
+    apiKey: string
   }
   common: {
     save: string
@@ -387,6 +393,12 @@ export const translations: Record<Language, TranslationKey> = {
       trending: 'Xu hướng',
       videos: 'Video',
       profile: 'Khác',
+      explore: 'Khám phá',
+      channels: 'Kênh',
+      saved: 'Đã lưu',
+      nicheRadar: 'Radar ngách',
+      history: 'Lịch sử',
+      apiKey: 'API Key',
     },
     common: {
       save: 'Lưu',
@@ -753,6 +765,12 @@ export const translations: Record<Language, TranslationKey> = {
       trending: 'Trending',
       videos: 'Videos',
       profile: 'More',
+      explore: 'Explore',
+      channels: 'Channels',
+      saved: 'Saved',
+      nicheRadar: 'Niche Radar',
+      history: 'History',
+      apiKey: 'API Key',
     },
     common: {
       save: 'Save',

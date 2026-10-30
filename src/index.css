@@ -38,7 +38,7 @@
   --color-secondary: hsl(220 14% 96%);
   --color-secondary-foreground: hsl(224 71% 4%);
   --color-muted: hsl(220 14% 96%);
-  --color-muted-foreground: hsl(220 9% 46%);
+  --color-muted-foreground: hsl(220 12% 38%);
   --color-accent: hsl(220 14% 96%);
   --color-accent-foreground: hsl(224 71% 4%);
   --color-destructive: hsl(0 84% 60%);
@@ -636,12 +636,30 @@ body {
   padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
 }
 
-/* Smooth transitions for dark mode toggle */
-html {
+/* Smooth transitions for dark mode toggle — scoped to html/body ONLY.
+   A global `html *` transition forces every element to animate on every
+   render where these props change (theme toggle, hovers) — jank on mobile. */
+html,
+body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-html *,
-html *::before,
-html *::after {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+/* Respect reduced-motion: kill smooth scrolling, animations, transitions */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

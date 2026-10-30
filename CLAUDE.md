@@ -66,3 +66,12 @@ Single schema file: `20260728000000_tube_atlas_schema.sql`. Tables: `profiles`, 
 - `user_api_keys.api_key_encrypted` is `pgp_sym_encrypt`'d BYTEA (passphrase in locked-down `app_config`, postgres-role only). The key column is revoked from anon/authenticated — the client reads only metadata columns; key writes go through the `save_user_youtube_key(TEXT)` RPC and `youtube-search` reads via `get_user_youtube_key()` (both SECURITY DEFINER). Never select the raw column from the client.
 - `drop policy if exists` + recreate pattern in migrations keeps the schema file idempotent; follow it.
 - Tailwind v4 (CSS-based config in `src/index.css`, no tailwind.config.js).
+
+## UI/UX rules (updated 2026-10-30)
+
+- **No global `*` transitions.** Theme transitions are scoped to `html, body` in `index.css`. Never re-add an `html *` transition block — it animates every element on every render and janks mobile.
+- **Accessibility baseline (in `index.css`):** global `:focus-visible` ring, a `prefers-reduced-motion` block, and `--color-muted-foreground` at `hsl(220 12% 38%)` for contrast. Nav links carry `aria-current`; icon-only links need `aria-label`; the Dashboard quota bar is a real `role="progressbar"`.
+- **Layout:** app content is centred at `max-w-[880px]` (`mx-auto`) inside `MainLayout`. Mobile bottom nav keeps 5 slots; the DESKTOP sidebar additionally has an “Explore” section (`sidebarExtraItems` in `MainLayout.tsx`): Channels, Niche Radar, Saved, History, API Key — labels are i18n keys `nav.{explore,channels,saved,nicheRadar,history,apiKey}` (vi + en in `translations.ts`). New top-level features go in the sidebar section, not the bottom nav.
+- **Colours:** prefer semantic tokens (`bg-background`, `bg-card`, `bg-muted`, `text-muted-foreground`, `divide-border`) over hardcoded `bg-white`/`bg-gray-*`. `index.css` still carries `.dark` overrides for legacy hardcoded classes — migrate per file, and only delete an override once no component uses that class.
+- Project skills live in `.claude/skills/` (21 installed 2026-10-30 via the `skills` CLI, `-a claude-code`); `skills-lock.json` tracks them.
+- Full UI/UX change log: `UI-UX-IMPROVEMENT-2026-10-30.md`.

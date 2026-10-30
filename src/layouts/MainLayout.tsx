@@ -9,6 +9,11 @@ import {
   Video,
   Menu,
   LogOut,
+  Users,
+  Bookmark,
+  Radar,
+  History,
+  KeyRound,
 } from 'lucide-react'
 
 import { Avatar, OfflineBanner } from '@/components/shared'
@@ -22,6 +27,15 @@ const bottomNavItems = [
   { icon: Video, labelKey: 'nav.videos', href: '/videos' },
   { icon: Menu, labelKey: 'nav.profile', href: '/profile' },
 ]
+
+/** Desktop-sidebar-only section: main features the 5-slot bottom nav cannot hold. */
+const sidebarExtraItems = [
+  { icon: Users, labelKey: 'channels', href: '/channels' },
+  { icon: Radar, labelKey: 'nicheRadar', href: '/niche-radar' },
+  { icon: Bookmark, labelKey: 'saved', href: '/saved' },
+  { icon: History, labelKey: 'history', href: '/history' },
+  { icon: KeyRound, labelKey: 'apiKey', href: '/settings/api-key' },
+] as const
 
 export default function MainLayout() {
   const location = useLocation()
@@ -44,7 +58,7 @@ export default function MainLayout() {
     <div className="flex h-screen flex-col">
       <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
         <OfflineBanner />
-        <main className="flex-1 overflow-y-auto pb-[calc(72px+env(safe-area-inset-bottom))] max-w-3xl">
+        <main className="flex-1 overflow-y-auto pb-[calc(72px+env(safe-area-inset-bottom))] w-full max-w-[880px] mx-auto">
           <AnimatePresence mode="wait">
             <div key={location.pathname}>
               <Outlet />
@@ -66,6 +80,8 @@ export default function MainLayout() {
                   <Link
                     key={item.href}
                     to={item.href}
+                    aria-label={t.nav.trending}
+                    aria-current={isActive ? 'page' : undefined}
                     className="relative -mt-8 z-10"
                   >
                     <motion.div
@@ -84,6 +100,7 @@ export default function MainLayout() {
                 <Link
                   key={item.href}
                   to={item.href}
+                  aria-current={isActive ? 'page' : undefined}
                   className="relative flex flex-col items-center justify-center gap-0.5 py-2 px-3 min-w-[56px]"
                 >
                   {isActive && (
@@ -169,6 +186,38 @@ function DesktopSidebar({ user }: { user: import('@/types').AuthUser }) {
               )}
               <Icon className={cn("h-4 w-4 relative z-10", isActive ? "text-white" : "")} />
               <span className="relative z-10">{t.nav[item.labelKey.split('.')[1] as keyof typeof t.nav]}</span>
+            </Link>
+          )
+        })}
+
+        {/* Explore — features beyond the 5 bottom-nav slots (desktop only) */}
+        <p className="px-3 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+          {t.nav.explore}
+        </p>
+        {sidebarExtraItems.map((item) => {
+          const isActive = location.pathname.startsWith(item.href)
+          const Icon = item.icon
+          return (
+            <Link
+              key={item.href}
+              to={item.href}
+              aria-current={isActive ? 'page' : undefined}
+              className={cn(
+                "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
+                isActive
+                  ? "text-white"
+                  : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-gray-100/60 dark:hover:bg-white/5"
+              )}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="sidebarPill"
+                  className="absolute inset-0 rounded-xl clay-button-primary"
+                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                />
+              )}
+              <Icon className={cn("h-4 w-4 relative z-10", isActive ? "text-white" : "")} />
+              <span className="relative z-10">{t.nav[item.labelKey]}</span>
             </Link>
           )
         })}

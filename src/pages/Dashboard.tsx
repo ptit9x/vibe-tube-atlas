@@ -49,7 +49,7 @@ export default function Dashboard() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gray-50 pb-20">
+      <div className="min-h-screen bg-background pb-20">
         <PageHeader>
           <h1 className="text-xl font-bold text-white">{t.dashboard.greeting}</h1>
           <p className="text-sm text-white/80">{t.dashboard.subtitle}</p>
@@ -57,7 +57,7 @@ export default function Dashboard() {
 
         <div className="px-4 mt-6 space-y-6">
           {/* API Quota Card */}
-          <Card className="bg-white rounded-xl shadow-sm">
+          <Card className="rounded-xl shadow-sm">
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -70,7 +70,7 @@ export default function Dashboard() {
                   {formatCompactNumber(quotaUsed)} / {formatCompactNumber(quotaLimit)}
                 </span>
               </div>
-              <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+              <div className="h-2 rounded-full bg-muted overflow-hidden" role="progressbar" aria-label={t.dashboard.apiQuota} aria-valuenow={Math.round(quotaPercent)} aria-valuemin={0} aria-valuemax={100}>
                 <div
                   className={`h-full rounded-full transition-all ${
                     quotaPercent > 80 ? 'bg-red-500' : quotaPercent > 50 ? 'bg-amber-500' : 'bg-green-500'
@@ -93,7 +93,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-3 gap-3">
               {quickActions.map(({ to, icon: Icon, label, color }) => (
                 <Link key={to} to={to}>
-                  <Card className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <Card className="rounded-xl shadow-sm hover:shadow-md transition-shadow">
                     <CardContent className="p-3 flex flex-col items-center gap-2 text-center">
                       <div className={`p-2.5 rounded-xl ${color}`}>
                         <Icon className="h-5 w-5" />
@@ -117,10 +117,10 @@ export default function Dashboard() {
             <div className="grid grid-cols-3 gap-3">
               {savedCounts.map(({ label, count }) => (
                 <Link key={label} to="/saved">
-                  <Card key={label} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <Card key={label} className="rounded-xl shadow-sm hover:shadow-md transition-shadow">
                     <CardContent className="p-3 text-center">
                       <div className="text-2xl font-bold">{formatCompactNumber(count)}</div>
-                      <div className="text-[10px] text-muted-foreground leading-tight mt-1">{label}</div>
+                      <div className="text-[11px] text-muted-foreground leading-tight mt-1">{label}</div>
                     </CardContent>
                   </Card>
                 </Link>
@@ -130,7 +130,7 @@ export default function Dashboard() {
 
           {/* Niche Radar entry */}
           <Link to="/niche-radar">
-            <Card className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <Card className="rounded-xl shadow-sm hover:shadow-md transition-shadow">
               <CardContent className="p-4 flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-red-50">
                   <Radar className="h-5 w-5 text-primary" />
@@ -160,23 +160,23 @@ export default function Dashboard() {
                 </Button>
               </Link>
             </div>
-            <Card className="bg-white rounded-xl shadow-sm">
+            <Card className="rounded-xl shadow-sm">
               <CardContent className="p-0">
                 {!searchHistory || searchHistory.length === 0 ? (
                   <div className="p-6 text-center text-sm text-muted-foreground">
                     {t.dashboard.noRecentSearches}
                   </div>
                 ) : (
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-border">
                     {searchHistory.map((entry) => (
                       <Link
                         key={entry.id}
                         to="/keywords"
-                        className="flex items-center justify-between p-3 hover:bg-gray-50 transition-colors"
+                        className="flex items-center justify-between p-3 hover:bg-muted transition-colors"
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="p-1.5 rounded-lg bg-gray-100">
-                            <Search className="h-3.5 w-3.5 text-gray-500" />
+                          <div className="p-1.5 rounded-lg bg-muted">
+                            <Search className="h-3.5 w-3.5 text-muted-foreground" />
                           </div>
                           <div className="min-w-0">
                             <div className="text-sm font-medium truncate">{entry.query}</div>
@@ -196,7 +196,7 @@ export default function Dashboard() {
 
           {/* API Key Status */}
           <Link to="/settings/api-key">
-            <Card className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <Card className="rounded-xl shadow-sm hover:shadow-md transition-shadow">
               <CardContent className="p-4 flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-green-50">
                   <KeyRound className="h-5 w-5 text-green-600" />
